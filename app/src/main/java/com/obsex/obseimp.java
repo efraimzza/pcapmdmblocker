@@ -8,14 +8,22 @@ public class obseimp {
     List<obseobj> obs=new ArrayList<>();
     public void addObs(obseobj o){
         boolean faund =false;
+        LogUtil.logToFile("rema");
+        try{
         for(obseobj ob:obs){
             if(o.getClass().equals(ob.getClass())){
+                LogUtil.logToFile("remb");
                 remObs(ob);
                 faund=true;
-                //LogUtil.logToFile("rem obseobj"+o.getClass()+ob.getClass());
+                LogUtil.logToFile("rem obseobj"+o.getClass()+ob.getClass());
+                break;
             }
         }
+        LogUtil.logToFile("remc");
         obs.add(o);
+        }catch(Exception e){
+            LogUtil.logToFile(e.toString()+e.getStackTrace()[0]);
+        }
         /*
         if(obs.contains(o)){
             remObs(o);

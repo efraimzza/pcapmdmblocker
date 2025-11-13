@@ -138,17 +138,19 @@ public class EmptyRecyclerView extends ListView {
         setClipToPadding(false);
     }
 
-    private void initEmptyView() {
+    public void initEmptyView() {
         if(getAdapter()!=null)
         LogUtil.logToFile("c="+getAdapter().getCount());
         else
             LogUtil.logToFile("a=null");
             try{
         if (mEmptyView != null) {
-            mEmptyView.setVisibility(
-                    getAdapter() == null || getAdapter().getCount() == 0 ? VISIBLE : GONE);
-            EmptyRecyclerView.this.setVisibility(
-                    getAdapter() == null || getAdapter().getCount() == 0 ? GONE : VISIBLE);
+            //mEmptyView.setVisibility(
+                   // getAdapter() == null || getAdapter().getCount() == 0 ? VISIBLE : GONE);
+            //EmptyRecyclerView.this.setVisibility(
+                //    getAdapter() == null || getAdapter().getCount() == 0 ? GONE : VISIBLE);
+            mEmptyView.setVisibility(GONE);
+            EmptyRecyclerView.this.setVisibility(VISIBLE);
         }
         }catch(Exception e){
             LogUtil.logToFile(e.toString());
@@ -174,7 +176,6 @@ public class EmptyRecyclerView extends ListView {
             initEmptyView();
         }
     };*/
-
     @Override
     public void setAdapter(ListAdapter adapter) {
         ListAdapter oldAdapter = getAdapter();
@@ -211,5 +212,18 @@ public class EmptyRecyclerView extends ListView {
                 return windowInsets;
             });
         }*/
+        if (view != null) {
+            view.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+
+                    @Override
+                    public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
+                      
+                Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars() |
+                                                       WindowInsets.Type.displayCutout());
+                v.setPadding(0, insets.top, 0, 0);
+
+                return windowInsets;
+            }});
+        }
     }
 }

@@ -53,41 +53,47 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.widget.AdapterView;
 import android.widget.Adapter;
+import android.app.Fragment;
+import com.obsex.obseobj;
 
-public class BlacklistsFragment implements BlacklistsStateListener {
+public class BlacklistsFragment extends Fragment implements BlacklistsStateListener {
     private static final String TAG = "BlacklistsFragment";
     private BlacklistsAdapter mAdapter;
     private Blacklists mBlacklists;
     private MenuItem mUpdateItem;
     private Handler mHandler;
 
-   // @Override
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         //requireActivity().addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.malware_detection_blacklists, container, false);
     }
 
-    //@Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         mBlacklists = PCAPdroid.getInstance().getBlacklists();
         mAdapter = new BlacklistsAdapter(view.getContext(), PCAPdroid.getInstance().getBlacklists().iter());
         ListView listView = view.findViewById(R.id.listview);
         listView.setAdapter(mAdapter);
-
         listView.setOnItemClickListener(new ListView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> p1, View view1, int position, long p4) {
-                
-                
-            BlacklistDescriptor bl = mAdapter.getItem(position);
-            if (bl != null)
-                openUrl(view1.getContext(), bl.url);
+                    BlacklistDescriptor bl = mAdapter.getItem(position);
+                    if (bl != null)
+                        openUrl(view1.getContext(), bl.url);
         }});
-
         mHandler = new Handler(Looper.getMainLooper());
-
+        obseobj ob = new obseobj() {
+            @Override
+            public void update(Object arg) {
+                refreshStatus();
+            }
+        };
+        
+        CaptureService.observeStatus(ob);
         //CaptureService.observeStatus(this, serviceStatus -> refreshStatus());
     }
 
@@ -96,18 +102,38 @@ public class BlacklistsFragment implements BlacklistsStateListener {
         Utils.startActivity(ctx, intent);
     }
 
-   // @Override
+    @Override
     public void onResume() {
-        //super.onResume();
+        super.onResume();
         mBlacklists.addOnChangeListener(this);
     }
 
-    //@Override
+    @Override
     public void onPause() {
-        //super.onPause();
+        super.onPause();
         mBlacklists.removeOnChangeListener(this);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.blacklists_menu, menu);
+        mUpdateItem = menu.findItem(R.id.update);
+        refreshStatus();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        
+        if(id == R.id.update) {
+            CaptureService.requestBlacklistsUpdate();
+            return true;
+        }
+
+        return false;
+    }
+    
    // @Override
     public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {
         //inflater.inflate(R.menu.blacklists_menu, menu);

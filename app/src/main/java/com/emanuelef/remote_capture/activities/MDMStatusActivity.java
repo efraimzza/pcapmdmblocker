@@ -67,7 +67,7 @@ import com.emanuelef.remote_capture.BuildConfig;
 import com.emanuelef.remote_capture.Utils;
 
 import java.util.Properties;
-/*
+
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -76,7 +76,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-*/
+
 @Deprecated
 public class MDMStatusActivity extends Activity {
     
@@ -157,7 +157,8 @@ public class MDMStatusActivity extends Activity {
         tvroute=findViewById(R.id.act_stat_tvroute);
         tvdescription=findViewById(R.id.act_stat_tvdescription);
         
-        tvappname.setText(getResources().getString(R.string.pcapdroid_app_name)+" "+Utils.getAppVersion(this));
+        tvappname.setText(getResources().getString(R.string.pcapdroid_app_name)+"\n"+Utils.getAppVersion(this));
+        
         bucpcmd.setOnClickListener(new OnClickListener(){
                 @Deprecated
                 @Override
@@ -356,6 +357,12 @@ public class MDMStatusActivity extends Activity {
         tvtlogin.setGravity(Gravity.CENTER);
         } catch (Exception e) {}
         if(mdmstate){
+            try{
+                if(Build.VERSION.SDK_INT >= 24){
+                    mDpm.setDeviceOwnerLockScreenInfo(mAdminComponentName,""+tvappname.getText());
+                    mDpm.setOrganizationName(mAdminComponentName,getResources().getString(R.string.pcapdroid_app_name));
+                }
+            }catch (Exception e) {}
             linlactivate.setVisibility(View.GONE);
             linldetails.setVisibility(View.VISIBLE);
             tvroute.setText("המסלול הפעיל - "+AppState.getInstance().getCurrentPath().getDescription());
@@ -671,7 +678,7 @@ public class MDMStatusActivity extends Activity {
                     props.put("mail.smtp.socketFactory.port", "587");
                     props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
                     props.put("mail.smtp.socketFactory.fallback", "true");
-                  /*  try {
+                    try {
                         Authenticator auth = new javax.mail.Authenticator() {
                             protected PasswordAuthentication getPasswordAuthentication() {
                                 return new PasswordAuthentication(md_email, md_password);
@@ -697,7 +704,7 @@ public class MDMStatusActivity extends Activity {
                          //6) set the multiplart object to the message object
                          msg.setContent(multipart ); 
                          */
-/*
+
                         msg.setFrom(new InternetAddress(md_email));
                         //msg.addRecipient(Message.RecipientType.TO, new InternetAddress(md_targetemail));
 
@@ -716,7 +723,7 @@ public class MDMStatusActivity extends Activity {
                         mcon.getMainLooper().myLooper().prepare();
                         Toast.makeText(mcon, "" + mex, 1).show();
                         mcon.getMainLooper().myLooper().loop();
-                    }*/
+                    }
 
                 } catch (Exception e) {
                     mcon.getMainLooper().myLooper().prepare();
@@ -767,12 +774,12 @@ public class MDMStatusActivity extends Activity {
                                 alertDialogb.hide();
                                 String md_email="";
                                 String md_password="";
-                                md_email = "";
-                                md_password = "";
+                                md_email = "md_mail";
+                                md_password = "md_pwd";
                                 
                                 String ad="****@gmail.com";
                                 String mail_to = "";
-                                mail_to = "";
+                                mail_to = "md_mail_to";
                                 String[] recipients = { mail_to };
                                 msendmail(md_email, md_password,resa,recipients);
                             } else {

@@ -79,6 +79,7 @@ import android.content.DialogInterface;
 import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import java.lang.reflect.InvocationTargetException;
+import com.emanuelef.remote_capture.activities.instcer;
 
 public class SettingsActivity extends BaseActivity implements 
 FragmentManager.OnBackStackChangedListener,
@@ -138,7 +139,7 @@ FragmentManager.OnBackStackChangedListener,
         // necessary, otherwise insets are not dispatched after fragment replace
        // if (mInsets != null)
             //ViewCompat.dispatchApplyWindowInsets(view, mInsets);
-    }
+    }*/
 /*
     @Override
     public boolean onPreferenceStartFragment(@NonNull PreferenceFragmentCompat caller, @NonNull Preference pref) {
@@ -216,8 +217,8 @@ FragmentManager.OnBackStackChangedListener,
         private ListPreference mBlockQuic;
         private Preference mVpnExceptions;
         private Preference mSocks5Settings;
-        private Preference mDnsSettings;
-        private Preference mPortMapping;
+        //private Preference mDnsSettings;
+        //private Preference mPortMapping;
         private Preference mMitmWizard;
         private SwitchPreference mMalwareDetectionEnabled;
         private SwitchPreference mPcapngEnabled;
@@ -232,7 +233,25 @@ FragmentManager.OnBackStackChangedListener,
             
         }
         
-        
+        void refreshsumarray(Preference pref,String s){
+            if(pref instanceof EditTextPreference){
+                pref.setSummary(s);
+            } else if(pref instanceof ListPreference){
+                pref.setSummary(s);
+            }
+        }
+        void mlistpresum(Preference pref){
+            if(pref instanceof ListPreference){
+                pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+
+                        @Override
+                        public boolean onPreferenceChange(Preference p1, Object p2) {
+                            p1.setSummary(((ListPreference)p1).getEntries()[((ListPreference)p1).findIndexOfValue(p2.toString())]);
+                            return true;
+                        }
+                    });
+            }
+        }
        // @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.root_preferences);
@@ -287,9 +306,13 @@ FragmentManager.OnBackStackChangedListener,
             T pref = (T) findPreference(key);
             if(pref == null)
                 throw new IllegalStateException();
+            if(pref instanceof EditTextPreference){
+                pref.setSummary(((EditTextPreference)pref).getText());
+            } else if(pref instanceof ListPreference){
+                pref.setSummary(((ListPreference)pref).getEntry());
+            }
             return pref;
         }
-
         @SuppressWarnings("deprecation")
         private void setupExporterPrefs() {
             /* Collector IP validation */
@@ -301,6 +324,7 @@ FragmentManager.OnBackStackChangedListener,
                        
             
             Utils.validateIpAddress(newValue.toString());
+                        refreshsumarray(p1,newValue.toString());
             return true;}});
             /* Collector port validation */
          EditTextPreference mRemoteCollectorPort = requirePreference(Prefs.PREF_COLLECTOR_PORT_KEY);
@@ -312,12 +336,14 @@ FragmentManager.OnBackStackChangedListener,
                         
                     
                 Utils.validatePort(newValue.toString());
+                        refreshsumarray(p1,newValue.toString());
                 return true;}});
         }
 
         private void setupHttpServerPrefs() {
             /* HTTP Server port validation */
             EditTextPreference mHttpServerPort = requirePreference(Prefs.PREF_HTTP_SERVER_PORT);
+            
             mHttpServerPort.setOnPreferenceChangeListener(new EditTextPreference.OnPreferenceChangeListener(){
 
                     @Override
@@ -325,6 +351,8 @@ FragmentManager.OnBackStackChangedListener,
                      
                     
                 Utils.validatePort(newValue.toString());
+                        //p1.setSummary(newValue.toString());
+                refreshsumarray(p1,newValue.toString());
                 return true;
                 }});
         }
@@ -383,7 +411,7 @@ FragmentManager.OnBackStackChangedListener,
             mRestartOnDisconnect = requirePreference(Prefs.PREF_RESTART_ON_DISCONNECT);
             mRestartOnDisconnect.setEnabled(VpnReconnectService.isAvailable());
 
-            mDnsSettings = requirePreference("dns_settings");;
+            //mDnsSettings = requirePreference("dns_settings");;
             mVpnExceptions = requirePreference(Prefs.PREF_VPN_EXCEPTIONS);
             mVpnExceptions.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
@@ -423,13 +451,14 @@ FragmentManager.OnBackStackChangedListener,
                 if(!checkDecrpytionWithRoot(rootCaptureEnabled(), (boolean) newValue))
                     return false;
 
-                if(enabled && MitmAddon.needsSetup(ctx)) {
+                /*if(enabled && MitmAddon.needsSetup(ctx)) {
                     mHasStartedMitmWizard = true;
                     Intent intent = new Intent(ctx, MitmSetupWizard.class);
-                    startActivity(intent);
+                    //startActivity(intent);
                     return false;
-                }
-
+                }*/
+                        MitmAddon.setDecryptionSetupDone(getContext(), true);
+                        
                         mMitmWizard.setEnabled((boolean) newValue);
                         mMitmproxyOpts.setEnabled((boolean) newValue);
                 socks5ProxyHideShow((boolean) newValue, rootCaptureEnabled());
@@ -466,12 +495,23 @@ FragmentManager.OnBackStackChangedListener,
                     public boolean onPreferenceClick(Preference p1) {
                         
                 mHasStartedMitmWizard = true;
-                Intent intent = new Intent(getContext(), MitmSetupWizard.class);
+                //Intent intent = new Intent(getContext(), MitmSetupWizard.class);
                 //startActivity(intent);
+                        //  if(MitmAddon.needsSetup(mcon)){
+                        Intent intent = new Intent(getContext(), instcer.class);
+                        startActivity(intent);
+                        //}else{
+                        //SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(getContext());
+                        //p.edit().putBoolean(Prefs.PREF_TLS_DECRYPTION_KEY, true).apply();
+                        //MitmAddon.setDecryptionSetupDone(getContext(), true);
+
+                        //  }
                 return true;
             }});
 
             mSocks5Settings = requirePreference("socks5_settings");
+            
+            mlistpresum(mBlockQuic);
             
         }
 
@@ -481,11 +521,11 @@ FragmentManager.OnBackStackChangedListener,
 
         private void setupAppLanguagePref() {
             ListPreference appLang = requirePreference(Prefs.PREF_APP_LANGUAGE);
-            Preference appLangExternal = requirePreference("app_language_external");
+            //Preference appLangExternal = requirePreference("app_language_external");
             boolean u=false;
             if (Build.VERSION.SDK_INT >= 33&&u) {
                 // On Android 33+, app language is configurable from the system settings
-                appLang.setEnabled(false);
+              /*  appLang.setEnabled(false);
                 appLangExternal.setEnabled(true);
               /*  ClassLoader l=null;
                 try {
@@ -494,7 +534,7 @@ FragmentManager.OnBackStackChangedListener,
                 */
                /* LocaleList locales = ((LocaleList)getContext().getSystemService("locale"))
                         .getApplicationLocales();*/
-                LocaleList locales =LocaleList.getDefault();
+            /*    LocaleList locales =LocaleList.getDefault();
                 if (locales.equals(LocaleList.getEmptyLocaleList()))
                     appLangExternal.setSummary(getString(R.string.system_default));
                 else if (!locales.isEmpty())
@@ -509,8 +549,10 @@ FragmentManager.OnBackStackChangedListener,
                     intent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
                     startActivity(intent);
                     return true;
-                }});
+                }});*/
             } else {
+                
+                //appLangExternal.setEnabled(false);
                 // Fallback selector for older Android versions
                /* if (SettingsActivity.ACTION_LANG_RESTART.equals(requireActivity().getIntent().getAction()))
                     scrollToPreference(appLang);
@@ -541,7 +583,7 @@ FragmentManager.OnBackStackChangedListener,
         private void setupOtherPrefs() {
             setupAppLanguagePref();
 
-            mPortMapping = requirePreference(Prefs.PREF_PORT_MAPPING);
+           /* mPortMapping = requirePreference(Prefs.PREF_PORT_MAPPING);
             mPortMapping.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 
                     @Override
@@ -550,11 +592,11 @@ FragmentManager.OnBackStackChangedListener,
                 Intent intent = new Intent(getContext(), PortMapActivity.class);
                 startActivity(intent);
                 return true;
-            }});
+            }});*/
 
             mIpMode = requirePreference(Prefs.PREF_IP_MODE);
-
-            Preference ctrlPerm = requirePreference("control_permissions");
+            mlistpresum(mIpMode);
+            /*Preference ctrlPerm = requirePreference("control_permissions");
             if(!PCAPdroid.getInstance().getCtrlPermissions().hasRules())
                 ctrlPerm.setEnabled(false);
             else
@@ -566,7 +608,7 @@ FragmentManager.OnBackStackChangedListener,
                     Intent intent = new Intent(getContext(), EditCtrlPermissions.class);
                     startActivity(intent);
                     return true;
-                }});
+                }});*/
         }
 
         private void rootCaptureHideShow(boolean enabled) {
@@ -586,8 +628,8 @@ FragmentManager.OnBackStackChangedListener,
             mIpMode.setEnabled(!enabled);
             //mCapInterface.setEnabled(enabled);
             mVpnExceptions.setEnabled(!enabled);
-            mDnsSettings.setEnabled(!enabled);
-            mPortMapping.setEnabled(!enabled);
+            //mDnsSettings.setEnabled(!enabled);
+            //mPortMapping.setEnabled(!enabled);
             
         }
 

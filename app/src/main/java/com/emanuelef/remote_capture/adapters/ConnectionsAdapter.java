@@ -52,8 +52,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import android.annotation.NonNull;
 import android.preference.PreferenceManager;
+import android.widget.ArrayAdapter;
 
-public class ConnectionsAdapter 
+public class ConnectionsAdapter extends ArrayAdapter
         implements ConnectionsListener {
     private static final String TAG = "ConnectionsAdapter";
     private final LayoutInflater mLayoutInflater;
@@ -179,6 +180,7 @@ public class ConnectionsAdapter
     }
 
     public ConnectionsAdapter(Context context, AppsResolver resolver) {
+        super(context,R.layout.connection_item);
         mContext = context;
         mAppsResolver = resolver;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -198,6 +200,12 @@ public class ConnectionsAdapter
         return((mFilteredConn != null) ? mFilteredConn.size() : mUnfilteredItemsCount);
     }
 
+    @Override
+    public int getCount() {
+        return((mFilteredConn != null) ? mFilteredConn.size() : mUnfilteredItemsCount);
+    }
+    
+/*
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -234,9 +242,43 @@ public class ConnectionsAdapter
         }
 
         holder.bindConn(mContext, conn, mAppsResolver, mUnknownIcon);
-    }
+    }*/
 
-  //  @Override
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        if(convertView==null)
+            convertView= mLayoutInflater.inflate(R.layout.connection_item, parent, false);
+
+        // Enable the ability to show the context menu
+        convertView.setLongClickable(true);
+
+        if(mListener != null)
+            convertView.setOnClickListener(mListener);
+
+        final ViewHolder holder = new ViewHolder(convertView);
+
+        convertView.setOnLongClickListener(new View.OnLongClickListener(){
+
+                @Override
+                public boolean onLongClick(View p1) {
+
+                    // see registerForContextMenu
+                    mSelectedItem = getItem(position);
+                    return false;
+                }
+            });
+        ConnectionDescriptor conn = getItem(position);
+        if(conn == null) {
+            Log.w(TAG, "bad position: " + position);
+            return convertView;
+        }
+
+        holder.bindConn(mContext, conn, mAppsResolver, mUnknownIcon);
+    
+        return convertView;
+    }
+    
+    @Override
     public long getItemId(int pos) {
         ConnectionDescriptor conn = getItem(pos);
 
@@ -266,6 +308,7 @@ public class ConnectionsAdapter
 
         mFilteredConn.remove(pos);
         mIdToFilteredPos.delete(item.incr_id);
+        notifyDataSetChanged();
       //  notifyItemRemoved(pos);
     }
 
@@ -288,6 +331,7 @@ public class ConnectionsAdapter
         mUnfilteredItemsCount += conns.length;
 
         if(mFilteredConn == null) {
+            notifyDataSetChanged();
            // notifyItemRangeInserted(start, conns.length);
             return;
         }
@@ -304,8 +348,9 @@ public class ConnectionsAdapter
                 numNew++;
             }
         }
-
-        //if(numNew > 0)
+        
+        if(numNew > 0)
+            notifyDataSetChanged();
            // notifyItemRangeInserted(mFilteredConn.size() - numNew, numNew);
     }
 
@@ -315,6 +360,7 @@ public class ConnectionsAdapter
         mUnfilteredItemsCount -= conns.length;
 
         if(mFilteredConn == null) {
+            notifyDataSetChanged();
            // notifyItemRangeRemoved(start, conns.length);
             return;
         }
@@ -341,6 +387,7 @@ public class ConnectionsAdapter
 
         if(mFilteredConn == null) {
             for(int pos : positions)
+                notifyDataSetChanged();
                 //notifyItemChanged(pos);
             return;
         }
@@ -367,6 +414,7 @@ public class ConnectionsAdapter
                     if(matches(conn)) {
                         Log.d(TAG, "Changed item " + pos + ", dataset size: " + getItemCount());
                        // notifyItemChanged(pos);
+                       notifyDataSetChanged();
                     } else {
                         Log.d(TAG, "Unmatch item " + pos + ": " + conn.toString());
 
@@ -418,7 +466,7 @@ public class ConnectionsAdapter
         } else
             mFilteredConn = null;
 
-        //notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     public ConnectionDescriptor getItem(int pos) {

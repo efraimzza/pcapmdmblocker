@@ -72,7 +72,7 @@ public class EditFilterActivity extends BaseActivity  {
         setContentView(R.layout.edit_filter_activity);
         setTitle(R.string.edit_filter);
         //addMenuProvider(this);
-
+/*
         ActionBar actionBar = getActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -84,7 +84,7 @@ public class EditFilterActivity extends BaseActivity  {
           /*  FilterDescriptor desc = Utils.getSerializableExtra(intent, FILTER_DESCRIPTOR, FilterDescriptor.class);
             if(desc != null)
                 mFilter = desc;*/
-        }
+ /*       }
         if(mFilter == null)
             mFilter = new FilterDescriptor();
 
@@ -122,7 +122,7 @@ public class EditFilterActivity extends BaseActivity  {
                 new Pair<>(DecryptionStatus.NOT_DECRYPTABLE, findViewById(R.id.dec_status_not_decryptable)),
                 new Pair<>(DecryptionStatus.ERROR, findViewById(R.id.dec_status_error))
         ));*/
-
+/*
         if (PCAPdroid.getInstance().isDecryptingPcap()) {
             // unable to show the following statuses
             findViewById(R.id.dec_status_not_decryptable).setVisibility(View.GONE);
@@ -159,7 +159,7 @@ public class EditFilterActivity extends BaseActivity  {
 
             mInterfaceGroup.setVisibility(View.VISIBLE);
             */
-            findViewById(R.id.interfaces_label).setVisibility(View.VISIBLE);
+    /*        findViewById(R.id.interfaces_label).setVisibility(View.VISIBLE);
         }
 
         if (reg != null) {
@@ -176,6 +176,7 @@ public class EditFilterActivity extends BaseActivity  {
         }
 
       //  model2view();
+      */
     }
 
    /* private <T> void setCheckedChip(ArrayList<Pair<T, Chip>> chipMap, T curValue) {

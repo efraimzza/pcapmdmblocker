@@ -34,8 +34,8 @@ public class ConnectionsActivity extends BaseActivity {
         displayBackAction(); // Use explicit back to restore the AppDetailsActivity state
         setContentView(R.layout.fragment_activity);
 
-       // getSupportFragmentManager().beginTransaction()
-               // .replace(R.id.fragment, new ConnectionsFragment())
-                //.commit();
+       getFragmentManager().beginTransaction()
+                .replace(R.id.linfra, new ConnectionsFragment())
+                .commit();
     }
 }

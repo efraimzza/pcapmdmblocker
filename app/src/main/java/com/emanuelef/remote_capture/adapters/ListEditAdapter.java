@@ -42,6 +42,7 @@ import com.emanuelef.remote_capture.model.MatchList;
 //import com.haipq.android.flagkit.FlagImageView;
 
 import java.util.Iterator;
+import com.emanuelef.remote_capture.activities.LogUtil;
 
 public class ListEditAdapter extends ArrayAdapter<MatchList.Rule> implements TextAdapter {
     private final LayoutInflater mLayoutInflater;
@@ -62,9 +63,9 @@ public class ListEditAdapter extends ArrayAdapter<MatchList.Rule> implements Tex
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        try{
         if(convertView == null)
             convertView = mLayoutInflater.inflate(R.layout.rule_item, parent, false);
-
         MatchList.Rule rule = getItem(position);
         ((TextView)convertView.findViewById(R.id.item_label)).setText(rule.getLabel());
 
@@ -90,7 +91,9 @@ public class ListEditAdapter extends ArrayAdapter<MatchList.Rule> implements Tex
             } else
                 icon.setImageDrawable(mDefaultIcon);
         }
-
+        }catch(Exception e){
+            LogUtil.logToFile(e.toString());
+        }
         return convertView;
     }
 

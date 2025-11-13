@@ -32,10 +32,10 @@
                 android:id="@+id/add_proto"
                 android:title="@string/protocol"
                 android:visible="false" />
-            <item
+            <!--item
                 android:id="@+id/add_country"
                 android:title="@string/country"
-                android:visible="false" />
+                android:visible="false" /-->
         </menu>
     </item>
 

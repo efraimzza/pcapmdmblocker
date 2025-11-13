@@ -120,14 +120,19 @@ import com.obsex.obseobj;
 import com.emanuelef.remote_capture.activities.LogUtil;
 import com.emanuelef.remote_capture.activities.instcer;
 import com.emanuelef.remote_capture.MitmAddon;
+import com.emanuelef.remote_capture.model.MatchList;
+import android.app.Fragment;
 
-public class StatusFragment extends LinearLayout implements AppStateListener {
+public class StatusFragment extends Fragment implements AppStateListener {
     private static final String TAG = "StatusFragment";
     public Menu mMenu;
     public MenuItem mStartBtn;
     public MenuItem mStopBtn;
     private ImageView mFilterIcon;
     public MenuItem mMenuSettings;
+    public MenuItem mMalware;
+    public MenuItem mDecrypt;
+    public MenuItem mLog;
     private TextView mInterfaceInfo;
     public View mCollectorInfoLayout;
     private TextView mCollectorInfoText;
@@ -157,7 +162,7 @@ public class StatusFragment extends LinearLayout implements AppStateListener {
     public static final String modesp="mode";
 	//public static sModetype smtype;
 	AlertDialog alertDialogmode;
-    public StatusFragment(Context context){
+  /*  public StatusFragment(Context context){
         super(context);
         inStatusFragment(context);
         
@@ -177,14 +182,14 @@ public class StatusFragment extends LinearLayout implements AppStateListener {
     @Override
     public void addView(View child) {
         super.addView(child);
-    }
+    }*/
     
 	private Context requireContext() {
-        return mcon;
+        return getContext();
     }
   
     private Activity requireActivity() {
-        return mActivity;
+        return getActivity();
     }
 
    /* @Override
@@ -195,44 +200,45 @@ public class StatusFragment extends LinearLayout implements AppStateListener {
         
         moncreate();
     }*/
-    /*
-  //  @Override
+    
+    @Override
     public void onAttach(@NonNull Context context) {
-     //   super.onAttach(context);
+        super.onAttach(context);
         mActivity = (MainActivity) context;
         mcon = context;
 	compName = new ComponentName(context, admin.class);
 	    
-    }*/
+    }
 
- //   @Override
+    @Override
     public void onDetach() {
-     //   super.onDetach();
+        super.onDetach();
         mActivity.setAppStateListener(null);
         mActivity = null;
     }
 
-//    @Override
+    @Override
     public void onResume() {
-     //  super.onResume();
+       super.onResume();
 
         CaptureService.checkAlwaysOnVpnActivated();
         refreshStatus();
     }
 
-   // @Override
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
       //  requireActivity().addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.status, container, false);
     }
     
-    //@Deprecated
-   // @SuppressLint("ClickableViewAccessibility")
-   // @Override
-  //  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-    public void moncreate() {
-        View view= LayoutInflater.from(mcon).inflate(R.layout.status,this);
+    @Deprecated
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+   // public void moncreate() {
+        //View view= LayoutInflater.from(mcon).inflate(R.layout.status,this);
+        setHasOptionsMenu(true);
         mInterfaceInfo = view.findViewById(R.id.interface_info);
         mCollectorInfoLayout = view.findViewById(R.id.collector_info_layout);
         mCollectorInfoText = mCollectorInfoLayout.findViewById(R.id.collector_info_text);
@@ -359,15 +365,17 @@ public class StatusFragment extends LinearLayout implements AppStateListener {
                               Toast.makeText(mcon, "" + e, 1).show();
                               return;
                           }*/
+                          /*
                         //  if(MitmAddon.needsSetup(mcon)){
-                         // Intent intent = new Intent(requireContext(), instcer.class);
-                          //mcon.startActivity(intent);
+                          Intent intent = new Intent(requireContext(), instcer.class);
+                          mcon.startActivity(intent);
                           //}else{
                              SharedPreferences p=mPrefs;
                              p.edit().putBoolean(Prefs.PREF_TLS_DECRYPTION_KEY, true).apply();
                           MitmAddon.setDecryptionSetupDone(requireContext(), true);
                           
                         //  }
+                        */
                            VpnService.prepare(mcon);
                            DevicePolicyManager dpm=(DevicePolicyManager)mcon.getSystemService("device_policy");
                            p(dpm, compName, mcon.getPackageName(), true);
@@ -505,12 +513,36 @@ public class StatusFragment extends LinearLayout implements AppStateListener {
      	//new
         //important add pcap to whitelist malware
         PCAPdroid.getInstance().getMalwareWhitelist().addApp(mcon.getPackageName());
-        PCAPdroid.getInstance().getDecryptionList().addApp("com.pure.browser.plus");
+        /*MatchList ml=  PCAPdroid.getInstance().getDecryptionList();
+        ml.addApp("com.pure.browser.plus");
+        ml.addApp("com.android.chrome");
+        ml.save();
+        */
         sp = mcon.getSharedPreferences(mcon.getPackageName(), mcon.MODE_PRIVATE);
     	
     }
     boolean succ=false;
     boolean mend=false;
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu, menu);
+
+        mMenu = menu;
+        mStartBtn = mMenu.findItem(R.id.action_start);
+        mStopBtn = mMenu.findItem(R.id.action_stop);
+        mMenuSettings = mMenu.findItem(R.id.action_settings);
+        mMalware= mMenu.findItem(R.id.action_malware);
+        mDecrypt=mMenu.findItem(R.id.action_decrypt);
+        mLog=mMenu.findItem(R.id.action_log);
+        refreshStatus();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
+    }
+    
     //@Override
  //   public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
        /* menuInflater.inflate(R.menu.main_menu, menu);
@@ -580,7 +612,7 @@ public class StatusFragment extends LinearLayout implements AppStateListener {
 
         @Override
         public void update( Object p2) {
-            mActivity.getMainExecutor().execute(new Runnable(){
+            mcon.getMainExecutor().execute(new Runnable(){
                    @Override
                    public void run() {
             //LogUtil.logToFile("notifi suc...lol");
@@ -696,6 +728,9 @@ public class StatusFragment extends LinearLayout implements AppStateListener {
             return;
 try{
         if(mMenu != null) {
+            mMalware.setVisible(Prefs.isMalwareDetectionEnabled(getContext(), PreferenceManager.getDefaultSharedPreferences(getContext())));
+            mDecrypt.setVisible(Prefs.getTlsDecryptionEnabled(PreferenceManager.getDefaultSharedPreferences(getContext())));
+            mLog.setVisible(Prefs.isdebug(PreferenceManager.getDefaultSharedPreferences(getContext())));
             if((state == AppState.running) || (state == AppState.stopping)) {
                 
                 //LogUtil.logToFile("run or stop");
@@ -715,7 +750,6 @@ try{
                // LogUtil.logToFile("continue lol3");
                 mMenuSettings.setEnabled(false);
                // LogUtil.logToFile("continue lol4");
-                
                 }catch(Exception e){
                     LogUtil.logToFile("runstoperr"+e.toString()+e.getStackTrace()[0].getMethodName()+e.getStackTrace()[0].getLineNumber());
                 }

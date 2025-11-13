@@ -57,7 +57,7 @@ import com.emanuelef.remote_capture.activities.LogUtil;
 //import kotlin.NotImplementedError;
 
 public abstract class AppsToggles extends Fragment implements AppsLoadListener,
-        AppsTogglesAdapter.AppToggleListener{
+AppsTogglesAdapter.AppToggleListener,SearchView.OnQueryTextListener{
     private static final String TAG = "AppsToggles";
     private AppsTogglesAdapter mAdapter;
     private SearchView mSearchView;
@@ -82,8 +82,8 @@ public abstract class AppsToggles extends Fragment implements AppsLoadListener,
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.recycler_view);
        // recyclerView.setLayoutManager(new EmptyRecyclerView.MyLinearLayoutManager(getContext()));
-
-        mAdapter = new AppsTogglesAdapter(getContext(), getCheckedApps());
+       setHasOptionsMenu(true);
+        mAdapter = new AppsTogglesAdapter(getContext(), getCheckedApps(),recyclerView);
         recyclerView.setAdapter(mAdapter);
         mAdapter.setAppToggleListener(this);
 
@@ -115,6 +115,19 @@ public abstract class AppsToggles extends Fragment implements AppsLoadListener,
             mQueryToApply = mSearchView.getQuery().toString();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+         inflater.inflate(R.menu.search_menu, menu);
+         MenuItem searchItem = menu.findItem(R.id.search);
+         mSearchView = (SearchView) searchItem.getActionView();
+         mSearchView.setOnQueryTextListener(this);
+
+         if((mQueryToApply != null) && (!mQueryToApply.isEmpty())) {
+         Log.d(TAG, "Initial filter: " + mQueryToApply);
+         Utils.setSearchQuery(mSearchView, searchItem, mQueryToApply);
+         }
+    }
+    
   //  @Override
     public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
        /* menuInflater.inflate(R.menu.search_menu, menu);
@@ -151,10 +164,10 @@ public abstract class AppsToggles extends Fragment implements AppsLoadListener,
         return Utils.backHandleSearchview(mSearchView);
     }
 
-   // @Override
+    @Override
     public boolean onQueryTextSubmit(String query) { return true; }
 
-   // @Override
+    @Override
     public boolean onQueryTextChange(String newText) {
         mAdapter.setFilter(newText);
         return true;
@@ -169,8 +182,8 @@ public abstract class AppsToggles extends Fragment implements AppsLoadListener,
             //very important to implement the getview in the adapter...
             
             
-           // mAdapter = new AppsTogglesAdapter(getContext(), getCheckedApps());
-        //recyclerView.setAdapter(mAdapter);
+           /* mAdapter = new AppsTogglesAdapter(getContext(), getCheckedApps());
+        recyclerView.setAdapter(mAdapter);*/
         mEmptyText.setText(R.string.no_matches_found);
         }catch(Exception e){
             LogUtil.logToFile(e.toString());
@@ -180,9 +193,10 @@ public abstract class AppsToggles extends Fragment implements AppsLoadListener,
     // Must be implemented in sub-classes
     protected Set<String> getCheckedApps() {
         //throw new NotImplementedError();
-        Set<String> mSelectedApps = new ArraySet<>();
+        throw new Error("not impl");
+        /*Set<String> mSelectedApps = new ArraySet<>();
         mSelectedApps.add("a");
-        return mSelectedApps;
+        return mSelectedApps;*/
         
     }
 }

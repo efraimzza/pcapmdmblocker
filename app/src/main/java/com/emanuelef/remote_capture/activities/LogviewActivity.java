@@ -40,6 +40,11 @@ import com.emanuelef.remote_capture.fragments.LogviewFragment;
 //import com.google.android.material.tabs.TabLayout;
 //import com.google.android.material.tabs.TabLayoutMediator;
 import android.annotation.NonNull;
+import android.app.ActionBar;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class LogviewActivity extends BaseActivity  {
     private static final String TAG = "LogviewActivity";
@@ -50,12 +55,14 @@ public class LogviewActivity extends BaseActivity  {
     private static final int POS_ROOT_LOG = 1;
     private static final int POS_MITM_LOG = 2;
     private static final int NUM_POS = 3;
-
+    
+    LogviewFragment curfra;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_log);
-        setContentView(R.layout.tabs_activity_fixed);
+        setContentView(R.layout.fragment_activity);
       //  addMenuProvider(this);
 
      //   mPager = findViewById(R.id.pager);
@@ -72,6 +79,40 @@ public class LogviewActivity extends BaseActivity  {
         new TabLayoutMediator(tabLayout, mPager, (tab, position) ->
                 tab.setText(getString(mPagerAdapter.getPageTitle(position)))
         ).attach();*/
+        try{
+            maddtab(LogviewFragment.newInstance(getFilesDir().getAbsolutePath() + "/" + Log.DEFAULT_LOGGER_PATH),getText(R.string.app));
+            maddtab(LogviewFragment.newInstance(getFilesDir().getAbsolutePath() + "/" + Log.MITM_LOGGER_PATH),getText(R.string.mitm_addon));
+            maddtab(LogviewFragment.newInstance("/storage/emulated/0/log.txt"),"log");
+            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        }catch(Exception e){}
+    }
+    private ActionBar.Tab maddtab(final Fragment f,CharSequence tname){
+        ActionBar a=getActionBar();
+        ActionBar.Tab ta=a.newTab().setText(tname);
+        ta.setTabListener(new ActionBar.TabListener(){
+
+                @Override
+                public void onTabSelected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    try{
+                        LogUtil.logToFile("comt="+ getFragmentManager().beginTransaction().replace(R.id.linfra,f).commit());
+                        curfra=(LogviewFragment) f;
+                        //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                    }catch(Exception e){
+                        LogUtil.logToFile(e.toString());
+                    }
+                }
+
+                @Override
+                public void onTabUnselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                }
+
+                @Override
+                public void onTabReselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                }
+            });
+        a.addTab(ta);
+        return ta;
     }
 /*
     private static class StateAdapter extends FragmentStateAdapter {
@@ -140,6 +181,45 @@ public class LogviewActivity extends BaseActivity  {
 
         return super.onKeyDown(keyCode, event);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.log_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(curfra == null)
+            return false;
+
+        String logText = curfra.getLog();
+
+        if(id == R.id.reload) {
+            curfra.reloadLog();
+            return true;
+        } else if(id == R.id.copy_to_clipboard) {
+            Utils.copyToClipboard(this, logText);
+            return true;
+        } else if(id == R.id.share) {
+            Utils.shareText(this, getString(R.string.app_log), logText);
+            return true;
+        } else if(id == R.id.clear) {
+            try {
+                FileWriter writer = new FileWriter(curfra.getLogPath(), false);
+                writer.write("\n");
+                writer.close();
+            } catch (IOException e) {
+                // silent
+            }
+            curfra.reloadLog();
+            return true;
+        }
+
+        return false;
+    }
+    
 
    // @Override
     public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {

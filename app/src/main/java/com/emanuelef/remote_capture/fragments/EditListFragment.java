@@ -154,7 +154,7 @@ public class EditListFragment extends Fragment implements MatchList.ListChangeLi
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
                 int id = menuItem.getItemId();
-/*
+
                 if(id == R.id.delete_entry) {
                     confirmDelete(mode);
                     return true;
@@ -169,7 +169,7 @@ public class EditListFragment extends Fragment implements MatchList.ListChangeLi
                     }
 
                     return true;
-                } else*/
+                } else
                     return false;
             }
 
@@ -263,9 +263,9 @@ public class EditListFragment extends Fragment implements MatchList.ListChangeLi
          menu.findItem(R.id.add_proto).setVisible(false);
          }
          if(supportedRules.contains(RuleType.COUNTRY)){
-         menu.findItem(R.id.add_country).setVisible(true);
+         //menu.findItem(R.id.add_country).setVisible(true);
          }else{
-         menu.findItem(R.id.add_country).setVisible(false);
+         //menu.findItem(R.id.add_country).setVisible(false);
          }
          if(mListInfo.getHelpString() <= 0)
          menu.findItem(R.id.show_hint).setVisible(false);
@@ -276,48 +276,48 @@ public class EditListFragment extends Fragment implements MatchList.ListChangeLi
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         ListView lv = requireActivity().findViewById(R.id.listview);
-        
-         if(lv == null)
-         return false;
 
-         if(id == R.id.action_export) {
-         if(mList.isEmpty())
-         Utils.showToastLong(requireContext(), R.string.no_rules_to_export);
-         else{
-         //startExport();
-         }
-         return true;
-         } else if(id == R.id.action_import) {
-        // startImport();
-         return true;
-         } else if(id == R.id.copy_to_clipboard) {
-         String contents = Utils.adapter2Text((ListEditAdapter)lv.getAdapter());
-         Utils.copyToClipboard(requireContext(), contents);
-         return true;
-         } else if(id == R.id.share) {
-         String contents = Utils.adapter2Text((ListEditAdapter)lv.getAdapter());
-         Utils.shareText(requireContext(), getString(mListInfo.getTitle()), contents);
-         return true;
-         } else if(id == R.id.show_hint) {
-         Utils.showHelpDialog(requireContext(), mListInfo.getHelpString());
-         return true;
-         } else if(id == R.id.add_ip) {
-         showAddIpRule();
-         return true;
-         } else if(id == R.id.add_proto) {
-         showAddProtoRule();
-         return true;
-         } else if(id == R.id.add_host) {
-         showAddHostRule();
-         return true;
-         } else if(id == R.id.add_app) {
-         showAddAppRule();
-         return true;
-         } else if(id == R.id.add_country) {
-         showAddCountryRule();
-         return true;
-         }
-         
+        if(lv == null)
+            return false;
+
+        if(id == R.id.action_export) {
+            if(mList.isEmpty())
+                Utils.showToastLong(requireContext(), R.string.no_rules_to_export);
+            else{
+                //startExport();
+            }
+            return true;
+        } else if(id == R.id.action_import) {
+            // startImport();
+            return true;
+        } else if(id == R.id.copy_to_clipboard) {
+            String contents = Utils.adapter2Text((ListEditAdapter)lv.getAdapter());
+            Utils.copyToClipboard(requireContext(), contents);
+            return true;
+        } else if(id == R.id.share) {
+            String contents = Utils.adapter2Text((ListEditAdapter)lv.getAdapter());
+            Utils.shareText(requireContext(), getString(mListInfo.getTitle()), contents);
+            return true;
+        } else if(id == R.id.show_hint) {
+            Utils.showHelpDialog(requireContext(), mListInfo.getHelpString());
+            return true;
+        } else if(id == R.id.add_ip) {
+            showAddIpRule();
+            return true;
+        } else if(id == R.id.add_proto) {
+            showAddProtoRule();
+            return true;
+        } else if(id == R.id.add_host) {
+            showAddHostRule();
+            return true;
+        } else if(id == R.id.add_app) {
+            showAddAppRule();
+            return true;
+        } /*else if(id == R.id.add_country) {
+            showAddCountryRule();
+            return true;
+        }*/
+
         return false;
     }
     
@@ -508,17 +508,17 @@ menu.findItem(R.id.add_country).setVisible(false);
                 new AppSelectDialog.AppSelectListener() {
             @Override
             public void onSelectedApp(AppDescriptor app) {
-               /* abortAppSelection();
+                abortAppSelection();
 
                 if(!mList.addApp(app.getPackageName()))
                     Utils.showToastLong(requireContext(), R.string.rule_exists);
                 else
-                    saveAndReload();*/
+                    saveAndReload();
             }
 
             @Override
             public void onAppSelectionAborted() {
-               // abortAppSelection();
+                abortAppSelection();
             }
         });
     }

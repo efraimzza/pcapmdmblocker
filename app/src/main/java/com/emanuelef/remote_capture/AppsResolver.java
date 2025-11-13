@@ -57,17 +57,31 @@ public class AppsResolver {
 
     private void initVirtualApps() {
         // Use loaders to only load the bitmap in memory if requested via AppDescriptor.getIcon()
-      /*  final DrawableLoader virtualIconLoader = () -> {
+        final DrawableLoader virtualIconLoader = new DrawableLoader() {
+
+            @Override
+            public Drawable getDrawable() {
+               
+            
             // cache this to avoid copies
             if(mVirtualAppIcon == null)
                 mVirtualAppIcon =mContext. getDrawable( android.R.drawable.sym_def_app_icon);
             return mVirtualAppIcon;
+            }
         };
-        final DrawableLoader unknownIconLoader = () -> ContextCompat.getDrawable(mContext, android.R.drawable.ic_menu_help);
+            final DrawableLoader unknownIconLoader = new DrawableLoader(){
+
+                @Override
+                public Drawable getDrawable() {
+                   
+                  return  mContext.getDrawable( android.R.drawable.ic_menu_help);
+                  }
+            };
 
         // https://android.googlesource.com/platform/system/core/+/master/libcutils/include/private/android_filesystem_config.h
         // NOTE: these virtual apps cannot be used as a permanent filter (via addAllowedApplication)
         // as they miss a valid package name
+        
         mApps.put(Utils.UID_UNKNOWN, new AppDescriptor(mContext.getString(R.string.unknown_app),
              unknownIconLoader, "unknown", Utils.UID_UNKNOWN, true)
             .setDescription(mContext.getString(R.string.unknown_app_info)));
@@ -90,7 +104,7 @@ public class AppsResolver {
                 virtualIconLoader,"netd", 1051, true)
                  .setDescription(mContext.getString(R.string.netd_app_info)));
         mApps.put(9999, new AppDescriptor("Nobody",
-                virtualIconLoader,"nobody", 9999, true));*/
+                virtualIconLoader,"nobody", 9999, true));
     }
 
     public synchronized static void clearMappedApps() {

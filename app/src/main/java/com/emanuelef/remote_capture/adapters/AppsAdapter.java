@@ -35,6 +35,7 @@ import com.emanuelef.remote_capture.R;
 import java.util.List;
 import android.annotation.NonNull;
 import android.widget.ArrayAdapter;
+import com.emanuelef.remote_capture.activities.LogUtil;
 
 public class AppsAdapter extends ArrayAdapter<AppDescriptor> {
     private final LayoutInflater mLayoutInflater;
@@ -55,14 +56,17 @@ public class AppsAdapter extends ArrayAdapter<AppDescriptor> {
 
         public AppViewHolder(View view) {
           //  super(view);
-
+          try{
             textInListView = view.findViewById(R.id.app_name);
             imageInListView = view.findViewById(R.id.app_icon);
             packageInListView= view.findViewById(R.id.app_package);
+            }catch(Exception e){
+                LogUtil.logToFile(e.toString());
+            }
         }
     }
 
-    @NonNull
+ /*   @NonNull
     @Override
     public AppsAdapter.AppViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.app_installed_item, parent, false);
@@ -72,10 +76,10 @@ public class AppsAdapter extends ArrayAdapter<AppDescriptor> {
             view.setOnClickListener(mListener);
 
         return(recyclerViewHolder);
-    }
+    }*/
 
   //  @Override
-    public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
+   /* public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
         AppDescriptor app = getItem(position);
 
         holder.textInListView.setText(app.getName());
@@ -83,13 +87,37 @@ public class AppsAdapter extends ArrayAdapter<AppDescriptor> {
 
         if(app.getIcon() != null)
             holder.imageInListView.setImageDrawable(app.getIcon());
-    }
+    }*/
 
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if(convertView==null)
+            convertView=mLayoutInflater.inflate(R.layout.app_installed_item, parent, false);
+        AppViewHolder holder = new AppViewHolder(convertView);
+        AppDescriptor app = getItem(position);
+
+        holder.textInListView.setText(app.getName());
+        holder.packageInListView.setText(app.getPackageName());
+
+        if(app.getIcon() != null)
+            holder.imageInListView.setImageDrawable(app.getIcon());
+   
+        //LogUtil.logToFile(app.getName()+app.getPackageName());
+        if(mListener != null)
+            convertView.setOnClickListener(mListener);
+        return convertView;
+    }
+    
  //   @Override
     public int getItemCount() {
         return listStorage.size();
     }
 
+    @Override
+    public int getCount() {
+        return listStorage.size();
+    }
+    
     public AppDescriptor getItem(int pos) {
         if((pos < 0) || (pos > listStorage.size()))
             return null;
@@ -100,6 +128,7 @@ public class AppsAdapter extends ArrayAdapter<AppDescriptor> {
     public void setApps(List<AppDescriptor> apps) {
         listStorage = apps;
         notifyDataSetChanged();
+        LogUtil.logToFile("si="+apps.size()+"c="+getCount());
     }
 
     public void setOnClickListener(final View.OnClickListener listener) {

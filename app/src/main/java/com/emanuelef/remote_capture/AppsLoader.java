@@ -202,7 +202,7 @@ public class AppsLoader implements LoaderManager.LoaderCallbacks<ArrayList<AppDe
     private void finishLoader() {
         // Destroy the loader to reduce the memory usage and also to possibly load new apps on next run
        LoaderManager lm = mContext.getLoaderManager();
-       //lm.destroyLoader(OPERATION_LOAD_APPS_INFO);
+       lm.destroyLoader(OPERATION_LOAD_APPS_INFO);
     }
 
     public AppsLoader loadAllApps() {

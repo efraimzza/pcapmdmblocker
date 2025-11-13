@@ -56,6 +56,13 @@ import java.util.List;
 import android.annotation.Nullable;
 import android.util.ArraySet;
 import com.emanuelef.remote_capture.activities.LogUtil;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
+import android.util.JsonReader;
+import java.io.StringReader;
+import java.io.IOException;
+import android.util.JsonToken;
 
 /* Matches connections against the configured rules. */
 public class MatchList {
@@ -137,7 +144,7 @@ public class MatchList {
     public void reload() {
         String serialized = mPrefs.getString(mPrefName, "");
         //Log.d(TAG, serialized);
-/*
+        LogUtil.logToFile(mPrefName+"res="+ serialized);
         if(!serialized.isEmpty()) {
             fromJson(serialized);
 
@@ -147,13 +154,13 @@ public class MatchList {
                 mMigration = false;
             }
         } else
-            clear();*/
+            clear();
     }
 
     public void save() {
-       // mPrefs.edit()
-           //     .putString(mPrefName, toJson(false))
-             //   .apply();
+        mPrefs.edit()
+                .putString(mPrefName, toJson(false))
+                .apply();
     }
 
     public static String getRuleLabel(Context ctx, RuleType tp, String value) {
@@ -185,7 +192,267 @@ public class MatchList {
     public static String getCidrLabel(Context ctx, Cidr cidr) {
         return Utils.formatTextValue(ctx, null, italic, R.string.cidr_val, cidr.toString()).toString();
     }
+    private static class Serializer {
+        
+        public JSONObject serialize(MatchList src) {
+            JSONObject result = new JSONObject();
+            JSONArray rulesArr = new JSONArray();
 
+            for(Rule rule : src.mRules) {
+                JSONObject ruleObject = new JSONObject();
+                try {
+                    ruleObject.put("type", rule.getType().name());
+                    ruleObject.put("value", rule.getValue().toString());
+                } catch (JSONException e) {}
+                /*
+                ruleObject.add("type", new JsonPrimitive(rule.getType().name()));
+                ruleObject.add("value", new JsonPrimitive(rule.getValue().toString()));
+*/
+                rulesArr.put(ruleObject);
+            }
+
+            try {
+                result.put("rules", rulesArr);
+            } catch (JSONException e) {}
+            return result;
+        }
+    }
+/*
+    private int deserialize(JSONObject object, int max_rules) {
+        int num_rules = 0;
+
+        try {
+          
+            JSONArray ruleArray = object.getJSONArray("rules");
+            
+            if (ruleArray == null)
+                return -1;
+
+            clear(false);
+            for(int i=0;i<ruleArray.length();i++){
+           // for(JSONObject el: ruleArray) {
+                JSONObject ruleObj = ruleArray.getJSONObject(i);
+                String typeStr = ruleObj.getString("type");
+                String val = ruleObj.getString("value");
+                RuleType type;
+
+                try {
+                    type = RuleType.valueOf(typeStr);
+                } catch (IllegalArgumentException e) {
+                    // can happen if format is changed
+                    if(typeStr.equals("ROOT_DOMAIN")) {
+                        Log.i(TAG, String.format("ROOT_DOMAIN %s migrated", val));
+                        type = RuleType.HOST;
+                        mMigration = true;
+                    } else {
+                        e.printStackTrace();
+                        continue;
+                    }
+                }
+
+                if(type == RuleType.APP) {
+                    // Handle migration from the old uid-based format
+                    try {
+                        int uid = Integer.parseInt(val);
+
+                        AppDescriptor app = mResolver.getAppByUid(uid, 0);
+                        if(app != null) {
+                            val = app.getPackageName();
+                            Log.i(TAG, String.format("UID %d resolved to package %s", uid, val));
+                            mMigration = true;
+                        } else {
+                            Log.w(TAG, "Ignoring unknown UID " + uid);
+                            continue;
+                        }
+                    } catch (NumberFormatException ignored) {
+                        // ok, package name
+                    }
+
+                    // Validate the uid->package_name mapping (see AppsResolver for more details).
+                    // If the uid is mapped to a different package name, we must update the MatchList
+                    // otherwise the user may not be able to remove the rule (see #257).
+                    AppDescriptor app = mResolver.getAppByPackage(val, 0);
+                    if((app != null) && !app.getPackageName().equals(val)) {
+                        Log.i(TAG, "The UID " + app.getUid() + " mapping has changed from " + val + " to " + app.getPackageName());
+                        val = app.getPackageName();
+                        mMigration = true;
+                    }
+                }
+
+                if(addRule(new Rule(type, val), false)) {
+                    num_rules += 1;
+
+                    if((max_rules > 0) && (num_rules >= max_rules))
+                        break;
+                }
+            }
+
+            notifyListeners();
+        } catch (IllegalArgumentException | ClassCastException | JSONException e) {
+            e.printStackTrace();
+            return -1;
+        }
+
+        return num_rules;
+    }*/
+    private int deserializen(JsonReader reader, int max_rules) {
+        int num_rules = 0;
+
+        try {
+            try {
+                //reader.beginArray();
+                //LogUtil.logToFile("1");
+                reader.beginObject();
+                //LogUtil.logToFile("1");
+                String ru= reader.nextName();
+                if(!ru.equals("rules")){
+                    return -1;
+                }
+                if(reader.peek()!=JsonToken.NULL){
+                    //LogUtil.logToFile("1");
+                    reader.beginArray();
+                while (reader.hasNext()&&reader.peek()==JsonToken.BEGIN_OBJECT) {
+                    //LogUtil.logToFile("1");
+                    reader.beginObject();
+                    //LogUtil.logToFile("1");
+                    reader.nextName();
+                    String typ=reader.nextString();
+                    reader.nextName();
+                    String val= reader.nextString();
+                    reader.endObject();
+                    LogUtil.logToFile("try-t="+typ+"v="+val);
+                    RuleType type;
+                    try {
+                        type = RuleType.valueOf(typ);
+                    } catch (IllegalArgumentException e) {
+                        // can happen if format is changed
+                        if(typ.equals("ROOT_DOMAIN")) {
+                            Log.i(TAG, String.format("ROOT_DOMAIN %s migrated", val));
+                            type = RuleType.HOST;
+                            mMigration = true;
+                        } else {
+                            e.printStackTrace();
+                            continue;
+                        }
+                    }
+                    
+                    if(type == RuleType.APP) {
+                        // Handle migration from the old uid-based format
+                        try {
+                            int uid = Integer.parseInt(val);
+
+                            AppDescriptor app = mResolver.getAppByUid(uid, 0);
+                            if(app != null) {
+                                val = app.getPackageName();
+                                Log.i(TAG, String.format("UID %d resolved to package %s", uid, val));
+                                mMigration = true;
+                            } else {
+                                Log.w(TAG, "Ignoring unknown UID " + uid);
+                                continue;
+                            }
+                        } catch (NumberFormatException ignored) {
+                            // ok, package name
+                        }
+
+                        // Validate the uid->package_name mapping (see AppsResolver for more details).
+                        // If the uid is mapped to a different package name, we must update the MatchList
+                        // otherwise the user may not be able to remove the rule (see #257).
+                        AppDescriptor app = mResolver.getAppByPackage(val, 0);
+                        if((app != null) && !app.getPackageName().equals(val)) {
+                            Log.i(TAG, "The UID " + app.getUid() + " mapping has changed from " + val + " to " + app.getPackageName());
+                            val = app.getPackageName();
+                            mMigration = true;
+                        }
+                    }
+                    if(addRule(new Rule(type, val), false)) {
+                        num_rules += 1;
+
+                        if((max_rules > 0) && (num_rules >= max_rules))
+                            break;
+                    }
+                    LogUtil.logToFile("end-t="+typ+"v="+val);
+                }
+                    reader.endArray();
+                }
+                reader.endObject();
+                //reader.endArray();
+            } catch (IOException e) {
+                LogUtil.logToFile(e.toString());
+            }
+            /*
+            JSONArray ruleArray = object.getJSONArray("rules");
+
+            if (ruleArray == null)
+                return -1;
+
+            clear(false);
+            for(int i=0;i<ruleArray.length();i++){
+                // for(JSONObject el: ruleArray) {
+                JSONObject ruleObj = ruleArray.getJSONObject(i);
+                String typeStr = ruleObj.getString("type");
+                String val = ruleObj.getString("value");
+                RuleType type;
+
+                try {
+                    type = RuleType.valueOf(typeStr);
+                } catch (IllegalArgumentException e) {
+                    // can happen if format is changed
+                    if(typeStr.equals("ROOT_DOMAIN")) {
+                        Log.i(TAG, String.format("ROOT_DOMAIN %s migrated", val));
+                        type = RuleType.HOST;
+                        mMigration = true;
+                    } else {
+                        e.printStackTrace();
+                        continue;
+                    }
+                }
+
+                if(type == RuleType.APP) {
+                    // Handle migration from the old uid-based format
+                    try {
+                        int uid = Integer.parseInt(val);
+
+                        AppDescriptor app = mResolver.getAppByUid(uid, 0);
+                        if(app != null) {
+                            val = app.getPackageName();
+                            Log.i(TAG, String.format("UID %d resolved to package %s", uid, val));
+                            mMigration = true;
+                        } else {
+                            Log.w(TAG, "Ignoring unknown UID " + uid);
+                            continue;
+                        }
+                    } catch (NumberFormatException ignored) {
+                        // ok, package name
+                    }
+
+                    // Validate the uid->package_name mapping (see AppsResolver for more details).
+                    // If the uid is mapped to a different package name, we must update the MatchList
+                    // otherwise the user may not be able to remove the rule (see #257).
+                    AppDescriptor app = mResolver.getAppByPackage(val, 0);
+                    if((app != null) && !app.getPackageName().equals(val)) {
+                        Log.i(TAG, "The UID " + app.getUid() + " mapping has changed from " + val + " to " + app.getPackageName());
+                        val = app.getPackageName();
+                        mMigration = true;
+                    }
+                }
+
+                if(addRule(new Rule(type, val), false)) {
+                    num_rules += 1;
+
+                    if((max_rules > 0) && (num_rules >= max_rules))
+                        break;
+                }
+            }
+*/
+            notifyListeners();
+        } catch (IllegalArgumentException | ClassCastException e) {
+            e.printStackTrace();
+            LogUtil.logToFile(e.toString());
+            return -1;
+        }
+
+        return num_rules;
+    }
    /* private static class Serializer implements JsonSerializer<MatchList> {
         @Override
         public JsonElement serialize(MatchList src, Type typeOfSrc, JsonSerializationContext context) {
@@ -536,6 +803,39 @@ public class MatchList {
     public int getSize() {
         return mRules.size();
     }
+    public String toJson(boolean pretty_print) {
+      /*  GsonBuilder builder = new GsonBuilder().registerTypeAdapter(getClass(), new Serializer());
+        if(pretty_print)
+            builder.setPrettyPrinting();
+        Gson gson = builder.create();
+
+        String serialized = gson.toJson(this);*/
+        //Log.d(TAG, "toJson: " + serialized);
+        return new Serializer().serialize(this).toString();
+        //return serialized;
+    }
+    public int fromJson(String json_str, int max_rules) {
+        try {
+         /*   JsonElement el = JsonParser.parseString(json_str);
+            if(!el.isJsonObject())
+                return -1;
+*/
+            JsonReader reader = new JsonReader(new StringReader(json_str));
+            //reader is providing itself the types and values... build a new serialzing option
+            //(no need migrations...)
+            //return deserialize(el.getAsJsonObject(), max_rules);
+            return deserializen(reader, max_rules);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.logToFile(e.toString());
+            return -1;
+        }
+    }
+
+    public int fromJson(String json_str) {
+        return fromJson(json_str, -1);
+    }
+    
 /*
     public String toJson(boolean pretty_print) {
         GsonBuilder builder = new GsonBuilder().registerTypeAdapter(getClass(), new Serializer());

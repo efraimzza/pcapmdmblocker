@@ -46,6 +46,8 @@ import android.widget.Button;
 import android.view.View.OnClickListener;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
 //import com.google.android.material.tabs.TabLayout;
 //import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -112,7 +114,7 @@ public class FirewallActivity extends BaseActivity {
             }
         }
     }
-
+    ActionBar.Tab abt = null;
     @SuppressLint("NotifyDataSetChanged")
     public void recheckTabs() {
         boolean whitelist_mode = Prefs.isFirewallWhitelistMode(mPrefs);
@@ -121,6 +123,13 @@ public class FirewallActivity extends BaseActivity {
 
         mHasWhitelist = whitelist_mode;
         //mPagerAdapter.notifyDataSetChanged();
+        
+        if(mHasWhitelist){
+            abt= maddtab(EditListFragment.newInstance(ListInfo.Type.FIREWALL_WHITELIST),getText(R.string.whitelist));
+        }else{
+            if(abt!=null)
+                getActionBar().removeTab(abt);
+        }
     }
 
     private void setupTabs() {
@@ -130,7 +139,63 @@ public class FirewallActivity extends BaseActivity {
         //new TabLayoutMediator(findViewById(R.id.tablayout), mPager, (tab, position) ->
         //        tab.setText(getString(mPagerAdapter.getPageTitle(position)))
        // ).attach();
-        
+        try{
+            /*
+            ActionBar a=getActionBar();
+            //a.setTitle("lolq");
+            //a.setSubtitle("lol");
+            ActionBar.Tab t=a.newTab().setText(R.string.blocklist);
+            t.setTabListener(new ActionBar.TabListener(){
+
+                    @Override
+                    public void onTabSelected(ActionBar.Tab p1, FragmentTransaction p2) {
+                        LogUtil.logToFile("comt="+ getFragmentManager().beginTransaction().replace(R.id.linfrapag,EditListFragment.newInstance(ListInfo.Type.BLOCKLIST)).commit());
+                        
+                    }
+
+                    @Override
+                    public void onTabUnselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                      //  p2.remove(EditListFragment.newInstance(ListInfo.Type.BLOCKLIST)).commit();
+                    }
+
+                    @Override
+                    public void onTabReselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                        
+                        //p2.remove(EditListFragment.newInstance(ListInfo.Type.BLOCKLIST)).commit();
+                    }
+                });
+            a.addTab(t);
+            ActionBar.Tab ta=a.newTab().setText(R.string.status);
+            ta.setTabListener(new ActionBar.TabListener(){
+
+                    @Override
+                    public void onTabSelected(ActionBar.Tab p1, FragmentTransaction p2) {
+                        try{
+                            LogUtil.logToFile("comt="+ getFragmentManager().beginTransaction().replace(R.id.linfrapag,new FirewallStatus()).commit());
+                        //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                        }catch(Exception e){
+                            LogUtil.logToFile(e.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onTabUnselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    }
+
+                    @Override
+                    public void onTabReselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                        //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                    }
+                });
+            a.addTab(ta);*/
+            maddtab(new FirewallStatus(),getText(R.string.status));
+            maddtab(EditListFragment.newInstance(ListInfo.Type.BLOCKLIST),getText(R.string.blocklist));
+            
+            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        }catch(Exception e){
+            
+        }
+        /*
         Fragment fa=new FirewallStatus();
         //if(f!=null)
         getFragmentManager().beginTransaction().replace(R.id.linfrapag,fa).commit();
@@ -159,14 +224,41 @@ public class FirewallActivity extends BaseActivity {
                         buf.setText(getText(R.string.status));
                     }
                     if(f!=null)
-                    getFragmentManager().beginTransaction().replace(R.id.linfrapag,f).commit();
+                    LogUtil.logToFile("com="+getFragmentManager().beginTransaction().replace(R.id.linfrapag,f).commit());
                 }
             });
+            */
         recheckTabs();
 
         // TODO fix DPAD navigation on Android TV, see MainActivity.onKeyDown
     }
+    private ActionBar.Tab maddtab(final Fragment f,CharSequence tname){
+        ActionBar a=getActionBar();
+        ActionBar.Tab ta=a.newTab().setText(tname);
+        ta.setTabListener(new ActionBar.TabListener(){
 
+                @Override
+                public void onTabSelected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    try{
+                        LogUtil.logToFile("comt="+ getFragmentManager().beginTransaction().replace(R.id.linfrapag,f).commit());
+                        //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                    }catch(Exception e){
+                        LogUtil.logToFile(e.toString());
+                    }
+                }
+
+                @Override
+                public void onTabUnselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                }
+
+                @Override
+                public void onTabReselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                }
+            });
+        a.addTab(ta);
+        return ta;
+    }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // This is required to properly handle the DPAD down press on Android TV, to properly

@@ -1653,7 +1653,17 @@ Java_com_emanuelef_remote_1capture_CaptureService_stopPacketLoop(JNIEnv *env, jc
     log_i("stopPacketLoop called");
     running = false;
 }
+JNIEXPORT void JNICALL
+Java_com_emanuelef_remote_1capture_CaptureService_setDnsServer(JNIEnv *env, jclass clazz,
+                                                               jstring server) {
+    struct in_addr addr = {0};
+    const char *value = (*env)->GetStringUTFChars(env, server, 0);
 
+    if(inet_aton(value, &addr) != 0)
+        new_dns_server = addr.s_addr;
+
+    (*env)->ReleaseStringUTFChars(env, server, value);
+}
 static void log_callback(int lvl, const char *line) {
     pcapdroid_t *pd = global_pd;
 

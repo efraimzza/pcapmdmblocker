@@ -46,6 +46,8 @@ import android.util.ArraySet;
 import java.util.Comparator;
 import android.widget.ArrayAdapter;
 import android.widget.Switch;
+import android.view.View.OnClickListener;
+import android.widget.ListView;
 
 public class AppsTogglesAdapter extends ArrayAdapter<AppDescriptor> {
     private static final String TAG = "AppToggleAdapter";
@@ -56,12 +58,14 @@ public class AppsTogglesAdapter extends ArrayAdapter<AppDescriptor> {
     private List<AppDescriptor> mApps = new ArrayList<>();
     private final List<AppDescriptor> mFilteredApps = new ArrayList<>();
   //  private @Nullable RecyclerView mRecyclerView;
-
-    public AppsTogglesAdapter(Context context, Set<String> checkedItems) {
+    private ListView mRecyclerView;
+    
+    public AppsTogglesAdapter(Context context, Set<String> checkedItems,ListView rv) {
         super(context,R.layout.app_selection_item);
         mLayoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mCheckedItems = new ArraySet<>(checkedItems);
+        mCheckedItems = checkedItems;
         mListener = null;
+        mRecyclerView=rv;
     }
 
     public interface AppToggleListener {
@@ -96,6 +100,7 @@ public class AppsTogglesAdapter extends ArrayAdapter<AppDescriptor> {
         //mRecyclerView = null;
     }
 */
+/*
     @NonNull
     @Override
     public AppsTogglesAdapter.AppViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -122,11 +127,12 @@ public class AppsTogglesAdapter extends ArrayAdapter<AppDescriptor> {
             }
         });
 */
+/*
         return(recyclerViewHolder);
     }
-
+*/
     
-
+/*
    // @Override
     public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
         AppDescriptor app = getItem(position);
@@ -138,7 +144,52 @@ public class AppsTogglesAdapter extends ArrayAdapter<AppDescriptor> {
         if(app.getIcon() != null)
             holder.icon.setImageDrawable(app.getIcon());
     }
+    */
 
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        if(convertView==null)
+            convertView= mLayoutInflater.inflate(R.layout.app_selection_item, parent, false);
+        final AppViewHolder recyclerViewHolder = new AppViewHolder(convertView);
+        AppDescriptor app = getItem(position);
+
+        recyclerViewHolder.appName.setText(app.getName());
+        recyclerViewHolder.packageName.setText(app.getPackageName());
+        recyclerViewHolder.toggle.setChecked(mCheckedItems.contains(app.getPackageName()));
+
+        if(app.getIcon() != null)
+            recyclerViewHolder.icon.setImageDrawable(app.getIcon());
+        convertView.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View p1) {
+
+                   // if(mRecyclerView != null) {
+                        //int pos = recyclerViewHolder.getAbsoluteAdapterPosition();
+                        AppDescriptor app = getItem(position);
+
+                        if (app != null) {
+                            boolean checked = mCheckedItems.contains(app.getPackageName());
+                            handleToggle(position, !checked);
+                        }
+                   // }
+                }});
+
+        recyclerViewHolder.toggle.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                   // if(mRecyclerView != null) {
+                        //int pos = recyclerViewHolder.getAbsoluteAdapterPosition();
+                        boolean checked = ((Switch)v).isChecked();
+                        handleToggle(position, checked);
+                    //}
+                }});
+         
+        return convertView;
+    }
+    
     private List<AppDescriptor> getApps() {
         if(mFilter.isEmpty())
             return mApps;
@@ -164,14 +215,14 @@ public class AppsTogglesAdapter extends ArrayAdapter<AppDescriptor> {
 
         if(checked == mCheckedItems.contains(packageName))
             return; // nothing changed
-
+        if(mListener != null)
+            mListener.onAppToggled(app, checked);
         if(checked)
             mCheckedItems.add(packageName);
         else
             mCheckedItems.remove(packageName);
 
-        if(mListener != null)
-            mListener.onAppToggled(app, checked);
+        
 
         List<AppDescriptor> apps = getApps();
 
@@ -180,10 +231,10 @@ public class AppsTogglesAdapter extends ArrayAdapter<AppDescriptor> {
         for(int i=0; i<apps.size(); i++) {
             AppDescriptor other = apps.get(i);
 
-           /* if((i != old_pos) && compareCheckedFirst(app, other) <= 0) {
+            if((i != old_pos) && compareCheckedFirst(app, other) <= 0) {
                 new_pos = i;
                 break;
-            }*/
+            }
         }
 
         if(new_pos > old_pos)
@@ -197,6 +248,12 @@ notifyDataSetChanged();
             apps.add(new_pos, app);
            // notifyItemMoved(old_pos, new_pos);
             notifyDataSetChanged();
+             if(mRecyclerView != null) {
+             if(checked)
+             mRecyclerView.smoothScrollToPositionFromTop(new_pos,0,0);
+             else
+             mRecyclerView.smoothScrollToPositionFromTop(old_pos,0,0);
+             }
            /* if(mRecyclerView != null) {
                 if(checked)
                     mRecyclerView.scrollToPosition(new_pos);
@@ -208,7 +265,18 @@ notifyDataSetChanged();
 
     // sort apps so that checked items always appear first
     
+    // sort apps so that checked items always appear first
+    private int compareCheckedFirst(AppDescriptor a, AppDescriptor b) {
+        boolean aChecked = mCheckedItems.contains(a.getPackageName());
+        boolean bChecked = mCheckedItems.contains(b.getPackageName());
 
+        if(aChecked && !bChecked)
+            return -1;
+        else if(!aChecked && bChecked)
+            return 1;
+        return a.compareTo(b);
+    }
+    
     @SuppressLint("NotifyDataSetChanged")
     private void refreshedFiteredApps() {
         mFilteredApps.clear();

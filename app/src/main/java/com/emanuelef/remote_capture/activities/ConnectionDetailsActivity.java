@@ -115,7 +115,7 @@ public class ConnectionDetailsActivity extends BaseActivity implements Connectio
         setupTabs();
     }
 
-  //  @Override
+    @Override
     public void onResume() {
         super.onResume();
         mConnPos = -1;

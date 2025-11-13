@@ -43,8 +43,9 @@ import java.nio.charset.StandardCharsets;
 import android.annotation.Nullable;
 import android.annotation.NonNull;
 import android.app.Activity;
+import android.app.Fragment;
 
-public class LogviewFragment extends Activity{
+public class LogviewFragment extends Fragment{
     private static final String TAG = "LogviewFragment";
     public static final int MAX_LINES = 512;
     private String mLogPath;
@@ -55,22 +56,22 @@ public class LogviewFragment extends Activity{
         LogviewFragment fragment = new LogviewFragment();
         Bundle args = new Bundle();
         args.putSerializable("path", path);
-     //   fragment.setArguments(args);
+        fragment.setArguments(args);
         return fragment;
     }
 
-   // @Override
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.logview_fragment, container, false);
     }
 
-    //@Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //Bundle args = getArguments();
-        //assert args != null;
-        //mLogPath = args.getString("path");
-        //assert(mLogPath != null);
+        Bundle args = getArguments();
+        assert args != null;
+        mLogPath = args.getString("path");
+        assert(mLogPath != null);
 
         ScrollView scrollView = (ScrollView) view.findViewById(R.id.scrollView);
         /*ViewCompat.setOnApplyWindowInsetsListener(scrollView, (v, windowInsets) -> {
@@ -95,7 +96,7 @@ public class LogviewFragment extends Activity{
 
     public void reloadLog() {
         try {
-            ReversedLinesFileReader reader = new ReversedLinesFileReader(new File(mLogPath), StandardCharsets.US_ASCII);
+            ReversedLinesFileReader reader = new ReversedLinesFileReader(new File(mLogPath), StandardCharsets.UTF_8);
             StringBuilder builder = new StringBuilder();
             String line;
             int count = 0;
@@ -117,5 +118,8 @@ public class LogviewFragment extends Activity{
 
     public String getLog() {
         return mLogText;
+    }
+    public String getLogPath() {
+        return mLogPath;
     }
 }

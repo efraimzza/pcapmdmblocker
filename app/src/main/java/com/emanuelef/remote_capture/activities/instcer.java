@@ -19,6 +19,9 @@ import java.nio.charset.StandardCharsets;
 import android.net.Uri;
 import java.io.PrintWriter;
 import java.io.IOException;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.view.Gravity;
 
 public class instcer extends Activity implements MitmListener{
     private static final String TAG = "InstallCertificate";
@@ -27,11 +30,17 @@ public class instcer extends Activity implements MitmListener{
     private X509Certificate mCaCert;
     private boolean mFallbackExport;
     
-    
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LinearLayout linl= new LinearLayout(this);
+        linl.setOrientation(LinearLayout.VERTICAL);
+        linl.setGravity(Gravity.CENTER);
+        TextView tv= new TextView(this);
+        tv.setGravity(Gravity.CENTER);
+        tv.setText("export ca certificate for tls decryption if isnt installd");
+        linl.addView(tv);
+        setContentView(linl);
         mAddon = new MitmAddon(requireContext(), this);
         if(!Utils.isCAInstalled(mCaCert)) {
             if(!mAddon.isConnected()) {

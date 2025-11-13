@@ -31,6 +31,7 @@ import com.emanuelef.remote_capture.adapters.AppsAdapter;
 import com.emanuelef.remote_capture.model.AppDescriptor;
 import java.util.ArrayList;
 import java.util.List;
+import com.emanuelef.remote_capture.activities.LogUtil;
 
 public class AppsListView extends EmptyRecyclerView implements SearchView.OnQueryTextListener, Filterable {
     private List<AppDescriptor> mAllApps;
@@ -115,10 +116,14 @@ public class AppsListView extends EmptyRecyclerView implements SearchView.OnQuer
 
         if(mAdapter == null) {
             mAdapter = new AppsAdapter(getContext(), mAllApps);
+            try{
             setAdapter(mAdapter);
+            }catch(Exception e){
+                LogUtil.logToFile(e.toString());
+            }
         } else
             mAdapter.setApps(mAllApps);
-
+        //initEmptyView();
         if(mLastFilter != null)
             getFilter().filter(mLastFilter);
     }
@@ -127,16 +132,16 @@ public class AppsListView extends EmptyRecyclerView implements SearchView.OnQuer
         mAdapter.setOnClickListener(new View.OnClickListener() {
 
                 @Override
-                public void onClick(View p1) {
+                public void onClick(View view) {
                 
                 
-           // int itemPosition = getChildLayoutPosition(view);
-
-            //AppDescriptor app = mAdapter.getItem(itemPosition);
-
-          //  if(app != null)
-             //   listener.onSelectedApp(app);
-                }
+            //int itemPosition = getChildLayoutPosition(view);
+            int itemPosition= getPositionForView(view);
+            AppDescriptor app = mAdapter.getItem(itemPosition);
+            LogUtil.logToFile("sel");
+            if(app != null)
+                listener.onSelectedApp(app);
+            }
         });
     }
 }

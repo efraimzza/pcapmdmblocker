@@ -9,12 +9,12 @@
     android:orientation="vertical"
     tools:openDrawer="start">
 
-    <!--LinearLayout
-        layout="@layout/tabs_activity"
+    <include
+        layout="@layout/fragment_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <LinearLayout
+    <!--LinearLayout
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

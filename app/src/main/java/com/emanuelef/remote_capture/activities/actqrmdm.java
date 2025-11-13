@@ -33,12 +33,12 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-/*
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-*/
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -604,19 +604,19 @@ public class actqrmdm extends Activity {
         return i;
     }
     public static Bitmap encodeToQrCode(String text, int width, int height) {
-       /* QRCodeWriter writer = new QRCodeWriter();
+        QRCodeWriter writer = new QRCodeWriter();
         BitMatrix matrix = null;
         try {
             matrix = writer.encode(text, BarcodeFormat.QR_CODE, 1200, 1200);
         } catch (WriterException ex) {
             ex.printStackTrace();
-        }*/
+        }
         Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-      /*  for (int x = 0; x < width; x++) {
+        for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 bmp.setPixel(x, y, matrix.get(x, y) ? Color.BLACK : Color.WHITE);
             }
-        }*/
+        }
         return bmp;
     }
     public TextView tvpo(String tv) {

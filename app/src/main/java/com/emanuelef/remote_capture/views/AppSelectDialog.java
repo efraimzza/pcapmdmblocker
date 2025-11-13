@@ -44,6 +44,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.widget.SearchView;
 import android.preference.PreferenceManager;
+import com.emanuelef.remote_capture.activities.LogUtil;
 
 public class AppSelectDialog implements AppsLoadListener {
     private static final String TAG = "AppSelectDialog";
@@ -92,6 +93,7 @@ public class AppSelectDialog implements AppsLoadListener {
         }
 
         Log.d(TAG, "loading " + installedApps.size() +" apps in dialog, icons=" + installedApps);
+        LogUtil.logToFile("loading " + installedApps.size());
         mOpenAppsList.setApps(installedApps);
     }
 
@@ -150,7 +152,7 @@ public class AppSelectDialog implements AppsLoadListener {
                 @Override
                 public void onSelectedApp(AppDescriptor app) {
                 
-                
+                LogUtil.logToFile("sela");
             if(mListener != null)
                 mListener.onSelectedApp(app);
 

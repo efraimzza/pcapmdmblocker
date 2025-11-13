@@ -44,21 +44,21 @@ public class EditListActivity extends BaseActivity {
             return;
         }
 
-       /* ListInfo.Type ltype = Utils.getSerializableExtra(getIntent(), LIST_TYPE_EXTRA, ListInfo.Type.class);
+        ListInfo.Type ltype = Utils.getSerializableExtra(getIntent(), LIST_TYPE_EXTRA, ListInfo.Type.class);
         if(ltype == null) {
             Log.e(TAG, "null list info");
             finish();
             return;
         }
 
-        mListInfo = new ListInfo(ltype);*/
+        mListInfo = new ListInfo(ltype);
 
         setTitle(mListInfo.getTitle());
         setContentView(R.layout.fragment_activity);
 
-       // getSupportFragmentManager().beginTransaction()
-              //  .replace(R.id.fragment, mListInfo.newFragment())
-               // .commit();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.linfra, mListInfo.newFragment())
+                .commit();
     }
 
     public MatchList getList() {

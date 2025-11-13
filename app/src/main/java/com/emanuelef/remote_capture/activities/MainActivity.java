@@ -132,6 +132,10 @@ import android.app.Activity;
 import java.util.Observer;
 import java.util.Observable;
 import com.obsex.obseobj;
+import android.app.Fragment;
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
+import com.emanuelef.remote_capture.Blacklists;
 
 public class MainActivity extends BaseActivity {
     public static MainActivity minstance;
@@ -190,7 +194,7 @@ public class MainActivity extends BaseActivity {
     private final ActivityResultLauncher<Intent> keylogFileOpenLauncher =
             registerForActivityResult(new StartActivityForResult(), this::keylogFileOpenResult);
 */
-    public StatusFragment lsta;
+    //public StatusFragment lsta;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,15 +240,15 @@ public class MainActivity extends BaseActivity {
                 appStateReady();
             }
         }});
-
+        //getFragmentManager().beginTransaction().add(R.id.linfra,new StatusFragment()).commit();
        // mPager = findViewById(R.id.pager);
         //Utils.fixViewPager2Insets(mPager);
         setupTabs();
-        LinearLayout linl=findViewById(R.id.drawer_layout);
-        lsta= new StatusFragment(this);
+        //LinearLayout linl=findViewById(R.id.drawer_layout);
+        //lsta= new StatusFragment(this);
        
        // l.addView( ll);
-        linl.addView(lsta);
+       // linl.addView(lsta);
        // Layout ll=findViewById(R.layout.status);
         //startActivity(new Intent(this,StatusFragment.class));
         
@@ -321,7 +325,33 @@ public class MainActivity extends BaseActivity {
               /*  appStateReady();
         });*/
     }
+    private ActionBar.Tab maddtab(final Fragment f,CharSequence tname){
+        ActionBar a=getActionBar();
+        ActionBar.Tab ta=a.newTab().setText(tname);
+        ta.setTabListener(new ActionBar.TabListener(){
 
+                @Override
+                public void onTabSelected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    try{
+                        LogUtil.logToFile("comt="+ getFragmentManager().beginTransaction().replace(R.id.linfra,f).commit());
+                        //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                    }catch(Exception e){
+                        LogUtil.logToFile(e.toString());
+                    }
+                }
+
+                @Override
+                public void onTabUnselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                }
+
+                @Override
+                public void onTabReselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                }
+            });
+        a.addTab(ta);
+        return ta;
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -351,8 +381,8 @@ public class MainActivity extends BaseActivity {
         checkPaidDrawerEntries();
         
         
-        if(this != null&&lsta!=null)
-            lsta.onResume();
+       /* if(this != null&&lsta!=null)
+            lsta.onResume();*/
     }
 
     private void setupNavigationDrawer() {
@@ -596,6 +626,10 @@ public class MainActivity extends BaseActivity {
         new TabLayoutMediator(findViewById(R.id.tablayout), mPager, (tab, position) ->
                 tab.setText(getString(stateAdapter.getPageTitle(position)))
         ).attach();*/
+        maddtab(new StatusFragment(),getText(R.string.status));
+        maddtab(new ConnectionsFragment(),getText(R.string.connections_view));
+
+        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     }
 
     @Override
@@ -850,7 +884,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         if(lsta!=null){
@@ -861,7 +895,7 @@ public class MainActivity extends BaseActivity {
             lsta.refreshStatus();
         }
         return true;
-    }
+    }*/
 
   /*  private void openTelegram() {
         Intent intent;
@@ -912,6 +946,19 @@ public class MainActivity extends BaseActivity {
             return true;
         } else if(id==R.id.action_firewall){
             Intent intent = new Intent(MainActivity.this, FirewallActivity.class);
+            startActivity(intent);
+            return true;
+        } else if(id==R.id.action_malware){
+            Intent intent = new Intent(MainActivity.this, MalwareDetection.class);
+            startActivity(intent);
+            return true;
+        } else if(id==R.id.action_decrypt){
+            Intent intent = new Intent(MainActivity.this, EditListActivity.class);
+            intent.putExtra(EditListActivity.LIST_TYPE_EXTRA, ListInfo.Type.DECRYPTION_LIST);
+            startActivity(intent);
+            return true;
+        } else if(id==R.id.action_log){
+            Intent intent = new Intent(MainActivity.this, LogviewActivity.class);
             startActivity(intent);
             return true;
         }
@@ -973,7 +1020,7 @@ public class MainActivity extends BaseActivity {
         if(Prefs.getTlsDecryptionEnabled(mPrefs)) {
             if (MitmAddon.needsSetup(this)) {
                 Intent intent = new Intent(this, MitmSetupWizard.class);
-                startActivity(intent);
+                //startActivity(intent);
                 return;
             }
 
@@ -989,7 +1036,7 @@ public class MainActivity extends BaseActivity {
                         
                         
                             Intent intent = new Intent(MainActivity. this, MitmSetupWizard.class);
-                            startActivity(intent);
+                            //startActivity(intent);
                         }})
                     .setNegativeButton(R.string.cancel_action, new DialogInterface.OnClickListener(){
 

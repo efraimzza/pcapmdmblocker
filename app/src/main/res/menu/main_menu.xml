@@ -33,4 +33,25 @@
         android:icon="@drawable/ic_shield"
         android:showAsAction="ifRoom"
     />
+    <item
+        android:id="@+id/action_malware"
+        android:title="@string/malware_detection"
+        android:orderInCategory="50"
+        android:icon="@drawable/ic_bug"
+        android:showAsAction="ifRoom"
+    />
+    <item
+        android:id="@+id/action_decrypt"
+        android:title="@string/decryption_rules"
+        android:orderInCategory="60"
+        android:icon="@drawable/ic_lock_open_alt"
+        android:showAsAction="ifRoom"
+    />
+    <item
+        android:id="@+id/action_log"
+        android:title="@string/app_log"
+        android:orderInCategory="60"
+        android:icon="@drawable/ic_lock_open_alt"
+        android:showAsAction="ifRoom"
+    />
 </menu>

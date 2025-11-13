@@ -276,9 +276,9 @@ public class CaptureService extends VpnService implements Runnable {
         // NOTE: since Android 12, startForeground cannot be called when the app is in background
         // (unless invoked via an Intent).
         setupNotifications();
-       // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-           // startForeground(NOTIFY_ID_VPNSERVICE, getStatusNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
-      //  else
+        if (Build.VERSION.SDK_INT >= 34)
+            startForeground(NOTIFY_ID_VPNSERVICE, getStatusNotification(), 1073741824);
+        else
             startForeground(NOTIFY_ID_VPNSERVICE, getStatusNotification());
 
         // NOTE: onStartCommand may be called when the capture is already running, e.g. if the user
@@ -1255,11 +1255,14 @@ public class CaptureService extends VpnService implements Runnable {
             Pair<ConnectionDescriptor[], ConnectionUpdate[]> item;
             try {
                 item = mPendingUpdates.take();
+                //LogUtil.logToFile("taking");
             } catch (InterruptedException e) {
+                LogUtil.logToFile(e.toString()+e.getStackTrace()[0].getMethodName()+e.getStackTrace()[0].getLineNumber());
                 continue;
             }
 
             if(item.first == null) { // termination request
+                LogUtil.logToFile("taking=null");
                 Log.i(TAG, "Connection update thread exit requested");
                 break;
             }
@@ -1546,11 +1549,17 @@ public class CaptureService extends VpnService implements Runnable {
        
     }
 
-    private void updateServiceStatus(ServiceStatus cur_status) {
+    private void updateServiceStatus(final ServiceStatus cur_status) {
         // notify the observers
         // NOTE: new subscribers will receive the STOPPED status right after their registration
        // serviceStatus.postValue(cur_status);
+        getMainExecutor().execute(new Runnable(){
+
+                @Override
+                public void run() {
+             
        try{
+           
         serviceStatus.upall(cur_status);
         
         if(cur_status == ServiceStatus.STARTED) {
@@ -1566,7 +1575,7 @@ public class CaptureService extends VpnService implements Runnable {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     Log.i(TAG, "VPN disconnected, starting reconnect service");
 
-                    final Intent intent = new Intent(this, VpnReconnectService.class);
+                    final Intent intent = new Intent(CaptureService.this, VpnReconnectService.class);
                     startForegroundService( intent);
                 }
             }
@@ -1574,6 +1583,7 @@ public class CaptureService extends VpnService implements Runnable {
         }catch(Exception e){
             LogUtil.logToFile("upstatuserr="+e.toString());
         }
+        }});
     }
 
     // NOTE: to be invoked only by the native code
@@ -1781,7 +1791,7 @@ public class CaptureService extends VpnService implements Runnable {
         serviceStatus.observe(lifecycleOwner, observer);
     }
 */
-    public static void observeStatus( obseobj observer) {
+    public synchronized static void observeStatus( obseobj observer) {
         serviceStatus.addObs(observer);
     }
     public static void waitForCaptureStop() {

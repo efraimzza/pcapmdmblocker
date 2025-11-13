@@ -131,7 +131,9 @@ public class MitmAddon {
     // Use ignoreNewVersion to silence this
     public static @NonNull String getNewVersionAvailable(Context ctx) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-
+        if(true){
+            return "";
+        }
         if (Prefs.isIgnoredMitmVersion(prefs, PACKAGE_VERSION_NAME))
             // update was ignored by the user
             return "";
@@ -140,7 +142,15 @@ public class MitmAddon {
         // in the source
         try {
             PackageInfo pInfo = Utils.getPackageInfo(ctx.getPackageManager(), MitmAPI.PACKAGE_NAME, 0);
-
+            if(Build.VERSION.SDK_INT>=28){
+                if (pInfo.getLongVersionCode() >= PACKAGE_VERSION_CODE){
+                    return "";
+                }
+            }else{
+                if (pInfo.versionCode >= PACKAGE_VERSION_CODE){
+                    return "";
+                }
+            }
           //  if (PackageInfoCompat.getLongVersionCode(pInfo) >= PACKAGE_VERSION_CODE)
                 // same version or better installed
                 //return "";

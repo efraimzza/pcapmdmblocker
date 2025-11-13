@@ -52,12 +52,12 @@
             android:iconSpaceReserved="false"
             android:defaultValue="true" />
 
-        <Preference
+        <!--Preference
             android:key="geolocation"
             android:title="@string/geolocation"
             android:summary="@string/geolocation_summary"
             android:iconSpaceReserved="false"
-            android:fragment="com.emanuelef.remote_capture.fragments.GeoipSettings" />
+            android:fragment="com.emanuelef.remote_capture.fragments.GeoipSettings" /-->
 
         <SwitchPreference
             android:key="tls_decryption"
@@ -146,12 +146,12 @@
                 android:data="https://emanuele-f.github.io/PCAPdroid/advanced_features#45-pcapdroid-extensions" />
         </Preference>
 
-        <Preference
+        <!--Preference
             android:key="dns_settings"
             android:title="@string/dns_servers"
             android:summary="@string/dns_servers_summary"
             android:iconSpaceReserved="false"
-            android:fragment="com.emanuelef.remote_capture.fragments.prefs.DnsSettings" />
+            android:fragment="com.emanuelef.remote_capture.fragments.prefs.DnsSettings" /-->
 
         <SwitchPreference
             android:key="start_at_boot"
@@ -195,17 +195,17 @@
             android:defaultValue="system"
             />
 
-        <Preference
+        <!--Preference
             android:key="app_language_external"
             android:title="@string/app_language"
             
-            android:iconSpaceReserved="false" />
+            android:iconSpaceReserved="false" /-->
 
-        <Preference
+        <!--Preference
             android:key="port_mapping"
             android:title="@string/port_mapping"
             android:summary="@string/port_mapping_summary"
-            android:iconSpaceReserved="false" />
+            android:iconSpaceReserved="false" /-->
 
         <ListPreference
             android:key="ip_mode"
@@ -216,10 +216,10 @@
             android:defaultValue="ipv4"
              />
 
-        <Preference
+        <!--Preference
             android:key="control_permissions"
             android:title="@string/control_permissions"
             android:iconSpaceReserved="false"
-            android:summary="@string/control_permissions_summary" />
+            android:summary="@string/control_permissions_summary" /-->
     </PreferenceCategory>
 </PreferenceScreen>
