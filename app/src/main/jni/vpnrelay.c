@@ -191,6 +191,8 @@ static int dns_server_count = 0;
 
 // פונקציה לרישום לוג לקובץ כללי
 void log_to_file(const char *format, ...) {
+    if(!debug)
+        return;
     FILE *fp = fopen(LOG_PATH, "a");
     if (!fp) return;
 
@@ -1619,6 +1621,8 @@ Java_com_emanuelef_remote_1capture_CaptureService_initLogger(JNIEnv *env, jclass
 JNIEXPORT jint JNICALL
 Java_com_emanuelef_remote_1capture_CaptureService_writeLog(JNIEnv *env, jclass clazz,
                                                       jint logger, jint lvl, jstring message) {
+    if(!debug)
+        return -1;
     const char *message_s = (*env)->GetStringUTFChars(env, message, 0);
     int rv = pd_log_write(logger, lvl, message_s);
     (*env)->ReleaseStringUTFChars(env, message, message_s);

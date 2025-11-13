@@ -21,6 +21,8 @@ package com.emanuelef.remote_capture;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import com.emanuelef.remote_capture.model.Prefs;
+import android.preference.PreferenceManager;
 
 public class Log {
     public static final int LOG_LEVEL_INFO = 0;
@@ -36,7 +38,7 @@ public class Log {
     }
 
     public static void writeLog(int logger, int level, @Nullable String tag, @NonNull String message) {
-        if(!PCAPdroid.isUnderTest())
+        if(!PCAPdroid.isUnderTest()/*&&Prefs.isdebug(PreferenceManager.getDefaultSharedPreferences(PCAPdroid.getInstance().getApplicationContext()))*/)
             CaptureService.writeLog(logger, level, ((tag != null) ? ("[" + tag + "] ") : "") + message);
     }
 

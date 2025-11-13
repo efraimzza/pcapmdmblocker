@@ -73,7 +73,7 @@ public class PCAPdroid extends Application {
             Log.init(getFilesDir().getAbsolutePath());
 
         Utils.BuildType buildtp = Utils.getVerifiedBuild(this);
-        Log.i(TAG, "Build type: " + buildtp);
+        //Log.i(TAG, "Build type: " + buildtp);
 
         /*CaocConfig.Builder builder = CaocConfig.Builder.create();
         if((buildtp == Utils.BuildType.PLAYSTORE) || (buildtp == Utils.BuildType.UNKNOWN)) {
@@ -84,7 +84,7 @@ public class PCAPdroid extends Application {
                     .errorActivity(ErrorActivity.class);
         }
         builder.apply();*/
-
+        CaptureService.setdebug(Prefs.isdebug(PreferenceManager.getDefaultSharedPreferences(this)));
         mInstance = new WeakReference<>(this);
         mLocalizedContext = createConfigurationContext(Utils.getLocalizedConfig(this));
         mIsUsharkAvailable = CaptureService.isUsharkAvailable(this);
