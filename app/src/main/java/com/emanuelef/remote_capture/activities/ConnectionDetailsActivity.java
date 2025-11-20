@@ -55,6 +55,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import android.annotation.NonNull;
+import android.app.ActionBar;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 
 public class ConnectionDetailsActivity extends BaseActivity implements ConnectionsListener, PayloadAdapter.ExportPayloadHandler {
     private static final String TAG = "ConnectionDetails";
@@ -92,7 +95,7 @@ public class ConnectionDetailsActivity extends BaseActivity implements Connectio
 
         setTitle(R.string.connection_details);
         displayBackAction();
-        setContentView(R.layout.tabs_activity_fixed);
+        setContentView(R.layout.fragment_activity);
 
         int incr_id = getIntent().getIntExtra(CONN_ID_KEY, -1);
         if(incr_id != -1) {
@@ -141,9 +144,43 @@ public class ConnectionDetailsActivity extends BaseActivity implements Connectio
       /*  new TabLayoutMediator(tabLayout, mPager, (tab, position) ->
                 tab.setText(getString(mPagerAdapter.getPageTitle(position)))
         ).attach();*/
-
+        try{
+            int conn_id = mConn.incr_id;
+            maddtab(ConnectionOverview.newInstance(conn_id),getText(R.string.overview));
+            
+            
+            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        }catch(Exception e){}
         mCurChunks = 0;
         recheckTabs();
+    }
+    private ActionBar.Tab maddtab(final Fragment f,CharSequence tname){
+        ActionBar a=getActionBar();
+        ActionBar.Tab ta=a.newTab().setText(tname);
+        ta.setTabListener(new ActionBar.TabListener(){
+
+                @Override
+                public void onTabSelected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    try{
+                        //LogUtil.logToFile("comt="+ 
+                        getFragmentManager().beginTransaction().replace(R.id.linfra,f).commit();
+                        //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                    }catch(Exception e){
+                        LogUtil.logToFile(e.toString());
+                    }
+                }
+
+                @Override
+                public void onTabUnselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                }
+
+                @Override
+                public void onTabReselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                }
+            });
+        a.addTab(ta);
+        return ta;
     }
 /*
     private class StateAdapter extends FragmentStateAdapter {
@@ -277,7 +314,9 @@ public class ConnectionDetailsActivity extends BaseActivity implements Connectio
     public void removeConnUpdateListener(ConnUpdateListener listener) {
         mListeners.remove(listener);
     }
-
+    ActionBar.Tab abta = null;
+    ActionBar.Tab abtb = null;
+    ActionBar.Tab abtc = null;
     @SuppressLint("NotifyDataSetChanged")
     private void recheckTabs() {
         if(mHasHttpTab && mHasWsTab)
@@ -290,7 +329,7 @@ public class ConnectionDetailsActivity extends BaseActivity implements Connectio
             mHasPayload = true;
             changed = true;
         }
-
+        LogUtil.logToFile("mHasPayload="+mHasPayload+"num="+mConn.getNumPayloadChunks());
         for(int i=mCurChunks; i<max_check; i++) {
             PayloadChunk chunk = mConn.getPayloadChunk(i);
             if(chunk == null)
@@ -304,7 +343,25 @@ public class ConnectionDetailsActivity extends BaseActivity implements Connectio
                 changed = true;
             }
         }
-
+        int conn_id = mConn.incr_id;
+        if(mHasWsTab){
+            abta= maddtab(ConnectionPayload.newInstance(PayloadChunk.ChunkType.WEBSOCKET, conn_id) ,getText(R.string.websocket));
+        }else{
+            if(abta!=null)
+                getActionBar().removeTab(abta);
+        }
+        if(mHasHttpTab){
+            abtb= maddtab(ConnectionPayload.newInstance(PayloadChunk.ChunkType.HTTP, conn_id) ,getText(R.string.http));
+        }else{
+            if(abtb!=null)
+                getActionBar().removeTab(abtb);
+        }
+        if(mHasPayload){
+            abtc= maddtab(ConnectionPayload.newInstance(PayloadChunk.ChunkType.RAW, conn_id) ,getText(R.string.payload));
+        }else{
+            if(abtc!=null)
+                getActionBar().removeTab(abtc);
+        }
        // if(changed)
          //   mPagerAdapter.notifyDataSetChanged();
 

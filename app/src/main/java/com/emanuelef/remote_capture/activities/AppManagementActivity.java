@@ -146,7 +146,7 @@ public class AppManagementActivity extends Activity {
                         //intent.addCategory(Intent.CATEGORY_OPENABLE);
                         //startActivityForResult(Intent.createChooser(intent, "בחר קובץ APK/APKS"), PICK_APK_REQUEST_CODE);
                         pickedfilepath="";
-                        Intent intent=new Intent(AppManagementActivity.this,picker.class);
+                        Intent intent=new Intent(AppManagementActivity.this,picker.class).putExtra("from","appman");
                         startActivity(intent);  
                     }
                 });
@@ -400,15 +400,15 @@ public class AppManagementActivity extends Activity {
                                                 detectedPackageName = AppUpdater.getApkPackageName(AppManagementActivity.this, baseApkFile.getAbsolutePath());
                                                 if (detectedPackageName != null) {}
                                                 else{
-                                                    LogUtil.logToFile("retrying detect pn");
+                                                    //LogUtil.logToFile("retrying detect pn");
                                                     for (File apk : extractedApks) {
-                                                        LogUtil.logToFile("for");
+                                                        //LogUtil.logToFile("for");
                                                         if (apk.getName().contains(".apk")) {
                                                             try {
                                                                 detectedPackageName = AppUpdater.getApkPackageName(AppManagementActivity.this, apk.getAbsolutePath());
                                                                 
                                                                 if (detectedPackageName != null ) {
-                                                                    LogUtil.logToFile("detected main pn - "+detectedPackageName);
+                                                                    //LogUtil.logToFile("detected main pn - "+detectedPackageName);
                                                                     break;
                                                                 }
                                                             } catch (Exception ee) {

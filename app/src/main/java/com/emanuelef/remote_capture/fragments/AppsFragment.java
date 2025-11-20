@@ -87,20 +87,20 @@ public class AppsFragment extends Fragment implements ConnectionsListener {
         registerConnsListener();
     }
 
-   // @Override
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
        // requireActivity().addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.apps_stats, container, false);
     }
 
-    //@Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //mRecyclerView = view.findViewById(R.id.recycler_view);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
         //mRecyclerView.setLayoutManager(new EmptyRecyclerView.MyLinearLayoutManager(getContext()));
-        //registerForContextMenu(mRecyclerView);
+        registerForContextMenu(mRecyclerView);
 
-        //mAdapter = new AppsStatsAdapter(getContext());
+        mAdapter = new AppsStatsAdapter(getContext());
         doRefreshApps();
         //mRecyclerView.setAdapter(mAdapter);
 
@@ -216,10 +216,10 @@ public class AppsFragment extends Fragment implements ConnectionsListener {
         return false;
     }
 
-   // @Override
+    @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v,
                                     @Nullable ContextMenu.ContextMenuInfo menuInfo) {
-        //super.onCreateContextMenu(menu, v, menuInfo);
+        super.onCreateContextMenu(menu, v, menuInfo);
         Log.d(TAG, "onCreateContextMenu");
 /*
         MenuInflater inflater = requireActivity().getMenuInflater();
@@ -259,7 +259,7 @@ public class AppsFragment extends Fragment implements ConnectionsListener {
  */
     }
 
-  //  @Override
+    @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         Blocklist blocklist = PCAPdroid.getInstance().getBlocklist();

@@ -162,7 +162,7 @@ public class CaptureService extends VpnService implements Runnable {
     private boolean mStrictDnsNoticeShown;
     private boolean mQueueFull;
     private boolean mStopping;
-    private Blacklists mBlacklists;
+    private static Blacklists mBlacklists;
     private Blocklist mBlocklist;
     private MatchList mMalwareWhitelist;
     private MatchList mFirewallWhitelist;
@@ -240,7 +240,9 @@ public class CaptureService extends VpnService implements Runnable {
         
         
     }
-
+    public static void refreshbl(){
+        mBlacklists = PCAPdroid.getInstance().getBlacklists();
+    }
     private int abortStart() {
         stopService();
         updateServiceStatus(ServiceStatus.STOPPED);

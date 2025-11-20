@@ -276,7 +276,7 @@ public class MainActivity extends BaseActivity {
                         if(!mKeylogFile.exists() || !CaptureService.isDecryptingTLS())
                             mKeylogFile = null;
 
-                        Log.d(TAG, "sslkeylog? " + (mKeylogFile != null));
+                        //Log.d(TAG, "sslkeylog? " + (mKeylogFile != null));
                         if((Prefs.getDumpMode(mPrefs) == Prefs.DumpMode.PCAP_FILE)) {
                             showPcapActionDialog();
 
@@ -333,7 +333,8 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void onTabSelected(ActionBar.Tab p1, FragmentTransaction p2) {
                     try{
-                        LogUtil.logToFile("comt="+ getFragmentManager().beginTransaction().replace(R.id.linfra,f).commit());
+                        //LogUtil.logToFile("comt="+ 
+                        getFragmentManager().beginTransaction().replace(R.id.linfra,f).commit();
                         //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
                     }catch(Exception e){
                         LogUtil.logToFile(e.toString());
@@ -1211,7 +1212,7 @@ public class MainActivity extends BaseActivity {
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TITLE, "sslkeylogfile.txt");
 
-        Log.d(TAG, "startExportSslkeylogfile: launching dialog");
+        //Log.d(TAG, "startExportSslkeylogfile: launching dialog");
        // Utils.launchFileDialog(this, intent, sslkeyfileExportLauncher);
     }
 /*

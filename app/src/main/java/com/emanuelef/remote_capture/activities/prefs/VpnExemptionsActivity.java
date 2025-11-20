@@ -115,15 +115,15 @@ public class VpnExemptionsActivity extends BaseActivity {
         public void onAppToggled(AppDescriptor app, boolean checked) {
             LogUtil.logToFile("to");
             String packageName = app.getPackageName();
-            LogUtil.logToFile("me="+mExcludedApps.contains(packageName)+"c="+checked);
+            //LogUtil.logToFile("me="+mExcludedApps.contains(packageName)+"c="+checked);
             if(mExcludedApps.contains(packageName) == checked)
                 return; // nothing to do
-            LogUtil.logToFile("toa");
+            //LogUtil.logToFile("toa");
             if(checked)
                 mExcludedApps.add(packageName);
             else
                 mExcludedApps.remove(packageName);
-            LogUtil.logToFile("tob");
+            //LogUtil.logToFile("tob");
             Log.d(TAG, "Saving " + mExcludedApps.size() + " exceptions");
 
             if(mPrefs == null)

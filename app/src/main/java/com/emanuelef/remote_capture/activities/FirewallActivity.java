@@ -240,7 +240,8 @@ public class FirewallActivity extends BaseActivity {
                 @Override
                 public void onTabSelected(ActionBar.Tab p1, FragmentTransaction p2) {
                     try{
-                        LogUtil.logToFile("comt="+ getFragmentManager().beginTransaction().replace(R.id.linfrapag,f).commit());
+                        //LogUtil.logToFile("comt="+ 
+                        getFragmentManager().beginTransaction().replace(R.id.linfrapag,f).commit();
                         //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
                     }catch(Exception e){
                         LogUtil.logToFile(e.toString());

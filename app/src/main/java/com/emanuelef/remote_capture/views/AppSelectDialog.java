@@ -93,7 +93,7 @@ public class AppSelectDialog implements AppsLoadListener {
         }
 
         Log.d(TAG, "loading " + installedApps.size() +" apps in dialog, icons=" + installedApps);
-        LogUtil.logToFile("loading " + installedApps.size());
+        //LogUtil.logToFile("loading " + installedApps.size());
         mOpenAppsList.setApps(installedApps);
     }
 
@@ -152,7 +152,7 @@ public class AppSelectDialog implements AppsLoadListener {
                 @Override
                 public void onSelectedApp(AppDescriptor app) {
                 
-                LogUtil.logToFile("sela");
+                //LogUtil.logToFile("sela");
             if(mListener != null)
                 mListener.onSelectedApp(app);
 

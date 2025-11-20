@@ -94,7 +94,8 @@ public class LogviewActivity extends BaseActivity  {
                 @Override
                 public void onTabSelected(ActionBar.Tab p1, FragmentTransaction p2) {
                     try{
-                        LogUtil.logToFile("comt="+ getFragmentManager().beginTransaction().replace(R.id.linfra,f).commit());
+                        //LogUtil.logToFile("comt="+ 
+                        getFragmentManager().beginTransaction().replace(R.id.linfra,f).commit();
                         curfra=(LogviewFragment) f;
                         //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
                     }catch(Exception e){

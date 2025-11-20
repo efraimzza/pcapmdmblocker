@@ -55,14 +55,27 @@ import android.widget.AdapterView;
 import android.widget.Adapter;
 import android.app.Fragment;
 import com.obsex.obseobj;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import com.emanuelef.remote_capture.activities.LogUtil;
+import android.app.Activity;
+import com.emanuelef.remote_capture.activities.picker;
+import com.emanuelef.remote_capture.activities.PasswordManager;
 
 public class BlacklistsFragment extends Fragment implements BlacklistsStateListener {
     private static final String TAG = "BlacklistsFragment";
-    private BlacklistsAdapter mAdapter;
-    private Blacklists mBlacklists;
-    private MenuItem mUpdateItem;
-    private Handler mHandler;
-
+    private static BlacklistsAdapter mAdapter;
+    private static Blacklists mBlacklists;
+    private static MenuItem mUpdateItem;
+    private static Handler mHandler;
+    
+    public static String blpickedfilepath="";
+    public static String reqbl="";
+    
+    static View mvi;
+    static ListView listView;
+    static Activity act;
+    
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -73,17 +86,31 @@ public class BlacklistsFragment extends Fragment implements BlacklistsStateListe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        mvi=view;
         mBlacklists = PCAPdroid.getInstance().getBlacklists();
         mAdapter = new BlacklistsAdapter(view.getContext(), PCAPdroid.getInstance().getBlacklists().iter());
-        ListView listView = view.findViewById(R.id.listview);
+        listView = view.findViewById(R.id.listview);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new ListView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> p1, View view1, int position, long p4) {
-                    BlacklistDescriptor bl = mAdapter.getItem(position);
-                    if (bl != null)
-                        openUrl(view1.getContext(), bl.url);
+                    final BlacklistDescriptor bl = mAdapter.getItem(position);
+                    if (bl != null){
+                        if(bl.url.equals("manual")){
+                            PasswordManager.requestPasswordAndSave(new Runnable(){
+
+                                    @Override
+                                    public void run() {
+                                        reqbl=bl.fname;
+                                        blpickedfilepath="";
+                                        Intent intent=new Intent(getActivity(),picker.class).putExtra("from","blf");
+                                        startActivity(intent);  
+                                    }
+                                },getActivity());
+                        }else
+                            openUrl(view1.getContext(), bl.url);
+                    }
         }});
         mHandler = new Handler(Looper.getMainLooper());
         obseobj ob = new obseobj() {
@@ -96,8 +123,101 @@ public class BlacklistsFragment extends Fragment implements BlacklistsStateListe
         CaptureService.observeStatus(ob);
         //CaptureService.observeStatus(this, serviceStatus -> refreshStatus());
     }
+    public static void refreshbl(){
+        mBlacklists = PCAPdroid.getInstance().getBlacklists();
+        try{
+        mAdapter = new BlacklistsAdapter(mvi.getContext(), PCAPdroid.getInstance().getBlacklists().iter());
+        listView.setAdapter(mAdapter);
+        listView.setOnItemClickListener(new ListView.OnItemClickListener() {
 
-    private void openUrl(Context ctx, String url) {
+                @Override
+                public void onItemClick(AdapterView<?> p1, View view1, int position, long p4) {
+                    final BlacklistDescriptor bl = mAdapter.getItem(position);
+                    if (bl != null){
+                        if(bl.url.equals("manual")){
+                            PasswordManager.requestPasswordAndSave(new Runnable(){
+
+                                    @Override
+                                    public void run() {
+                                        reqbl=bl.fname;
+                                        blpickedfilepath="";
+                                        Intent intent=new Intent(act,picker.class).putExtra("from","blf");
+                                        act.startActivity(intent);  
+                                    }
+                                },act);
+                        }else
+                            openUrl(view1.getContext(), bl.url);
+                    }
+                }});
+        mHandler = new Handler(Looper.getMainLooper());
+        obseobj ob = new obseobj() {
+            @Override
+            public void update(Object arg) {
+                refreshStatus();
+            }
+        };
+
+        CaptureService.observeStatus(ob);
+        }catch(Exception e){
+            LogUtil.logToFile(e.toString());
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        act=getActivity();
+    }
+    
+    @Override
+    public void onStart() {
+        super.onStart();
+        
+        //LogUtil.logToFile("started");
+        if(!blpickedfilepath.equals("")){
+            String picked=blpickedfilepath;
+            blpickedfilepath="";
+            if(reqbl.equals("manualdom.txt")){
+                //copying dom.txt for the first check
+
+                try{
+                    FileInputStream in = new FileInputStream(picked);
+                    FileOutputStream out= new FileOutputStream(getListPath(reqbl));
+                    byte[] bytesIn = new byte[4096];
+                    int read;
+                    while((read = in.read(bytesIn)) != -1)
+                        out.write(bytesIn, 0, read);
+                }catch(Exception e){
+                    LogUtil.logToFile(reqbl+picked+ e.toString());
+                }
+            }else if(reqbl.equals("manualip.txt")){
+                //copying ip.txt for the first check
+                try{
+                    FileInputStream in = new FileInputStream(picked);
+                    FileOutputStream out= new FileOutputStream(getListPath(reqbl));
+                    byte[] bytesIn = new byte[4096];
+                    int read;
+                    while((read = in.read(bytesIn)) != -1)
+                        out.write(bytesIn, 0, read);
+                }catch(Exception e){
+                    LogUtil.logToFile(reqbl+picked+ e.toString());
+                }
+            }
+            CaptureService.requestBlacklistsUpdate();
+            //self select your file
+            //bl.setUpdated(System.currentTimeMillis());
+            //notifyListeners();
+        }
+    }
+    
+    
+    
+    
+    
+    private String getListPath(String mreqbl) {
+        return getContext().getFilesDir().getPath() + "/malware_bl/" + mreqbl;
+    }
+    private static void openUrl(Context ctx, String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         Utils.startActivity(ctx, intent);
     }
@@ -153,7 +273,7 @@ public class BlacklistsFragment extends Fragment implements BlacklistsStateListe
         return false;
     }
 
-    private void refreshStatus() {
+    private static void refreshStatus() {
         if(mAdapter != null)
             mAdapter.notifyDataSetChanged();
 

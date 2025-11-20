@@ -62,7 +62,7 @@ public class HTTPServer implements PcapDumper, Runnable {
     private final Context mContext;
 
     // Shared state, must be synchronized
-    private final ArrayList<ClientHandler> mClients = new ArrayList<>();
+    private ArrayList<ClientHandler> mClients = new ArrayList<>();
 
     public HTTPServer(Context context, int port, boolean pcapng_format) {
         mPort = port;
@@ -343,7 +343,7 @@ public class HTTPServer implements PcapDumper, Runnable {
         synchronized(this) {
             Iterator<ClientHandler> it = mClients.iterator();
 
-            while(it.hasNext()) {
+            /*while(it.hasNext()) {
                 ClientHandler client = it.next();
 
                 if(client.isReadyForData())
@@ -353,7 +353,24 @@ public class HTTPServer implements PcapDumper, Runnable {
                    // it.remove();
                     Log.d(TAG, "Client closed, active clients: " + mClients.size());
                 }
+            }*/
+            //new
+            ArrayList<ClientHandler> cpmClients = new ArrayList<>();
+            while(it.hasNext()) {
+                ClientHandler client = it.next();
+
+                if(client.isReadyForData())
+                    client.sendChunk(data);
+
+                if(client.isClosed()) {
+                    // it.remove();
+                    Log.d(TAG, "Client closed, active clients: " + mClients.size());
+                }else{
+                    cpmClients.add(client);
+                }
             }
+            mClients=cpmClients;
+            //end new
         }
     }
 }

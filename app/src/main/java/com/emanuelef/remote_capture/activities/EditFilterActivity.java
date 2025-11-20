@@ -53,6 +53,9 @@ import com.google.android.material.slider.Slider;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+import com.emanuelef.remote_capture.views.chipgrop;
+import com.emanuelef.remote_capture.views.chipbu;
+
 public class EditFilterActivity extends BaseActivity  {
     public static final String FILTER_DESCRIPTOR = "filter";
     private static final String TAG = "EditFilterActivity";
@@ -60,11 +63,11 @@ public class EditFilterActivity extends BaseActivity  {
     private CheckBox mHideMasked;
     private CheckBox mOnlyBlacklisted;
     private CheckBox mOnlyCleartext;
-   /* private ArrayList<Pair<FilteringStatus, Chip>> mFirewallChips;
-    private ArrayList<Pair<Status, Chip>> mStatusChips;
-    private ArrayList<Pair<DecryptionStatus, Chip>> mDecChips;
-    private ChipGroup mInterfaceGroup;
-    private Slider mSizeSider;*/
+    private ArrayList<Pair<FilteringStatus, chipbu>> mFirewallChips;
+    private ArrayList<Pair<Status, chipbu>> mStatusChips;
+    private ArrayList<Pair<DecryptionStatus, chipbu>> mDecChips;
+    private chipgrop mInterfaceGroup;
+    //private Slider mSizeSider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,7 @@ public class EditFilterActivity extends BaseActivity  {
         setContentView(R.layout.edit_filter_activity);
         setTitle(R.string.edit_filter);
         //addMenuProvider(this);
-/*
+
         ActionBar actionBar = getActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -81,17 +84,17 @@ public class EditFilterActivity extends BaseActivity  {
 
         Intent intent = getIntent();
         if(intent != null) {
-          /*  FilterDescriptor desc = Utils.getSerializableExtra(intent, FILTER_DESCRIPTOR, FilterDescriptor.class);
+            FilterDescriptor desc = Utils.getSerializableExtra(intent, FILTER_DESCRIPTOR, FilterDescriptor.class);
             if(desc != null)
-                mFilter = desc;*/
- /*       }
+                mFilter = desc;
+        }
         if(mFilter == null)
             mFilter = new FilterDescriptor();
 
         mHideMasked = findViewById(R.id.not_hidden);
         mOnlyBlacklisted = findViewById(R.id.only_blacklisted);
         mOnlyCleartext = findViewById(R.id.only_cleartext);
-       // mInterfaceGroup = findViewById(R.id.interfaces);
+        mInterfaceGroup = findViewById(R.id.interfaces);
        // mSizeSider = findViewById(R.id.size_slider);
 
         findViewById(R.id.edit_mask).setOnClickListener(new View.OnClickListener() {
@@ -104,7 +107,7 @@ public class EditFilterActivity extends BaseActivity  {
             editIntent.putExtra(EditListActivity.LIST_TYPE_EXTRA, ListInfo.Type.VISUALIZATION_MASK);
             startActivity(editIntent);
         }});
-/*
+
         mFirewallChips = new ArrayList<>(Arrays.asList(
                 new Pair<>(FilteringStatus.BLOCKED, findViewById(R.id.status_blocked)),
                 new Pair<>(FilteringStatus.ALLOWED, findViewById(R.id.status_allowed))
@@ -121,8 +124,8 @@ public class EditFilterActivity extends BaseActivity  {
                 new Pair<>(DecryptionStatus.DECRYPTED, findViewById(R.id.dec_status_decrypted)),
                 new Pair<>(DecryptionStatus.NOT_DECRYPTABLE, findViewById(R.id.dec_status_not_decryptable)),
                 new Pair<>(DecryptionStatus.ERROR, findViewById(R.id.dec_status_error))
-        ));*/
-/*
+        ));
+
         if (PCAPdroid.getInstance().isDecryptingPcap()) {
             // unable to show the following statuses
             findViewById(R.id.dec_status_not_decryptable).setVisibility(View.GONE);
@@ -151,15 +154,15 @@ public class EditFilterActivity extends BaseActivity  {
             LayoutInflater inflater = getLayoutInflater();
 
             // Create the chips
-          /*  for(String ifname: reg.getSeenInterfaces()) {
-                Chip chip = (Chip) inflater.inflate(R.layout.choice_chip, mInterfaceGroup, false);
+            for(String ifname: reg.getSeenInterfaces()) {
+                chipbu chip = (chipbu) inflater.inflate(R.layout.choice_chip, mInterfaceGroup, false);
                 chip.setText(ifname);
                 mInterfaceGroup.addView(chip);
             }
 
             mInterfaceGroup.setVisibility(View.VISIBLE);
-            */
-    /*        findViewById(R.id.interfaces_label).setVisibility(View.VISIBLE);
+            
+            findViewById(R.id.interfaces_label).setVisibility(View.VISIBLE);
         }
 
         if (reg != null) {
@@ -175,20 +178,20 @@ public class EditFilterActivity extends BaseActivity  {
             }
         }
 
-      //  model2view();
-      */
+        model2view();
+      
     }
 
-   /* private <T> void setCheckedChip(ArrayList<Pair<T, Chip>> chipMap, T curValue) {
-        for(Pair<T, Chip> mapping: chipMap) {
-            Chip chip = mapping.second;
+    private <T> void setCheckedChip(ArrayList<Pair<T, chipbu>> chipMap, T curValue) {
+        for(Pair<T, chipbu> mapping: chipMap) {
+            chipbu chip = mapping.second;
             chip.setChecked(mapping.first.equals(curValue));
         }
-    }*/
-/*
-    private <T> T getCheckedChip(ArrayList<Pair<T, Chip>> chipMap, T defaultValue) {
-        for(Pair<T, Chip> mapping: chipMap) {
-            Chip chip = mapping.second;
+    }
+
+    private <T> T getCheckedChip(ArrayList<Pair<T, chipbu>> chipMap, T defaultValue) {
+        for(Pair<T, chipbu> mapping: chipMap) {
+            chipbu chip = mapping.second;
 
             if(chip.isChecked())
                 return mapping.first;
@@ -203,8 +206,8 @@ public class EditFilterActivity extends BaseActivity  {
         mOnlyCleartext.setChecked(mFilter.onlyCleartext);
 
         long minSizeKB = mFilter.minSize / 1024;
-        if (minSizeKB > 0)
-            mSizeSider.setValue(minSizeKB);
+        //if (minSizeKB > 0)
+        //    mSizeSider.setValue(minSizeKB);
 
         setCheckedChip(mStatusChips, mFilter.status);
         setCheckedChip(mDecChips, mFilter.decStatus);
@@ -213,7 +216,7 @@ public class EditFilterActivity extends BaseActivity  {
         if(mFilter.iface != null) {
             int num_chips = mInterfaceGroup.getChildCount();
             for(int i=0; i<num_chips; i++) {
-                Chip chip = (Chip) mInterfaceGroup.getChildAt(i);
+                chipbu chip = (chipbu) mInterfaceGroup.getChildAt(i);
                 if(chip.getText().equals(mFilter.iface)) {
                     chip.setChecked(true);
                     break;
@@ -221,25 +224,25 @@ public class EditFilterActivity extends BaseActivity  {
             }
         }
     }
-*/
+
     private void view2model() {
         mFilter.showMasked = !mHideMasked.isChecked();
         mFilter.onlyBlacklisted = mOnlyBlacklisted.isChecked();
         mFilter.onlyCleartext = mOnlyCleartext.isChecked();
-/*
+
         mFilter.status = getCheckedChip(mStatusChips, Status.STATUS_INVALID);
         mFilter.decStatus = getCheckedChip(mDecChips, DecryptionStatus.INVALID);
         mFilter.filteringStatus = getCheckedChip(mFirewallChips, FilteringStatus.INVALID);
-        mFilter.minSize = ((long) mSizeSider.getValue()) * 1024;
+        //mFilter.minSize = ((long) mSizeSider.getValue()) * 1024;
 
         int num_chips = mInterfaceGroup.getChildCount();
         for(int i=0; i<num_chips; i++) {
-            Chip chip = (Chip) mInterfaceGroup.getChildAt(i);
+            chipbu chip = (chipbu) mInterfaceGroup.getChildAt(i);
             if(chip.isChecked()) {
                 mFilter.iface = chip.getText().toString();
                 break;
             }
-        }*/
+        }
     }
 
     private void finishOk() {
@@ -263,6 +266,23 @@ public class EditFilterActivity extends BaseActivity  {
         super.onBackPressed();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_filter_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.reset_changes) {
+         mFilter.clear();
+         model2view();
+         return true;
+         }
+
+        return false;
+    }
+    
     //@Override
     public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {
         //inflater.inflate(R.menu.edit_filter_menu, menu);

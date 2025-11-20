@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.fragments.BlacklistsFragment;
 
 public class picker extends Activity { 
 
@@ -31,6 +32,7 @@ public class picker extends Activity {
     String mpath="";
     FileAdapter adapter;
     List<FileItem> fileList;
+    String from="";
     //final ReentrantLock mLock = new ReentrantLock();
 
     @Override
@@ -39,6 +41,9 @@ public class picker extends Activity {
         setContentView(R.layout.activity_picker);
         //LogUtil.initlogpat(getExternalFilesDir("")+"/log.txt");
         try {
+            if(getIntent().getStringExtra("from")!=null&&!getIntent().getStringExtra("from").equals("")){
+                from=getIntent().getStringExtra("from");
+            }
             //requestVolumeAccess();
 
             listView = findViewById(R.id.file_list_view);
@@ -76,13 +81,20 @@ public class picker extends Activity {
                             // e.g., loadFilesFromUri(Uri.parse(clickedItem.path));
                         } else {
                             // File click: Show the full path in a Toast
+                            if(from.equals("appman")){
                             if (clickedItem.path.toLowerCase().endsWith(".apk") ||
                                 clickedItem.path.toLowerCase().toLowerCase().endsWith(".apks") ||
                                 clickedItem.path.toLowerCase().toLowerCase().endsWith(".xapk") ||
                                 clickedItem.path.toLowerCase().toLowerCase().endsWith(".apkm")) {
-                                    AppManagementActivity.pickedfilepath=clickedItem.path;
-                                    finish();
-                                }
+                                AppManagementActivity.pickedfilepath=clickedItem.path;
+                                finish();
+                            }
+                            } else if(from.equals("blf")){
+                                if(clickedItem.path.toLowerCase().endsWith(".txt")){
+                                BlacklistsFragment.blpickedfilepath=clickedItem.path;
+                                finish();
+                            }
+                            }
                             //Toast.makeText(getApplicationContext(), "Path: " + clickedItem.path, Toast.LENGTH_LONG).show();
                         }
 

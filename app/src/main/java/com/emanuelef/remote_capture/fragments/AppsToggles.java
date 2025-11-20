@@ -176,7 +176,7 @@ AppsTogglesAdapter.AppToggleListener,SearchView.OnQueryTextListener{
     @Override
     public void onAppsInfoLoaded(List<AppDescriptor> apps) {
         mAdapter.setApps(apps);
-        LogUtil.logToFile("coil="+ mAdapter.getCount());
+        //LogUtil.logToFile("coil="+ mAdapter.getCount());
         try{
             
             //very important to implement the getview in the adapter...

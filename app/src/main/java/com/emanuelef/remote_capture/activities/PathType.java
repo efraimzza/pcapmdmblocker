@@ -7,7 +7,8 @@ public enum PathType {
     MAPS("מפות"),
     WAZE("וויז"),
     MAIL("מייל"),
-    NAVIGATIONMUSICAPPS("ניווט ומוזיקה");
+    NAVIGATIONMUSICAPPS("ניווט ומוזיקה"),
+    MANUAL("ידני");
 
     private final String description;
 

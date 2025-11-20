@@ -128,7 +128,7 @@ public class AppsAdapter extends ArrayAdapter<AppDescriptor> {
     public void setApps(List<AppDescriptor> apps) {
         listStorage = apps;
         notifyDataSetChanged();
-        LogUtil.logToFile("si="+apps.size()+"c="+getCount());
+        //LogUtil.logToFile("si="+apps.size()+"c="+getCount());
     }
 
     public void setOnClickListener(final View.OnClickListener listener) {

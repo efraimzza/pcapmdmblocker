@@ -1823,7 +1823,7 @@ static int handle_udp_reply(zdtun_t *tun, zdtun_conn_t *conn) {
     close_with_socket_error(tun, conn, "UDP recv");
     return -1;
   }
-
+//log_to_file("1%s",payload_ptr);
   // Reconstruct the UDP header
   int l3_len = l4_len + sizeof(struct udphdr);
   struct udphdr *data = (struct udphdr*) (tun->reply_buf + iphdr_len);

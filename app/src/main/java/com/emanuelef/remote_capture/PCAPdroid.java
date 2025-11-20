@@ -141,7 +141,12 @@ public class PCAPdroid extends Application {
             mBlacklists = new Blacklists(mLocalizedContext);
         return mBlacklists;
     }
-
+    public Blacklists refreshBlacklists() {
+         mBlacklists = new Blacklists(mLocalizedContext);
+         CaptureService.refreshbl();
+         
+         return mBlacklists;
+    }
     public MatchList getMalwareWhitelist() {
         if(mMalwareWhitelist == null)
             mMalwareWhitelist = new MatchList(mLocalizedContext, Prefs.PREF_MALWARE_WHITELIST);

@@ -53,12 +53,14 @@ import java.util.Locale;
 import android.annotation.NonNull;
 import android.content.DialogInterface;
 import android.widget.Button;
+import android.widget.ArrayAdapter;
+import android.view.View.OnClickListener;
 
 /* An adapter to show PayloadChunk items.
  * Each item is wrapped into an AdapterChunk. An item can either be collapsed or expanded.
  * Since the text of a chunk can be very long (hundreds of KB) and rendering it would freeze the UI,
  * it is split into pages of VISUAL_PAGE_SIZE. */
-public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
+public class PayloadAdapter extends ArrayAdapter implements HTTPReassembly.ReassemblyListener {
     private static final String TAG = "PayloadAdapter";
     public static final int COLLAPSE_CHUNK_SIZE = 1500;
     public static final int VISUAL_PAGE_SIZE = 4020; // must be a multiple of 67 to avoid splitting the hexdump
@@ -81,6 +83,7 @@ public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
     }
 
     public PayloadAdapter(Context context, ConnectionDescriptor conn, ChunkType mode, boolean showAsPrintable) {
+        super(context,R.layout.payload_item);
         mLayoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mConn = conn;
         mContext = context;
@@ -273,8 +276,8 @@ public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
     private void handleCopyExportButtons(PayloadViewHolder holder, final boolean is_export) {
         if(is_export && (mExportHandler == null))
             return;
-/*
-        final int payload_pos = holder.getAbsoluteAdapterPosition();
+
+        final int payload_pos = getPosition(holder);
         int title = is_export ? R.string.export_ellipsis : R.string.copy_action;
         int positive_action = is_export ? R.string.export_action : R.string.copy_to_clipboard;
 
@@ -354,10 +357,10 @@ public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
                 String to_copy = payload;
 
                 if (choice != 2) {
-        /*            if (choice == 0 /* Headers *//*)
-             /*           to_copy = to_copy.substring(0, crlf_pos);
- /*                   else /* body */
-    /*                    to_copy = to_copy.substring(crlf_pos + 4);
+                    if (choice == 0 /* Headers */)
+                        to_copy = to_copy.substring(0, crlf_pos);
+                    else /* body */
+                        to_copy = to_copy.substring(crlf_pos + 4);
                 }
 
                 if (is_export) {
@@ -410,8 +413,8 @@ public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
                     
                 int choice = ((AlertDialog)dialogInterface).getListView().getCheckedItemPosition();
 
-                if (choice == 2 /* raw bytes *//*) {
-            /*        assert (is_export);
+                if (choice == 2 /* raw bytes */) {
+                    assert (is_export);
 
                     if (mExportHandler != null)
                         mExportHandler.exportPayload(chunk.mChunk.payload, "application/octet-stream", "");
@@ -425,7 +428,7 @@ public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
                 }
             }});
             builder.create().show();
-        }*/
+        }
     }
 
     private String getHeaderTag(PayloadChunk chunk) {
@@ -452,25 +455,101 @@ public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
         } else
             holder.headerLine.setVisibility(View.GONE);
 
-        //if(page.isLast && page.adaptChunk.canBeExpanded()) {
-           // holder.expandButton.setVisibility(View.VISIBLE);
-          //  holder.expandButton.setRotation(page.adaptChunk.isExpanded() ? 180 : 0);
-        //} else
-            //holder.expandButton.setVisibility(View.GONE);
+        if(page.isLast && page.adaptChunk.canBeExpanded()) {
+            holder.expandButton.setVisibility(View.VISIBLE);
+            holder.expandButton.setRotation(page.adaptChunk.isExpanded() ? 180 : 0);
+        } else
+            holder.expandButton.setVisibility(View.GONE);
 
         holder.dump.setText(page.getText());
 
         if(chunk.is_sent) {
             holder.dumpBox.setBackgroundResource(R.color.sentPayloadBg);
-           // holder.dump.setTextColor(ContextCompat.getColor(mContext, R.color.sentPayloadFg));
+            holder.dump.setTextColor(mContext.getColor( R.color.sentPayloadFg));
         } else {
             holder.dumpBox.setBackgroundResource(R.color.rcvdPayloadBg);
-           // holder.dump.setTextColor(ContextCompat.getColor(mContext, R.color.rcvdPayloadFg));
+            holder.dump.setTextColor(mContext.getColor(R.color.rcvdPayloadFg));
         }
     }
 
-   // @Override
-    public int getItemCount() {
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        if(convertView==null)
+        convertView = mLayoutInflater.inflate(R.layout.payload_item, parent, false);
+        final PayloadViewHolder holder = new PayloadViewHolder(convertView);
+
+        holder.expandButton.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View p1) {
+                    
+
+                     int pos =position;
+                     Page page = getItem(pos);
+
+                     if(page.adaptChunk.isExpanded()) {
+                     int numPages = page.adaptChunk.getNumPages();
+                     int firstPagePos = pos - (numPages - 1);
+                     page.adaptChunk.collapse();
+                     //notifyItemChanged(firstPagePos);
+                     // notifyItemRangeRemoved(firstPagePos + 1, numPages - 1);
+                     notifyDataSetChanged();
+                     } else {
+                     page.adaptChunk.expand();
+                     // notifyItemChanged(pos);
+                     // notifyItemRangeInserted(pos + 1, page.adaptChunk.getNumPages() - 1);
+                     notifyDataSetChanged();
+                     }
+                }});
+
+        holder.copybutton.setOnClickListener(new OnClickListener(){
+
+                @Override
+                public void onClick(View p1) {
+              handleCopyExportButtons(holder, false);}});
+        holder.exportbutton.setOnClickListener(new OnClickListener(){
+
+                @Override
+                public void onClick(View p1) {
+            handleCopyExportButtons(holder, true);}});
+        holder.exportbutton.setVisibility(mSupportsFileDialog ? View.VISIBLE : View.GONE);
+        
+        Page page = getItem(position);
+        PayloadChunk chunk = page.adaptChunk.getPayloadChunk();
+
+        if(page.isFirst()) {
+            holder.headerLine.setVisibility(View.VISIBLE);
+
+            Locale locale = Utils.getPrimaryLocale(mContext);
+            holder.header.setText(String.format(locale,
+                                                "#%d [%s] %s — %s", page.adaptChunk.incrId + 1,
+                                                getHeaderTag(chunk),
+                                                (new SimpleDateFormat("HH:mm:ss.SSS", locale)).format(new Date(chunk.timestamp)),
+                                                Utils.formatBytes(chunk.payload.length)));
+        } else
+            holder.headerLine.setVisibility(View.GONE);
+
+        if(page.isLast && page.adaptChunk.canBeExpanded()) {
+            holder.expandButton.setVisibility(View.VISIBLE);
+            holder.expandButton.setRotation(page.adaptChunk.isExpanded() ? 180 : 0);
+        } else
+            holder.expandButton.setVisibility(View.GONE);
+
+        holder.dump.setText(page.getText());
+
+        if(chunk.is_sent) {
+            holder.dumpBox.setBackgroundResource(R.color.sentPayloadBg);
+            holder.dump.setTextColor(mContext.getColor( R.color.sentPayloadFg));
+        } else {
+            holder.dumpBox.setBackgroundResource(R.color.rcvdPayloadBg);
+            holder.dump.setTextColor(mContext.getColor(R.color.rcvdPayloadFg));
+        }
+        return convertView;
+    }
+    
+
+    @Override
+    public int getCount() {
         // TODO remove loop, as it can generate ANRs on high number of elements
         int count = 0;
 
@@ -514,7 +593,7 @@ public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
             // than handling individual changes
             for(AdapterChunk chunk: mChunks)
                 chunk.collapse(); // resets the chunk text
-            //notifyDataSetChanged();
+            notifyDataSetChanged();
         }
     }
 
@@ -554,9 +633,10 @@ public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
             } else {
                 // TODO remove temporary caching due to slow getItemCount
                 if(items_count == -1)
-                    items_count = getItemCount();
+                    items_count = getCount();
                 mChunks.add(new AdapterChunk(chunk, mChunks.size()));
               //  notifyItemInserted(items_count);
+              notifyDataSetChanged();
                 items_count += 1;
             }
         }
@@ -582,7 +662,7 @@ public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
     @Override
     public void onChunkReassembled(PayloadChunk chunk) {
         AdapterChunk adapterChunk = new AdapterChunk(chunk, mChunks.size());
-        int adapterPos = getItemCount();
+        int adapterPos = getCount();
         int insertPos = mChunks.size();
 
         // Need to determine where to add the chunk. If HTTP request, always add it to the bottom.
@@ -601,5 +681,6 @@ public class PayloadAdapter implements HTTPReassembly.ReassemblyListener {
 
         mChunks.add(insertPos, adapterChunk);
        // notifyItemInserted(adapterPos);
+       notifyDataSetChanged();
     }
 }

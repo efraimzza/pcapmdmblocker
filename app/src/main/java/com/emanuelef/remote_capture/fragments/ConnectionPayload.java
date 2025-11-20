@@ -58,9 +58,10 @@ import android.preference.PreferenceManager;
 import android.content.DialogInterface;
 import android.view.View.OnClickListener;
 import android.annotation.Nullable;
-import android.app.Activity;
+import android.app.Fragment;
+import com.emanuelef.remote_capture.activities.LogUtil;
 
-public class ConnectionPayload extends Activity implements ConnectionDetailsActivity.ConnUpdateListener {
+public class ConnectionPayload extends Fragment implements ConnectionDetailsActivity.ConnUpdateListener {
     private static final String TAG = "ConnectionPayload";
     private ConnectionDetailsActivity mActivity;
     private ConnectionDescriptor mConn;
@@ -73,26 +74,22 @@ public class ConnectionPayload extends Activity implements ConnectionDetailsActi
     private boolean mShowAsPrintable;
 //    private WindowInsetsCompat mInsets;
     private Context requireContext() {
-        return null;
+        return getContext();
     }
-    private Context getContext() {
-        return null;
-    }
-    private Activity requireActivity() {
-        return null;
-    }
+   
+    
     public static ConnectionPayload newInstance(PayloadChunk.ChunkType mode, int conn_id) {
         ConnectionPayload fragment = new ConnectionPayload();
         Bundle args = new Bundle();
         args.putSerializable("mode", mode);
         args.putInt("conn_id", conn_id);
-      //  fragment.setArguments(args);
+        fragment.setArguments(args);
         return fragment;
     }
 
-    //@Override
+    @Override
     public void onAttach(@NonNull Context context) {
-        //super.onAttach(context);
+        super.onAttach(context);
         mActivity = (ConnectionDetailsActivity) context;
         mActivity.addConnUpdateListener(this);
 
@@ -100,9 +97,9 @@ public class ConnectionPayload extends Activity implements ConnectionDetailsActi
             mAdapter.setExportPayloadHandler(mActivity);
     }
 
-  //  @Override
+    @Override
     public void onDetach() {
-       // super.onDetach();
+        super.onDetach();
         mActivity.removeConnUpdateListener(this);
         mActivity = null;
 
@@ -110,23 +107,25 @@ public class ConnectionPayload extends Activity implements ConnectionDetailsActi
             mAdapter.setExportPayloadHandler(null);
     }
 
- //   @Override
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
        // requireActivity().addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.connection_payload, container, false);
     }
 
-   // @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //Bundle args = getArguments();
+        setHasOptionsMenu(true);
+        setMenuVisibility(true);
+        Bundle args = getArguments();
         PayloadChunk.ChunkType mode;
-       // assert args != null;
+        assert args != null;
         ConnectionsRegister reg = CaptureService.requireConnsRegister();
-        //mode = Utils.getSerializable(args, "mode", PayloadChunk.ChunkType.class);
-       // assert(mode != null);
+        mode = Utils.getSerializable(args, "mode", PayloadChunk.ChunkType.class);
+        assert(mode != null);
 
-       // mConn = reg.getConnById(args.getInt("conn_id"));
+        mConn = reg.getConnById(args.getInt("conn_id"));
         if(mConn == null) {
             Utils.showToast(requireContext(), R.string.connection_not_found);
             mActivity.finish();
@@ -150,9 +149,9 @@ public class ConnectionPayload extends Activity implements ConnectionDetailsActi
             v.setPadding(0, 0, 0, insets.bottom);
 
             return WindowInsetsCompat.CONSUMED;
-        });
+        });*/
         mRecyclerView.setClipToPadding(false);
-
+/*
         ViewCompat.setOnApplyWindowInsetsListener(mTruncatedWarning, (v, windowInsets) -> {
             if(mConn.isPayloadTruncated()) {
                 applyTruncatedWarningInsets(windowInsets);
@@ -164,17 +163,18 @@ public class ConnectionPayload extends Activity implements ConnectionDetailsActi
         });
 */
         mCurChunks = mConn.getNumPayloadChunks();
+        LogUtil.logToFile("mCurChunks="+mCurChunks);
         if(mCurChunks > 0)
             mShowAsPrintable = guessDisplayAsPrintable();
         else
             mShowAsPrintable = false;
-      //  mAdapter = new PayloadAdapter(requireContext(), mConn, mode, mShowAsPrintable);
+        mAdapter = new PayloadAdapter(requireContext(), mConn, mode, mShowAsPrintable);
         mAdapter.setExportPayloadHandler(mActivity);
         mJustCreated = true;
 
         // only set adapter after acknowledged (see setMenuVisibility below)
-        //if(payloadNoticeAcknowledged(PreferenceManager.getDefaultSharedPreferences(requireContext())))
-            //mRecyclerView.setAdapter(mAdapter);
+        if(payloadNoticeAcknowledged(PreferenceManager.getDefaultSharedPreferences(requireContext())))
+            mRecyclerView.setAdapter(mAdapter);
     }
 
    /* private void applyTruncatedWarningInsets(WindowInsetsCompat windowInsets) {
@@ -185,9 +185,9 @@ public class ConnectionPayload extends Activity implements ConnectionDetailsActi
         mTruncatedWarning.setLayoutParams(mlp);
     }*/
 
-   // @Override
+    @Override
     public void setMenuVisibility(boolean menuVisible) {
-        //super.setMenuVisibility(menuVisible);
+        super.setMenuVisibility(menuVisible);
 
         Context context = getContext();
         if(context == null)
@@ -204,12 +204,12 @@ public class ConnectionPayload extends Activity implements ConnectionDetailsActi
 
                     @Override
                     public void onCancel(DialogInterface p1) {
-                        requireActivity().finish();}})
+                        getActivity().finish();}})
                 .setNegativeButton(R.string.cancel_action, new DialogInterface.OnClickListener(){
 
                     @Override
                     public void onClick(DialogInterface p1, int p2) {
-                        requireActivity().finish();}})
+                       getActivity().finish();}})
                 .setPositiveButton(R.string.show_data_action, new DialogInterface.OnClickListener(){
 
                     @Override
@@ -217,7 +217,7 @@ public class ConnectionPayload extends Activity implements ConnectionDetailsActi
                     
                     
                         // show the data
-                        //mRecyclerView.setAdapter(mAdapter);
+                        mRecyclerView.setAdapter(mAdapter);
 
                         prefs.edit().putBoolean(Prefs.PREF_PAYLOAD_NOTICE_ACK, true).apply();
                     }}).show();
@@ -230,6 +230,37 @@ public class ConnectionPayload extends Activity implements ConnectionDetailsActi
         return prefs.getBoolean(Prefs.PREF_PAYLOAD_NOTICE_ACK, false);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.connection_payload, menu);
+        mMenu = menu;
+        if((mCurChunks > 0) && mJustCreated) {
+            mShowAsPrintable = guessDisplayAsPrintable();
+            mAdapter.setDisplayAsPrintableText(mShowAsPrintable);
+            mJustCreated = false;
+        }
+        refreshDisplayMode();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        
+        if(id == R.id.printable_text) {
+            mShowAsPrintable = true;
+            mAdapter.setDisplayAsPrintableText(true);
+            refreshDisplayMode();
+            return true;
+        } else if(id == R.id.hexdump) {
+            mShowAsPrintable = false;
+            mAdapter.setDisplayAsPrintableText(false);
+            refreshDisplayMode();
+            return true;
+        }
+
+        return false;
+    }
+    
     //@Override
     public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
        // menuInflater.inflate(R.menu.connection_payload, menu);
@@ -303,7 +334,7 @@ public class ConnectionPayload extends Activity implements ConnectionDetailsActi
             mShowAsPrintable = guessDisplayAsPrintable();
             mAdapter.setDisplayAsPrintableText(mShowAsPrintable);
         }
-
+        LogUtil.logToFile("mCurChunks2="+mConn.getNumPayloadChunks());
         if(mConn.getNumPayloadChunks() > mCurChunks) {
             mAdapter.handleChunksAdded(mConn.getNumPayloadChunks());
             mCurChunks = mConn.getNumPayloadChunks();

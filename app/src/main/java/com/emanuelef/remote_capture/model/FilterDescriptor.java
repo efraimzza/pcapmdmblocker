@@ -33,6 +33,8 @@ import com.emanuelef.remote_capture.model.ConnectionDescriptor.FilteringStatus;
 //import com.google.android.material.chip.ChipGroup;
 
 import java.io.Serializable;
+import android.widget.RadioGroup;
+import android.widget.RadioButton;
 
 public class FilterDescriptor implements Serializable {
     public Status status;
@@ -73,15 +75,15 @@ public class FilterDescriptor implements Serializable {
                 && ((uid == -2) || (uid == conn.uid))
                 && ((minSize == 0) || ((conn.sent_bytes + conn.rcvd_bytes) >= minSize));
     }
-/*
-    private void addChip(LayoutInflater inflater, ChipGroup group, int id, String text) {
-        Chip chip = (Chip) inflater.inflate(R.layout.active_filter_chip, group, false);
+
+    private void addChip(LayoutInflater inflater, RadioGroup group, int id, String text) {
+        RadioButton chip = (RadioButton) inflater.inflate(R.layout.active_filter_chip, group, false);
         chip.setId(id);
         chip.setText(text.toLowerCase());
         group.addView(chip);
     }
 
-    public void toChips(LayoutInflater inflater, ChipGroup group) {
+    public void toChips(LayoutInflater inflater, RadioGroup group) {
         Context ctx = inflater.getContext();
 
         if(!showMasked)
@@ -126,7 +128,7 @@ public class FilterDescriptor implements Serializable {
         else if(filter_id == R.id.capture_interface)
             iface = null;
     }
-*/
+
     public void clear() {
         showMasked = true;
         onlyBlacklisted = false;

@@ -88,12 +88,12 @@
             android:defaultValue="never"
              />
 
-        <!--SwitchPreference
+        <SwitchPreference
             android:key="full_payload"
             android:title="@string/full_payload"
             android:iconSpaceReserved="false"
             android:summary="@string/full_payload_summary"
-            android:defaultValue="false" /-->
+            android:defaultValue="false" />
 
         <Preference
             android:key="socks5_settings"

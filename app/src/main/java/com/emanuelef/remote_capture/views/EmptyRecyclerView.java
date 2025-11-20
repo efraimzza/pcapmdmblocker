@@ -139,10 +139,12 @@ public class EmptyRecyclerView extends ListView {
     }
 
     public void initEmptyView() {
-        if(getAdapter()!=null)
-        LogUtil.logToFile("c="+getAdapter().getCount());
-        else
-            LogUtil.logToFile("a=null");
+        if(getAdapter()!=null){
+        //LogUtil.logToFile("c="+getAdapter().getCount());
+        }
+        else{
+            //LogUtil.logToFile("a=null");
+        }
             try{
         if (mEmptyView != null) {
             //mEmptyView.setVisibility(

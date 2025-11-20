@@ -38,6 +38,9 @@ import com.emanuelef.remote_capture.Utils;
 import com.emanuelef.remote_capture.fragments.AppOverview;
 import com.emanuelef.remote_capture.fragments.ConnectionsFragment;
 import com.emanuelef.remote_capture.model.FilterDescriptor;
+import android.app.ActionBar;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 //import com.google.android.material.tabs.TabLayout;
 //import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -56,7 +59,7 @@ public class AppDetailsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_details);
         displayBackAction();
-        setContentView(R.layout.tabs_activity);
+        setContentView(R.layout.fragment_activity);
 
         mUid = getIntent().getIntExtra(APP_UID_EXTRA, Utils.UID_UNKNOWN);
         setupUidFilter();
@@ -118,8 +121,41 @@ public class AppDetailsActivity extends BaseActivity {
         new TabLayoutMediator(findViewById(R.id.tablayout), mPager, (tab, position) ->
                 tab.setText(getString(pageAdapter.getPageTitle(position)))
         ).attach();*/
+        try{
+            maddtab(AppOverview.newInstance(mUid),getText(R.string.overview));
+            maddtab(new ConnectionsFragment(),getText(R.string.connections_view));
+            
+            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        }catch(Exception e){}
     }
+    private ActionBar.Tab maddtab(final Fragment f,CharSequence tname){
+        ActionBar a=getActionBar();
+        ActionBar.Tab ta=a.newTab().setText(tname);
+        ta.setTabListener(new ActionBar.TabListener(){
 
+                @Override
+                public void onTabSelected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    try{
+                            //LogUtil.logToFile("comt="+ 
+                            getFragmentManager().beginTransaction().replace(R.id.linfra,f).commit();
+                            //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                    }catch(Exception e){
+                        LogUtil.logToFile(e.toString());
+                    }
+                }
+
+                @Override
+                public void onTabUnselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                }
+
+                @Override
+                public void onTabReselected(ActionBar.Tab p1, FragmentTransaction p2) {
+                    //p2.replace(R.id.linfrapag,new FirewallStatus()).commit();
+                }
+            });
+        a.addTab(ta);
+        return ta;
+    }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // This is required to properly handle the DPAD down press on Android TV, to properly

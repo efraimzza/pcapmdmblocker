@@ -57,6 +57,8 @@ import java.util.Map;
 import com.emanuelef.remote_capture.model.MatchList;
 import com.emanuelef.remote_capture.activities.LogUtil;
 import android.util.ArraySet;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 /* Represents the malware blacklists.
  * The blacklists are hard-coded via the Blacklists.addList calls. Blacklists update is performed
@@ -116,85 +118,93 @@ public class Blacklists {
         }*/
         switch (AppState.getInstance().getCurrentPath()){
             case MULTIMEDIA:
-                  /*addList("Maltrail", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"maltrail-malware-domains.txt",
-                "https://raw.githubusercontent.com/stamparm/aux/master/maltrail-malware-domains.txt");
-        */
-        //domains
-        addList("domains white", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"domainswhite.txt",
-                "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/domainswhite.txt");
-        // IPs
-        /*addList("Emerging Threats", BlacklistDescriptor.Type.IP_BLACKLIST, "emerging-Block-IPs.txt",
-                "https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt");
-        */
-        addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
-                "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
- 
-        /*
-        addList("DigitalSide Threat-Intel", BlacklistDescriptor.Type.IP_BLACKLIST,  "digitalsideit_ips.txt",
-                "https://raw.githubusercontent.com/davidonzo/Threat-Intel/master/lists/latestips.txt");
-        */
+                /*addList("Maltrail", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"maltrail-malware-domains.txt",
+                 "https://raw.githubusercontent.com/stamparm/aux/master/maltrail-malware-domains.txt");
+                 */
+                //domains
+                addList("domains white", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"domainswhite.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/domainswhite.txt");
+                // IPs
+                /*addList("Emerging Threats", BlacklistDescriptor.Type.IP_BLACKLIST, "emerging-Block-IPs.txt",
+                 "https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt");
+                 */
+                addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
+
+                /*
+                 addList("DigitalSide Threat-Intel", BlacklistDescriptor.Type.IP_BLACKLIST,  "digitalsideit_ips.txt",
+                 "https://raw.githubusercontent.com/davidonzo/Threat-Intel/master/lists/latestips.txt");
+                 */
                 break;
             case EVERYTHING:
-        addList("domains white all", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"domainswhiteall.txt",
-                "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/domainswhiteall.txt");
-        // IPs
-        addList("ips white all", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhiteall.txt",
-                "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhiteall.txt");
-        
-        break;
-        case MULTIMEDIA_ACCESSIBILITY:
-                  /*addList("Maltrail", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"maltrail-malware-domains.txt",
-                "https://raw.githubusercontent.com/stamparm/aux/master/maltrail-malware-domains.txt");
-        */
-        //domains
-        addList("domains white", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"domainswhite.txt",
-                "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/domainswhite.txt");
-        // IPs
-        /*addList("Emerging Threats", BlacklistDescriptor.Type.IP_BLACKLIST, "emerging-Block-IPs.txt",
-                "https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt");
-        */
-        addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
-                "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
- 
-        /*
-        addList("DigitalSide Threat-Intel", BlacklistDescriptor.Type.IP_BLACKLIST,  "digitalsideit_ips.txt",
-                "https://raw.githubusercontent.com/davidonzo/Threat-Intel/master/lists/latestips.txt");
-        */
+                addList("domains white all", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"domainswhiteall.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/domainswhiteall.txt");
+                // IPs
+                addList("ips white all", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhiteall.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhiteall.txt");
+
                 break;
-                case MAPS:
-                    //domains
-                    addList("domains maps", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"maps.txt",
-                            "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/maps.txt");
-                    // IPs
-                    addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
-                            "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
-                    break;
-                case WAZE:
-                    //domains
-                    addList("domains waze", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"waze.txt",
-                            "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/waze/waze-domains.txt");
-                    // IPs
-                    addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
-                            "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
-                    break;
-                case MAIL:
-                    //domains
-                    addList("domains mail", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"mail.txt",
-                            "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/mail/mail-domains.txt");
-                    // IPs
-                    addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
-                            "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
-                    break;
-                case NAVIGATIONMUSICAPPS:
-                    //domains
-                    addList("domains navigationmusicapps", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"navigationmusicapps.txt",
-                            "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/navigationmusicapps/navigationmusicapps-domains.txt");
-                    // IPs
-                    addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
-                            "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
-                    break;
-                default:
-                    break;
+            case MULTIMEDIA_ACCESSIBILITY:
+                /*addList("Maltrail", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"maltrail-malware-domains.txt",
+                 "https://raw.githubusercontent.com/stamparm/aux/master/maltrail-malware-domains.txt");
+                 */
+                //domains
+                addList("domains white", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"domainswhite.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/domainswhite.txt");
+                // IPs
+                /*addList("Emerging Threats", BlacklistDescriptor.Type.IP_BLACKLIST, "emerging-Block-IPs.txt",
+                 "https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt");
+                 */
+                addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
+
+                /*
+                 addList("DigitalSide Threat-Intel", BlacklistDescriptor.Type.IP_BLACKLIST,  "digitalsideit_ips.txt",
+                 "https://raw.githubusercontent.com/davidonzo/Threat-Intel/master/lists/latestips.txt");
+                 */
+                break;
+            case MAPS:
+                //domains
+                addList("domains maps", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"maps.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/maps.txt");
+                // IPs
+                addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
+                break;
+            case WAZE:
+                //domains
+                addList("domains waze", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"waze.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/waze/waze-domains.txt");
+                // IPs
+                addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
+                break;
+            case MAIL:
+                //domains
+                addList("domains mail", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"mail.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/mail/mail-domains.txt");
+                // IPs
+                addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
+                break;
+            case NAVIGATIONMUSICAPPS:
+                //domains
+                addList("domains navigationmusicapps", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"navigationmusicapps.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/navigationmusicapps/navigationmusicapps-domains.txt");
+                // IPs
+                addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
+                break;
+            case MANUAL:
+                //domains
+                addList("domains MANUAL", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"manualdom.txt",
+                        "manual");
+                // IPs
+                addList("ips MANUAL", BlacklistDescriptor.Type.IP_BLACKLIST, "manualip.txt",
+                        "manual");
+                break;
+            default:
+                break;
         }
         // To review
         //https://github.com/StevenBlack/hosts
@@ -203,6 +213,7 @@ public class Blacklists {
 
         deserialize();
         checkFiles();
+        
     }
 
     private void addList(String label, BlacklistDescriptor.Type tp, String fname, String url) {
@@ -339,7 +350,36 @@ public class Blacklists {
                 bl.setOutdated();
             */
             //end old
-            
+            if(bl.url.equals("manual")){
+                /*if(bl.fname.equals("manualdom.txt")){
+                    //copying dom.txt for the first check
+                    try{
+                        FileInputStream in = new FileInputStream("/storage/emulated/0/Download/dom.txt");
+                        FileOutputStream out= new FileOutputStream(getListPath(bl));
+                        byte[] bytesIn = new byte[4096];
+                        int read;
+                        while((read = in.read(bytesIn)) != -1)
+                            out.write(bytesIn, 0, read);
+                    }catch(Exception e){
+                        LogUtil.logToFile(bl.fname+bl.url+ e.toString());
+                    }
+                }else if(bl.fname.equals("manualip.txt")){
+                    //copying ip.txt for the first check
+                    try{
+                        FileInputStream in = new FileInputStream("/storage/emulated/0/Download/ip.txt");
+                        FileOutputStream out= new FileOutputStream(getListPath(bl));
+                        byte[] bytesIn = new byte[4096];
+                        int read;
+                        while((read = in.read(bytesIn)) != -1)
+                            out.write(bytesIn, 0, read);
+                    }catch(Exception e){
+                        LogUtil.logToFile(bl.fname+bl.url+ e.toString());
+                    }
+                }*/
+                //self select your file
+                bl.setUpdated(System.currentTimeMillis());
+                notifyListeners();
+            }else{
             try{
             Utils.startDownload(mContext,bl.url, getListPath(bl),new Runnable(){
                             @Override
@@ -365,7 +405,7 @@ public class Blacklists {
                 LogUtil.logToFile(""+e);
                 //Toast.makeText(mContext,e+ "", Toast.LENGTH_SHORT).show();
             }
-            
+            }
             //notifyListeners();
         }
 

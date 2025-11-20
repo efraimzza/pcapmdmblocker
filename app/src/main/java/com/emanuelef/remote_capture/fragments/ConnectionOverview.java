@@ -54,9 +54,10 @@ import com.emanuelef.remote_capture.activities.MainActivity;
 import com.emanuelef.remote_capture.model.AppDescriptor;
 import com.emanuelef.remote_capture.model.ConnectionDescriptor;
 import android.app.Activity;
+import android.app.Fragment;
 //import com.haipq.android.flagkit.FlagImageView;
 
-public class ConnectionOverview extends Activity implements ConnectionDetailsActivity.ConnUpdateListener {
+public class ConnectionOverview extends Fragment implements ConnectionDetailsActivity.ConnUpdateListener {
     private static final String TAG = "ConnectionOverview";
     private ConnectionDetailsActivity mActivity;
     private ConnectionDescriptor mConn;
@@ -79,46 +80,39 @@ public class ConnectionOverview extends Activity implements ConnectionDetailsAct
     private View mSocketErrnoInfo;
     private ImageView mBlacklistedIp;
     private ImageView mBlacklistedHost;
-    private Context requireContext() {
-        return null;
-    }
-    private Context getContext() {
-        return null;
-    }
-    private Activity requireActivity() {
-        return null;
-    }
+ 
     public static ConnectionOverview newInstance(int conn_id) {
         ConnectionOverview fragment = new ConnectionOverview();
         Bundle args = new Bundle();
         args.putInt("conn_id", conn_id);
-       // fragment.setArguments(args);
+        fragment.setArguments(args);
         return fragment;
     }
 
-   // @Override
+    @Override
     public void onAttach(@NonNull Context context) {
-        //super.onAttach(context);
+        super.onAttach(context);
         mActivity = (ConnectionDetailsActivity) context;
         mActivity.addConnUpdateListener(this);
     }
 
-  //  @Override
+    @Override
     public void onDetach() {
-     //   super.onDetach();
+        super.onDetach();
         mActivity.removeConnUpdateListener(this);
         mActivity = null;
     }
 
- //   @Override
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
        // requireActivity().addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.connection_overview, container, false);
     }
 
- //   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         TextView appLabel = view.findViewById(R.id.detail_app);
         TextView proto = view.findViewById(R.id.detail_protocol);
         TextView info_label = view.findViewById(R.id.detail_info_label);
@@ -151,16 +145,16 @@ public class ConnectionOverview extends Activity implements ConnectionDetailsAct
         mBlacklistedIp = view.findViewById(R.id.blacklisted_ip);
         mBlacklistedHost = view.findViewById(R.id.blacklisted_host);
 
-       // Bundle args = getArguments();
-        //assert args != null;
+        Bundle args = getArguments();
+        assert args != null;
         ConnectionsRegister reg = CaptureService.requireConnsRegister();
-/*
+
         mConn = reg.getConnById(args.getInt("conn_id"));
         if(mConn == null) {
-            Utils.showToast(requireContext(), R.string.connection_not_found);
+            Utils.showToast(getContext(), R.string.connection_not_found);
             mActivity.finish();
             return;
-        }*/
+        }
 
         view.findViewById(R.id.whois_ip).setOnClickListener(new View.OnClickListener() {
 
@@ -272,6 +266,30 @@ public class ConnectionOverview extends Activity implements ConnectionDetailsAct
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.copy_share_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        
+        if(id == R.id.copy_to_clipboard) {
+            ClipboardManager clipboard = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(getString(R.string.connection_details), getContents());
+            clipboard.setPrimaryClip(clip);
+
+            Utils.showToast(mActivity, R.string.copied);
+            return true;
+        } else if(id == R.id.share) {
+            Utils.shareText(mActivity, getString(R.string.connection_details), getContents());
+            return true;
+        }
+
+        return false;
+    }
+    
    // @Override
     public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
         //menuInflater.inflate(R.menu.copy_share_menu, menu);

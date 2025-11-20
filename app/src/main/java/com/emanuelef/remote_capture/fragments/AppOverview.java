@@ -60,8 +60,9 @@ import com.emanuelef.remote_capture.model.AppStats;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Activity;
+import android.app.Fragment;
 
-public class AppOverview extends Activity{
+public class AppOverview extends Fragment{
     private static final String UID_ARG = "UID";
     private int mUid;
     private Handler mHandler;
@@ -74,31 +75,32 @@ public class AppOverview extends Activity{
     private PackageInfo mPinfo;
     private boolean mCreateError;
     private Context requireContext() {
-        return null;
+        return getContext();
     }
     private Activity requireActivity() {
-        return null;
+        return getActivity();
     }
     public static AppOverview newInstance(int uid) {
         AppOverview fragment = new AppOverview();
         Bundle args = new Bundle();
         args.putInt(UID_ARG, uid);
 
-       // fragment.setArguments(args);
+        fragment.setArguments(args);
         return fragment;
     }
 
-   // @Override
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
        // requireActivity().addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.app_overview, container, false);
     }
 
-    //@Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-       // assert getArguments() != null;
-      //  mUid = getArguments().getInt(UID_ARG);
+        setHasOptionsMenu(true);
+        assert getArguments() != null;
+        mUid = getArguments().getInt(UID_ARG);
         final Context ctx = requireContext();
 
         AppsResolver res = new AppsResolver(ctx);
@@ -196,18 +198,18 @@ public class AppOverview extends Activity{
         sv.setClipToPadding(false);
     }
 
-    //@Override
+    @Override
     public void onResume() {
-       // super.onResume();
+        super.onResume();
         if(mCreateError)
             return;
 
         updateStatus();
     }
 
-   // @Override
+    @Override
     public void onPause() {
-      //  super.onPause();
+        super.onPause();
         if(mCreateError)
             return;
 
@@ -225,6 +227,35 @@ public class AppOverview extends Activity{
                 mPermissions.getText();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.app_overview_menu, menu);
+
+        if(mPinfo == null)
+            menu.findItem(R.id.app_info).setVisible(false);
+        
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        
+        if(id == R.id.app_info) {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.fromParts("package", mPinfo.packageName, null));
+            Utils.startActivity(requireContext(), intent);
+            return true;
+        } else if(id == R.id.copy_to_clipboard) {
+            Utils.copyToClipboard(requireContext(), asString());
+            return true;
+        } else if(id == R.id.share) {
+            Utils.shareText(requireContext(), getString(R.string.app_details), asString());
+            return true;
+        }
+         
+        return false;
+    }
+    
    // @Override
     public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
       //  menuInflater.inflate(R.menu.app_overview_menu, menu);

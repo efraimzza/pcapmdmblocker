@@ -22,7 +22,7 @@ public class Blocklist extends MatchList {
 
     // access to mUidToGrace must be synchronized as it can happen either from the UI thread or from
     // the CaptureService.connUpdateWork thread
-    private final ArrayMap<Integer, Long> mUidToGrace = new ArrayMap<>();
+    private ArrayMap<Integer, Long> mUidToGrace = new ArrayMap<>();
 
     public Blocklist(Context ctx) {
         super(ctx, Prefs.PREF_BLOCKLIST);
@@ -39,16 +39,30 @@ public class Blocklist extends MatchList {
         boolean changed = false;
         Iterator<Map.Entry<Integer,Long>> iter = mUidToGrace.entrySet().iterator();
 
+        /*while(iter.hasNext()) {
+            Map.Entry<Integer, Long> entry = iter.next();
+
+            if(now >= entry.getValue()) {
+                Log.i(TAG, "Grace period ended for app: " + entry.getKey());
+                iter.remove();
+                changed = true;
+            }
+        }*/
+        //new
+        final ArrayMap<Integer, Long> cpmUidToGrace = new ArrayMap<>();
         while(iter.hasNext()) {
             Map.Entry<Integer, Long> entry = iter.next();
 
             if(now >= entry.getValue()) {
                 Log.i(TAG, "Grace period ended for app: " + entry.getKey());
-               // iter.remove();
+                //iter.remove();
                 changed = true;
+            }else{
+                cpmUidToGrace.put(entry.getKey(),entry.getValue());
             }
         }
-
+        mUidToGrace=cpmUidToGrace;
+        //end new
         return changed;
     }
 

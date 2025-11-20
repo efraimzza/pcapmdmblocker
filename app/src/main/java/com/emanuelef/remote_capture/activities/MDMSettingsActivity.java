@@ -53,6 +53,7 @@ import com.emanuelef.remote_capture.Utils;
 import com.emanuelef.remote_capture.CaptureService;
 import com.emanuelef.remote_capture.R;
 import android.preference.PreferenceManager;
+import com.emanuelef.remote_capture.PCAPdroid;
 
 @Deprecated
 public class MDMSettingsActivity extends Activity {
@@ -189,6 +190,7 @@ public class MDMSettingsActivity extends Activity {
                             AppState.getInstance().setCurrentPath(selectedPath);
                             spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
                             spe.commit();
+                            PCAPdroid.getInstance().refreshBlacklists();
                             TextView tvcurroute=findViewById(R.id.tv_cur_route);
                             tvcurroute.setText("המסלול הפעיל - "+AppState.getInstance().getCurrentPath().getDescription());
                             

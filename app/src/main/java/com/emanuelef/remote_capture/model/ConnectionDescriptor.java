@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import com.emanuelef.remote_capture.activities.LogUtil;
 
 /* Holds the information about a single connection.
  * Equivalent of zdtun_conn_t from zdtun and pd_conn_t from pcapdroid.c .
@@ -189,11 +190,13 @@ public class ConnectionDescriptor {
         }
         if((update.update_type & ConnectionUpdate.UPDATE_PAYLOAD) != 0) {
             // Payload for decryptable connections should be received via the MitmReceiver
+            LogUtil.logToFile("tr adding chunks");
             assert(decryption_ignored || isNotDecryptable() || PCAPdroid.getInstance().isDecryptingPcap());
 
             // Some pending updates with payload may still be received after low memory has been
             // triggered and payload disabled
             if(!CaptureService.isLowMemory()) {
+                LogUtil.logToFile("adding chunks");
                 synchronized (this) {
                     if(update.payload_chunks != null)
                         payload_chunks.addAll(update.payload_chunks);
@@ -355,14 +358,20 @@ public class ConnectionDescriptor {
         // Need to wrap the String to set it from the lambda
         final AtomicReference<String> rv = new AtomicReference<>();
 
-      /*  HTTPReassembly reassembly = new HTTPReassembly(CaptureService.getCurPayloadMode() == Prefs.PayloadMode.FULL,
-                chunk -> rv.set(new String(chunk.payload, StandardCharsets.UTF_8))
+        HTTPReassembly reassembly = new HTTPReassembly(CaptureService.getCurPayloadMode() == Prefs.PayloadMode.FULL,
+            new HTTPReassembly.ReassemblyListener(){
+
+                @Override
+                public void onChunkReassembled(PayloadChunk chunk) {
+            
+                 rv.set(new String(chunk.payload, StandardCharsets.UTF_8));
+                 }}
         );
-*/
+
         // Possibly reassemble/decode the request
         for(PayloadChunk chunk: payload_chunks) {
-           // if(chunk.is_sent == is_sent)
-                //reassembly.handleChunk(chunk);
+            if(chunk.is_sent == is_sent)
+                reassembly.handleChunk(chunk);
 
             // Stop at the first reassembly/chunk
             if(rv.get() != null)

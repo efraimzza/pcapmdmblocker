@@ -234,42 +234,42 @@ public class EditListFragment extends Fragment implements MatchList.ListChangeLi
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-         inflater.inflate(R.menu.list_edit_menu, menu);
+        inflater.inflate(R.menu.list_edit_menu, menu);
 
-         if(!Utils.supportsFileDialog(requireContext())) {
-         menu.findItem(R.id.action_import).setVisible(false);
-         menu.findItem(R.id.action_export).setVisible(false);
-         }
+        if(!Utils.supportsFileDialog(requireContext())) {
+            menu.findItem(R.id.action_import).setVisible(false);
+            menu.findItem(R.id.action_export).setVisible(false);
+        }
 
-         Set<RuleType> supportedRules = mListInfo.getSupportedRules();
-         if(supportedRules.contains(RuleType.APP)){
-         menu.findItem(R.id.add_app).setVisible(true);
-         }else{
-         menu.findItem(R.id.add_app).setVisible(false);
-         }
-         if(supportedRules.contains(RuleType.HOST)){
-         menu.findItem(R.id.add_host).setVisible(true);
-         }else{
-         menu.findItem(R.id.add_host).setVisible(false);
-         }
-         if(supportedRules.contains(RuleType.IP)){
-         menu.findItem(R.id.add_ip).setVisible(true);
-         }else{
-         menu.findItem(R.id.add_ip).setVisible(false);
-         }
-         if(supportedRules.contains(RuleType.PROTOCOL)){
-         menu.findItem(R.id.add_proto).setVisible(true);
-         }else{
-         menu.findItem(R.id.add_proto).setVisible(false);
-         }
-         if(supportedRules.contains(RuleType.COUNTRY)){
-         //menu.findItem(R.id.add_country).setVisible(true);
-         }else{
-         //menu.findItem(R.id.add_country).setVisible(false);
-         }
-         if(mListInfo.getHelpString() <= 0)
-         menu.findItem(R.id.show_hint).setVisible(false);
-         
+        Set<RuleType> supportedRules = mListInfo.getSupportedRules();
+        if(supportedRules.contains(RuleType.APP)){
+            menu.findItem(R.id.add_app).setVisible(true);
+        }else{
+            menu.findItem(R.id.add_app).setVisible(false);
+        }
+        if(supportedRules.contains(RuleType.HOST)){
+            menu.findItem(R.id.add_host).setVisible(true);
+        }else{
+            menu.findItem(R.id.add_host).setVisible(false);
+        }
+        if(supportedRules.contains(RuleType.IP)){
+            menu.findItem(R.id.add_ip).setVisible(true);
+        }else{
+            menu.findItem(R.id.add_ip).setVisible(false);
+        }
+        if(supportedRules.contains(RuleType.PROTOCOL)){
+            menu.findItem(R.id.add_proto).setVisible(true);
+        }else{
+            menu.findItem(R.id.add_proto).setVisible(false);
+        }
+        if(supportedRules.contains(RuleType.COUNTRY)){
+            //menu.findItem(R.id.add_country).setVisible(true);
+        }else{
+            //menu.findItem(R.id.add_country).setVisible(false);
+        }
+        if(mListInfo.getHelpString() <= 0)
+            menu.findItem(R.id.show_hint).setVisible(false);
+
     }
 
     @Override
@@ -284,11 +284,11 @@ public class EditListFragment extends Fragment implements MatchList.ListChangeLi
             if(mList.isEmpty())
                 Utils.showToastLong(requireContext(), R.string.no_rules_to_export);
             else{
-                //startExport();
+                startExport();
             }
             return true;
         } else if(id == R.id.action_import) {
-            // startImport();
+             startImport();
             return true;
         } else if(id == R.id.copy_to_clipboard) {
             String contents = Utils.adapter2Text((ListEditAdapter)lv.getAdapter());
@@ -565,23 +565,34 @@ menu.findItem(R.id.add_country).setVisible(false);
         String fname = getString(mListInfo.getTitle()).toLowerCase().replaceAll(" ", "_");
         return "PCAPdroid_" + fname + ".json";
     }
-/*
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==11){
+            exportResult(requestCode,resultCode,data);
+        }else if(requestCode==22){
+            importResult(requestCode,resultCode,data);
+        }
+    }
+    
     private void startExport() {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*//**");
+        intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TITLE, getExportName());
-
-        Utils.launchFileDialog(requireContext(), intent, exportLauncher);
+        
+        startActivityForResult(intent,11);
+        //Utils.launchFileDialog(requireContext(), intent, exportLauncher);
     }
 
-    private void exportResult(final ActivityResult result) {
-        /*if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+    private void exportResult(int req,int res,Intent inte) {
+        if(res == Activity.RESULT_OK && inte != null) {
             Context context = requireContext();
             String data = mList.toJson(true);
 
             try{
-                OutputStream out = context.getContentResolver().openOutputStream(result.getData().getData(), "rwt");
+                OutputStream out = context.getContentResolver().openOutputStream(inte.getData(), "rwt");
                 try(PrintWriter printer = new PrintWriter(out)) {
                     printer.print(data);
                     Utils.showToast(context, R.string.save_ok);
@@ -596,34 +607,36 @@ menu.findItem(R.id.add_country).setVisible(false);
     private void startImport() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*//*");
+        intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_TITLE, getExportName());
 
-        Utils.launchFileDialog(requireContext(), intent, importLauncher);
+        startActivityForResult(intent,22);
+        //Utils.launchFileDialog(requireContext(), intent, importLauncher);
     }
 
-    private void importResult(final ActivityResult result) {
-        if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+    private void importResult(int req,int res,Intent inte) {
+        if(res == Activity.RESULT_OK && inte != null) {
             Context context = requireContext();
 
             try{
-                InputStream in = context.getContentResolver().openInputStream(result.getData().getData());
+                InputStream in = context.getContentResolver().openInputStream(inte.getData());
                 try(Scanner s = new Scanner(in).useDelimiter("\\A")) {
                     String data = s.hasNext() ? s.next() : "";
                     importRulesData(data, true);
                 }
             } catch (IOException | RuntimeException e) {
                 e.printStackTrace();
+                LogUtil.logToFile(e.toString());
                 Utils.showToastLong(context, R.string.import_failed);
             }
         }
-    }*/
+    }
 
     private void importRulesData(String data, boolean limit_check) {
         Context context = requireContext();
         MatchList rules = new MatchList(context, "");
 
-        /*int num_rules = rules.fromJson(data, limit_check ? MAX_RULES_BEFORE_WARNING : -1);
+        int num_rules = rules.fromJson(data, limit_check ? MAX_RULES_BEFORE_WARNING : -1);
         if((num_rules <= 0) || rules.isEmpty()) {
             Utils.showToastLong(context, R.string.invalid_backup);
             return;
@@ -632,7 +645,7 @@ menu.findItem(R.id.add_country).setVisible(false);
         if(limit_check && (num_rules >= MAX_RULES_BEFORE_WARNING)) {
             confirmLoadManyRules(data);
             return;
-        }*/
+        }
 
         // go on and import
         if(!mList.isEmpty())

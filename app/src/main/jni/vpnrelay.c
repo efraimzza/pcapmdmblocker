@@ -2382,9 +2382,9 @@ static jobject getConnUpdate(pcapdroid_t *pd, const conn_and_tuple_t *conn) {
         (*env)->DeleteLocalRef(env, l7proto);
     }
     if(data->update_type & CONN_UPDATE_PAYLOAD) {
-        /*(*env)->CallVoidMethod(env, update, mids.connUpdateSetPayload, data->payload_chunks,
-                               data->payload_truncated |
-                               (data->has_decrypted_data << 1));*/
+       // (*env)->CallVoidMethod(env, update, mids.connUpdateSetPayload, data->payload_chunks,
+                     //          data->payload_truncated |
+                         //      (data->has_decrypted_data << 1));
         (*pd->env)->DeleteLocalRef(pd->env, data->payload_chunks);
         data->payload_chunks = NULL;
     }
@@ -2870,7 +2870,10 @@ static int remote2vpn(zdtun_t *zdt, zdtun_pkt_t *pkt, const zdtun_conn_t *conn_i
         // via zdtun, since data received via the zdtun TCP sockets must be delivered to the client.
         return -1;
     }
-
+    //new
+    //char *buff=pkt->buf;
+    //log_to_file("buf- %s",buff);
+    //end new
     int rv = write(pd->vpn.tunfd, pkt->buf, pkt->len);
     if(rv < 0) {
         if(errno == ENOBUFS) {
@@ -2991,6 +2994,109 @@ static void connection_closed(zdtun_t *zdt, const zdtun_conn_t *conn_info) {
     data->error = zdtun_conn_get_error(conn_info);
     data->to_purge = true;
 }
+static bool arraylist_add_string(JNIEnv *env, jmethodID arrayListAdd, jobject arr, const char *s) {
+    jobject s_obj = (*env)->NewStringUTF(env, s);
+    if(!s_obj || jniCheckException(env))
+        return false;
+
+    bool rv = (*env)->CallBooleanMethod(env, arr, arrayListAdd, s_obj);
+    (*env)->DeleteLocalRef(env, s_obj);
+    return rv;
+}
+JNIEXPORT jobject JNICALL
+Java_com_emanuelef_remote_1capture_CaptureService_getL7Protocols(JNIEnv *env, jclass clazz) {
+    jclass arrayListClass = jniFindClass(env, "java/util/ArrayList");
+    jmethodID arrayListNew = jniGetMethodID(env, arrayListClass, "<init>", "()V");
+    jmethodID arrayListAdd = jniGetMethodID(env, arrayListClass, "add", "(Ljava/lang/Object;)Z");
+
+    struct ndpi_detection_module_struct *ndpi = ndpi_init_detection_module(NULL);
+    if(!ndpi)
+        return(NULL);
+
+    NDPI_PROTOCOL_BITMASK protocols;
+    NDPI_BITMASK_SET_ALL(protocols);
+    ndpi_set_protocol_detection_bitmask2(ndpi, &protocols);
+
+    jobject plist = (*env)->NewObject(env, arrayListClass, arrayListNew);
+    if((plist == NULL) || jniCheckException(env))
+        return NULL;
+
+    bool success = true;
+    int num_protos = (int) ndpi_get_ndpi_num_supported_protocols(ndpi);
+    ndpi_proto_defaults_t* proto_defaults = ndpi_get_proto_defaults(ndpi);
+
+    ndpi_protocol_bitmask_struct_t unique_protos;
+    NDPI_BITMASK_RESET(unique_protos);
+
+    // NOTE: this does not currently exist as a protocol (see pd_get_proto_name)
+    if(!arraylist_add_string(env, arrayListAdd, plist, "HTTPS")) {
+        success = false;
+        goto out;
+    }
+
+    for(int i=0; i<num_protos; i++) {
+        ndpi_protocol n_proto = {proto_defaults[i].protoId, NDPI_PROTOCOL_UNKNOWN, NDPI_PROTOCOL_CATEGORY_UNSPECIFIED};
+        uint16_t proto = pd_ndpi2proto(n_proto);
+        //log_d("protos: %d -> %d -> %d", i, proto_defaults[i].protoId, proto);
+
+        if(!NDPI_ISSET(&unique_protos, proto)) {
+            NDPI_SET(&unique_protos, proto);
+            const char *name = ndpi_get_proto_name(ndpi, proto);
+            //log_d("proto: %d %s", proto, name);
+
+            if(!arraylist_add_string(env, arrayListAdd, plist, name)) {
+                success = false;
+                goto out;
+            }
+        }
+    }
+
+out:
+    if(!success) {
+        (*env)->DeleteLocalRef(env, plist);
+        plist = NULL;
+    }
+    ndpi_exit_detection_module(ndpi);
+
+    return(plist);
+}
+/*
+JNIEXPORT void JNICALL
+Java_com_emanuelef_remote_1capture_CaptureService_dumpMasterSecret(JNIEnv *env, jclass clazz,
+                                                                   jbyteArray secret) {
+    jsize sec_len = (*env)->GetArrayLength(env, secret);
+    jbyte* sec_data = (*env)->GetByteArrayElements(env, secret, 0);
+
+    if(global_pd && global_pd->pcap_dump.dumper)
+        pcap_dump_secret(global_pd->pcap_dump.dumper, sec_data, sec_len);
+
+    (*env)->ReleaseByteArrayElements(env, secret, sec_data, 0);
+}*/
+
+/* ******************************************************* */
+/*
+JNIEXPORT jboolean JNICALL
+Java_com_emanuelef_remote_1capture_CaptureService_hasSeenDumpExtensions(JNIEnv *env,
+                                                                        jclass clazz) {
+    return has_seen_dump_extensions;
+}
+*/
+/* ******************************************************* */
+/*
+JNIEXPORT jboolean JNICALL
+Java_com_emanuelef_remote_1capture_CaptureService_extractKeylogFromPcapng(JNIEnv *env, jclass clazz,
+                    jstring pcapng_path, jstring out_path
+) {
+    const char *pcapng_s = (*env)->GetStringUTFChars(env, pcapng_path, 0);
+    const char *out_s = (*env)->GetStringUTFChars(env, out_path, 0);
+
+    bool rv = pcapng_to_keylog(pcapng_s, out_s);
+
+    (*env)->ReleaseStringUTFChars(env, out_path, out_s);
+    (*env)->ReleaseStringUTFChars(env, pcapng_path, pcapng_s);
+    return rv;
+}
+*/
 char* getStringPref(pcapdroid_t *pd, const char *key, char *buf, int bufsize) {
     JNIEnv *env = pd->env;
 
@@ -3651,10 +3757,10 @@ static bool dumpPayloadChunk(struct pcapdroid *pd, const pkt_context_t *pctx, co
     jobject chunk = (*env)->NewObject(env, cls.payload_chunk, mids.payloadChunkInit, barray, chunk_type, pctx->is_tx, pctx->ms);
     if(chunk && !jniCheckException(env)) {
         (*env)->SetByteArrayRegion(env, barray, 0, dump_size, (jbyte*) dump_data);
-       // rv = (*env)->CallBooleanMethod(env, pctx->data->payload_chunks, mids.arraylistAdd, chunk);
+        //rv = (*env)->CallBooleanMethod(env, pctx->data->payload_chunks, mids.arraylistAdd, chunk);
     }
 
-    //log_d("Dump chunk [size=%d]: %d", rv, dump_size);
+    log_d("Dump chunk [size=%d]: %d", rv, dump_size);
 
     (*env)->DeleteLocalRef(env, barray);
     (*env)->DeleteLocalRef(env, chunk);

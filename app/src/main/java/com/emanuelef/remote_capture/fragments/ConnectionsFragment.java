@@ -131,6 +131,11 @@ import android.view.WindowInsets;
 import android.widget.ListView;
 import android.widget.AbsListView;
 import com.obsex.obseobj;
+import com.emanuelef.remote_capture.activities.LogUtil;
+import javax.activation.MimetypesFileTypeMap;
+import javax.activation.MailcapCommandMap;
+import javax.activation.CommandMap;
+import com.emanuelef.remote_capture.activities.PasswordManager;
 
 public class ConnectionsFragment extends Fragment implements ConnectionsListener,SearchView.OnQueryTextListener{
     private static final String TAG = "ConnectionsFragment";
@@ -320,7 +325,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
             if(item != null) {
                 Intent intent = new Intent(requireContext(), ConnectionDetailsActivity.class);
                 intent.putExtra(ConnectionDetailsActivity.CONN_ID_KEY, item.incr_id);
-                //startActivity(intent);
+                startActivity(intent);
             }
         }});
 
@@ -501,22 +506,22 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
             item = menu.findItem(R.id.block_app);
             item.setTitle(label);
             item.setVisible(!appBlocked);
-            item.setVisible(false);
+            //item.setVisible(false);
 
             item = menu.findItem(R.id.unblock_app);
             item.setTitle(label);
             item.setVisible(appBlocked);
-            item.setVisible(false);
+            //item.setVisible(false);
 
             item = menu.findItem(R.id.dec_add_app);
             item.setTitle(label);
             item.setVisible(!decryptApp);
-            item.setVisible(false);
+            //item.setVisible(false);
 
             item = menu.findItem(R.id.dec_rem_app);
             item.setTitle(label);
             item.setVisible(decryptApp);
-            item.setVisible(false);
+            //item.setVisible(false);
 
             menu.findItem(R.id.unblock_app_10m).setTitle(getString(R.string.unblock_for_n_minutes, 10));
             menu.findItem(R.id.unblock_app_1h).setTitle(getString(R.string.unblock_for_n_hours, 1));
@@ -526,15 +531,15 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                 item = menu.findItem(R.id.mw_whitelist_app);
                 item.setTitle(label);
                 item.setVisible(true);
-                item.setVisible(false);
+                //item.setVisible(false);
             }
 
             if(firewallVisible && whitelistMode) {
                 boolean whitelisted = fwWhitelist.matchesApp(app.getUid());
                 menu.findItem(R.id.add_to_fw_whitelist).setVisible(!whitelisted);
                 menu.findItem(R.id.remove_from_fw_whitelist).setVisible(whitelisted);
-                menu.findItem(R.id.add_to_fw_whitelist).setVisible(false);
-                menu.findItem(R.id.remove_from_fw_whitelist).setVisible(false);
+                //menu.findItem(R.id.add_to_fw_whitelist).setVisible(false);
+                //menu.findItem(R.id.remove_from_fw_whitelist).setVisible(false);
             }
         }
 
@@ -555,12 +560,12 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
             item = menu.findItem(R.id.block_host);
             item.setTitle(label);
             item.setVisible(!hostBlocked);
-            item.setVisible(false);
+            //item.setVisible(false);
 
             item = menu.findItem(R.id.unblock_host);
             item.setTitle(label);
             item.setVisible(hostBlocked);
-            item.setVisible(false);
+            //item.setVisible(false);
 
             item = menu.findItem(R.id.search_host);
             item.setTitle(label);
@@ -573,12 +578,12 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
             item = menu.findItem(R.id.dec_add_host);
             item.setTitle(label);
             item.setVisible(!decryptHost);
-            item.setVisible(false);
+            //item.setVisible(false);
 
             item = menu.findItem(R.id.dec_rem_host);
             item.setTitle(label);
             item.setVisible(decryptHost);
-            item.setVisible(false);
+            //item.setVisible(false);
 
             String dm_clean = Utils.cleanDomain(conn.info);
             String domain = Utils.getSecondLevelDomain(dm_clean);
@@ -596,19 +601,19 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                 item = menu.findItem(R.id.block_domain);
                 item.setTitle(label);
                 item.setVisible(!domainBlocked);
-                item.setVisible(false);
+                //item.setVisible(false);
 
                 item = menu.findItem(R.id.unblock_domain);
                 item.setTitle(label);
                 item.setVisible(domainBlocked);
-                item.setVisible(false);
+                //item.setVisible(false);
             }
 
             if(conn.isBlacklistedHost()) {
                 item = menu.findItem(R.id.mw_whitelist_host);
                 item.setTitle(label);
                 item.setVisible(true);
-                item.setVisible(false);
+                //item.setVisible(false);
             }
         } // conn.info
 
@@ -679,12 +684,12 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                 .setTitle(unblockIpLabel)
                 .setVisible(ipBlocked);
         
-        menu.findItem(R.id.block_ip)
+        /*menu.findItem(R.id.block_ip)
                 .setTitle(label)
                 .setVisible(false);
         menu.findItem(R.id.unblock_ip)
                 .setTitle(unblockIpLabel)
-                .setVisible(false);
+                .setVisible(false);*/
 
         menu.findItem(R.id.dec_add_ip)
                 .setTitle(label)
@@ -692,17 +697,18 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         menu.findItem(R.id.dec_rem_ip)
                 .setTitle(decRemoveIpLabel)
                 .setVisible(decryptIp);
-        menu.findItem(R.id.dec_add_ip)
+                
+        /*menu.findItem(R.id.dec_add_ip)
                 .setTitle(label)
                 .setVisible(false);
         menu.findItem(R.id.dec_rem_ip)
                 .setTitle(decRemoveIpLabel)
-                .setVisible(false);
+                .setVisible(false);*/
 
         if(conn.isBlacklistedIp())
             menu.findItem(R.id.mw_whitelist_ip).setTitle(label).setVisible(true);
-        if(conn.isBlacklistedIp())
-            menu.findItem(R.id.mw_whitelist_ip).setTitle(label).setVisible(false);
+        //if(conn.isBlacklistedIp())
+       //     menu.findItem(R.id.mw_whitelist_ip).setTitle(label).setVisible(false);
         
         if(conn.hasHttpRequest())
             menu.findItem(R.id.copy_http_request).setVisible(true);
@@ -716,35 +722,35 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         menu.findItem(R.id.block_menu).setVisible((firewallVisible || showPurchaseFirewall) && blockVisible);
         menu.findItem(R.id.unblock_menu).setVisible(firewallVisible && unblockVisible);
 
-        menu.findItem(R.id.block_menu).setVisible(false);
-        menu.findItem(R.id.unblock_menu).setVisible(false);
+        //menu.findItem(R.id.block_menu).setVisible(false);
+        //menu.findItem(R.id.unblock_menu).setVisible(false);
     
-        //if(!conn.isBlacklisted())
+        if(!conn.isBlacklisted())
             menu.findItem(R.id.mw_whitelist_menu).setVisible(false);
 
         boolean decryptionEnabled = CaptureService.isDecryptionListEnabled();
         boolean canDecryptConnection = !conn.isNotDecryptable() && !conn.isCleartext();
         menu.findItem(R.id.decrypt_menu).setVisible(decryptionEnabled && canDecryptConnection && decryptVisible);
         menu.findItem(R.id.dont_decrypt_menu).setVisible(decryptionEnabled && canDecryptConnection && dontDecryptVisible);
-        menu.findItem(R.id.decrypt_menu).setVisible(false);
-        menu.findItem(R.id.dont_decrypt_menu).setVisible(false);
+        //menu.findItem(R.id.decrypt_menu).setVisible(false);
+        //menu.findItem(R.id.dont_decrypt_menu).setVisible(false);
 
     }
-
+    boolean whitelist_changed = false;
+    boolean blocklist_changed = false;
+    boolean firewall_wl_changed = false;
+    boolean decryption_list_changed = false;
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         Context ctx = requireContext();
-        ConnectionDescriptor conn = mAdapter.getSelectedItem();
-        MatchList whitelist = PCAPdroid.getInstance().getMalwareWhitelist();
-        MatchList fwWhitelist = PCAPdroid.getInstance().getFirewallWhitelist();
-        MatchList decryptionList = PCAPdroid.getInstance().getDecryptionList();
-        Blocklist blocklist = PCAPdroid.getInstance().getBlocklist();
+        final ConnectionDescriptor conn = mAdapter.getSelectedItem();
+        final MatchList whitelist = PCAPdroid.getInstance().getMalwareWhitelist();
+        final MatchList fwWhitelist = PCAPdroid.getInstance().getFirewallWhitelist();
+        final MatchList decryptionList = PCAPdroid.getInstance().getDecryptionList();
+        final Blocklist blocklist = PCAPdroid.getInstance().getBlocklist();
         boolean firewallPurchased = Billing.newInstance(ctx).isPurchased(Billing.FIREWALL_SKU);
         boolean mask_changed = false;
-        boolean whitelist_changed = false;
-        boolean blocklist_changed = false;
-        boolean firewall_wl_changed = false;
-        boolean decryption_list_changed = false;
+        
 
         if(conn == null)
             return super.onContextItemSelected(item);
@@ -782,93 +788,141 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         else if(id == R.id.search_proto)
             setQuery(conn.l7proto);
         else if(id == R.id.mw_whitelist_app)  {
-            //whitelist.addApp(conn.uid);
-            //whitelist_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            whitelist.addApp(conn.uid);
+            whitelist_changed = true;
+            }},getActivity());
         } else if(id == R.id.mw_whitelist_ip)  {
-            //whitelist.addIp(conn.dst_ip);
-            //whitelist_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            whitelist.addIp(conn.dst_ip);
+            whitelist_changed = true;
+            }},getActivity());
         } else if(id == R.id.mw_whitelist_host) {
-            //whitelist.addHost(conn.info);
-            //whitelist_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            whitelist.addHost(conn.info);
+            whitelist_changed = true;
+            }},getActivity());
         } else if(id == R.id.dec_add_app)  {
-            //decryptionList.addApp(conn.uid);
-            //decryption_list_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            decryptionList.addApp(conn.uid);
+            decryption_list_changed = true;
+            }},getActivity());
         } else if(id == R.id.dec_add_ip)  {
-            //decryptionList.addIp(conn.dst_ip);
-            //decryption_list_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            decryptionList.addIp(conn.dst_ip);
+            decryption_list_changed = true;
+            }},getActivity());
         } else if(id == R.id.dec_add_host)  {
-            //decryptionList.addHost(conn.info);
-            //decryption_list_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            decryptionList.addHost(conn.info);
+            decryption_list_changed = true;
+            }},getActivity());
         } else if(id == R.id.dec_rem_app)  {
-            //decryptionList.removeApp(conn.uid);
-            //decryption_list_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            decryptionList.removeApp(conn.uid);
+            decryption_list_changed = true;
+            }},getActivity());
         } else if(id == R.id.dec_rem_ip)  {
-            //decryptionList.removeIp((mDecRemoveCidr != null) ? mDecRemoveCidr : conn.dst_ip);
-            //decryption_list_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            decryptionList.removeIp((mDecRemoveCidr != null) ? mDecRemoveCidr : conn.dst_ip);
+            decryption_list_changed = true;
+            }},getActivity());
         } else if(id == R.id.dec_rem_host)  {
-            //decryptionList.removeHost(conn.info);
-            //decryption_list_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            decryptionList.removeHost(conn.info);
+            decryption_list_changed = true;
+            }},getActivity());
         } else if(id == R.id.block_app) {
             if(firewallPurchased) {
-                //blocklist.addApp(conn.uid);
-                //blocklist_changed = true;
+                PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+                blocklist.addApp(conn.uid);
+                blocklist_changed = true;
+                }},getActivity());
             } else{}
                 //showFirewallPurchaseDialog();
         } else if(id == R.id.block_ip) {
             if(firewallPurchased) {
-                //blocklist.addIp(conn.dst_ip);
-                //blocklist_changed = true;
+                PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+                blocklist.addIp(conn.dst_ip);
+                blocklist_changed = true;
+                }},getActivity());
             } else{}
                 //showFirewallPurchaseDialog();
         } else if(id == R.id.block_host) {
             if(firewallPurchased) {
-                //blocklist.addHost(conn.info);
-                //blocklist_changed = true;
+                PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+                blocklist.addHost(conn.info);
+                blocklist_changed = true;
+                }},getActivity());
             } else{}
                 //showFirewallPurchaseDialog();
         } else if(id == R.id.block_domain) {
             if(firewallPurchased) {
-                //blocklist.addHost(Utils.getSecondLevelDomain(conn.info));
-                //blocklist_changed = true;
+                PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+                blocklist.addHost(Utils.getSecondLevelDomain(conn.info));
+                blocklist_changed = true;
+                }},getActivity());
             } else{}
                 //showFirewallPurchaseDialog();
         } else if(id == R.id.block_country) {
             if(firewallPurchased) {
-                //blocklist.addCountry(conn.country);
-                //blocklist_changed = true;
+                PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+                blocklist.addCountry(conn.country);
+                blocklist_changed = true;
+                }},getActivity());
             } else{}
                 //showFirewallPurchaseDialog();
         } else if(id == R.id.unblock_app_permanently) {
-            //blocklist.removeApp(conn.uid);
-            //blocklist_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            blocklist.removeApp(conn.uid);
+            blocklist_changed = true;
+            }},getActivity());
         } else if(id == R.id.unblock_app_10m) {
-            //blocklist_changed = blocklist.unblockAppForMinutes(conn.uid, 10);
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            blocklist_changed = blocklist.unblockAppForMinutes(conn.uid, 10);
+            }},getActivity());
         } else if(id == R.id.unblock_app_1h) {
-            //blocklist_changed = blocklist.unblockAppForMinutes(conn.uid, 60);
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            blocklist_changed = blocklist.unblockAppForMinutes(conn.uid, 60);
+            }},getActivity());
         } else if(id == R.id.unblock_app_8h) {
-            //blocklist_changed = blocklist.unblockAppForMinutes(conn.uid, 480);
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            blocklist_changed = blocklist.unblockAppForMinutes(conn.uid, 480);
+            }},getActivity());
         } else if(id == R.id.unblock_ip) {
-            //blocklist.removeIp((mUnblockCidr != null) ? mUnblockCidr : conn.dst_ip);
-            //blocklist_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            blocklist.removeIp((mUnblockCidr != null) ? mUnblockCidr : conn.dst_ip);
+            blocklist_changed = true;
+            }},getActivity());
         } else if(id == R.id.unblock_host) {
-            //blocklist.removeHost(conn.info);
-            //blocklist_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            blocklist.removeHost(conn.info);
+            blocklist_changed = true;
+            }},getActivity());
         } else if(id == R.id.unblock_domain) {
-            //blocklist.removeHost(Utils.getSecondLevelDomain(conn.info));
-            //blocklist_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            blocklist.removeHost(Utils.getSecondLevelDomain(conn.info));
+            blocklist_changed = true;
+            }},getActivity());
         } else if(id == R.id.unblock_country) {
-            //blocklist.removeCountry(conn.country);
-            //blocklist_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            blocklist.removeCountry(conn.country);
+            blocklist_changed = true;
+            }},getActivity());
         } else if(id == R.id.add_to_fw_whitelist) {
-            //fwWhitelist.addApp(conn.uid);
-            //firewall_wl_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            fwWhitelist.addApp(conn.uid);
+            firewall_wl_changed = true;
+            }},getActivity());
         } else if(id == R.id.remove_from_fw_whitelist) {
-            //fwWhitelist.removeApp(conn.uid);
-            //firewall_wl_changed = true;
+            PasswordManager.requestPasswordAndSave(new Runnable(){@Override public void run() {
+            fwWhitelist.removeApp(conn.uid);
+            firewall_wl_changed = true;
+            }},getActivity());
         } else if(id == R.id.open_app_details) {
             Intent intent = new Intent(requireContext(), AppDetailsActivity.class);
             intent.putExtra(AppDetailsActivity.APP_UID_EXTRA, conn.uid);
-            //startActivity(intent);
+            startActivity(intent);
         } else if(id == R.id.copy_ip)
             Utils.copyToClipboard(ctx, conn.dst_ip);
         else if(id == R.id.copy_host)
@@ -1129,7 +1183,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         } else if(id == R.id.edit_filter) {
             Intent intent = new Intent(requireContext(), EditFilterActivity.class);
             intent.putExtra(EditFilterActivity.FILTER_DESCRIPTOR, mAdapter.mFilter);
-           // startActivityForResult(intent,11);
+            startActivityForResult(intent,11);
             //filterLauncher.launch(intent);
             return true;
         } else if(id == R.id.senddev) {
@@ -1317,6 +1371,10 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     
     
     public void msendmail(final String md_email, final String md_password,final String body,final String[] recipients) {
+        new Handler(getActivity().getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    
         new Thread(){public void run() {
                 try {
                     Properties props = new Properties();
@@ -1334,11 +1392,31 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                                 return new PasswordAuthentication(md_email, md_password);
                             }
                         };
+                        // Source - https://stackoverflow.com/a
+// Posted by Vidhee, modified by community. See post 'Timeline' for change history
+// Retrieved 2025-11-15, License - CC BY-SA 4.0
+
+                        //Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
+                        
+                        // Source - https://stackoverflow.com/a
+// Posted by Som, modified by community. See post 'Timeline' for change history
+// Retrieved 2025-11-15, License - CC BY-SA 3.0
+
+                        /*MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap(); 
+                        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html"); 
+                        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml"); 
+                        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain"); 
+                        mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed"); 
+                        mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822"); 
+                        */
+                        
+                        
+                        
                         Session session = Session.getInstance(props, auth);
                         MimeMessage msg = new MimeMessage(session);
                         String sub =mcon.getResources().getString(R.string.mailsub);
                         msg.setSubject(sub+" log "+AppState.getInstance().getCurrentPath().getDescription());
-                        msg.setText(body);
+                        //msg.setText(body);
                         
                         String dump = mAdapter.dumpConnectionsCsv();
             try {
@@ -1353,16 +1431,39 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(mcon, "" + e, 1).show();
+                LogUtil.logToFile(e.toString());
+                //Toast.makeText(mcon, "" + e, 1).show();
                 return;
             }
+                        // Source - https://stackoverflow.com/a
+// Posted by Jonad García San Martín, modified by community. See post 'Timeline' for change history
+// Retrieved 2025-11-15, License - CC BY-SA 4.0
+
+                      //  final MimetypesFileTypeMap mimetypes = (MimetypesFileTypeMap) MimetypesFileTypeMap.getDefaultFileTypeMap();
+                       // mimetypes.addMimeTypes("text/calendar ics ICS");
+                      //  final MailcapCommandMap mailcap = (MailcapCommandMap) MailcapCommandMap.getDefaultCommandMap();
+                       // mailcap.addMailcap("text/calendar;; x-java-content-handler=com.sun.mail.handlers.text_plain");
                         
                          BodyPart messageBodyPart1 = new MimeBodyPart();
                          messageBodyPart1.setText(""+body); 
                          MimeBodyPart messageBodyPart2 = new MimeBodyPart();
                          String filename = requireContext().getFilesDir()+"/a.csv";//change accordingly
                          DataSource source = new FileDataSource(filename);
-                         messageBodyPart2.setDataHandler(new DataHandler(source));
+                         DataHandler dh=new DataHandler(source);
+                        final MimetypesFileTypeMap mimetypes = (MimetypesFileTypeMap) MimetypesFileTypeMap.getDefaultFileTypeMap();
+                        mimetypes.addMimeTypes("text/plain csv CSV");
+                        mimetypes.addMimeTypes("text/plain txt TXT");
+                         
+                        MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap(); 
+                        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html"); 
+                        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml"); 
+                        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain"); 
+                        mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed"); 
+                        
+                        //mc.addMailcap("*//*csv;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+                        dh.setCommandMap(mc);
+                        
+                         messageBodyPart2.setDataHandler(dh);
                          messageBodyPart2.setFileName("a.csv"); 
                          //5) create Multipart object and add MimeBodyPart objects to this object    
                          Multipart multipart = new MimeMultipart();
@@ -1380,24 +1481,39 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                             recipientAddresses[i] = new InternetAddress(recipients[i]);
                         }
                         msg.addRecipients(Message.RecipientType.TO, recipientAddresses);
+                        Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
                         Transport.send(msg);
-                        mcon.getMainLooper().myLooper().prepare();
-                        Toast.makeText(mcon, R.string.send_successful, 1).show();
-                        mcon.getMainLooper().myLooper().loop();
+                        //mcon.getMainLooper().myLooper().prepare();
+                        new Handler(mcon.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(mcon, R.string.send_successful, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        //Toast.makeText(mcon, R.string.send_successful, 1).show();
+                        //mcon.getMainLooper().myLooper().loop();
                     } catch (MessagingException mex) {
                         mex.printStackTrace();
+                        LogUtil.logToFile(mex.toString());
                         //res += mex;
-                        mcon.getMainLooper().myLooper().prepare();
-                        Toast.makeText(mcon, "" + mex, 1).show();
-                        mcon.getMainLooper().myLooper().loop();
+                        final String errorMsg = mex.toString();
+                        new Handler(mcon.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Note: Use Toast.LENGTH_LONG (1) or Toast.LENGTH_SHORT (0)
+                                    Toast.makeText(mcon, "" + errorMsg, Toast.LENGTH_LONG).show(); 
+                                }
+                            });
                     }
 
                 } catch (Exception e) {
+                    LogUtil.logToFile(e.toString());
                     mcon.getMainLooper().myLooper().prepare();
                     Toast.makeText(mcon, "" + e, 1).show();
                     mcon.getMainLooper().myLooper().loop();
                 }
             }}.start();
+            }});
     }
     void sendm() {
         try {

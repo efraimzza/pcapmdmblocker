@@ -138,7 +138,7 @@ public class AppsListView extends EmptyRecyclerView implements SearchView.OnQuer
             //int itemPosition = getChildLayoutPosition(view);
             int itemPosition= getPositionForView(view);
             AppDescriptor app = mAdapter.getItem(itemPosition);
-            LogUtil.logToFile("sel");
+            //LogUtil.logToFile("sel");
             if(app != null)
                 listener.onSelectedApp(app);
             }

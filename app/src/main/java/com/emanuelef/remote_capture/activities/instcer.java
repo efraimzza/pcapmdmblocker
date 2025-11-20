@@ -45,11 +45,11 @@ public class instcer extends Activity implements MitmListener{
         if(!Utils.isCAInstalled(mCaCert)) {
             if(!mAddon.isConnected()) {
                 if (!mAddon.connect(0)) {
-                    LogUtil.logToFile("not con");
+                    //LogUtil.logToFile("not con");
                 }
-                LogUtil.logToFile("not con1");
+                //LogUtil.logToFile("not con1");
             }
-            LogUtil.logToFile("not con2");
+            //LogUtil.logToFile("not con2");
         }
     }
 
@@ -178,7 +178,7 @@ public class instcer extends Activity implements MitmListener{
                 writer.print(mCaPem);
                 writer.flush();
                 written = true;
-                LogUtil.logToFile("written..."+mCaPem);
+                //LogUtil.logToFile("written..."+mCaPem);
             } catch (IOException e) {
                 LogUtil.logToFile(e.toString());
                 e.printStackTrace();

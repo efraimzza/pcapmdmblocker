@@ -208,7 +208,7 @@ FragmentManager.OnBackStackChangedListener,
 
     public static class SettingsFragment extends PreferenceFragment{
         private SwitchPreference mTlsDecryption;
-        //private SwitchPreference mFullPayloadEnabled;
+        private SwitchPreference mFullPayloadEnabled;
         //private SwitchPreference mRootCaptureEnabled;
         private SwitchPreference mAutoBlockPrivateDNS;
         private EditTextPreference mMitmproxyOpts;
@@ -483,7 +483,7 @@ FragmentManager.OnBackStackChangedListener,
             } else
                 mPcapngEnabled.setEnabled(false);
 
-            //mFullPayloadEnabled = requirePreference(Prefs.PREF_FULL_PAYLOAD);
+            mFullPayloadEnabled = requirePreference(Prefs.PREF_FULL_PAYLOAD);
             mBlockQuic = requirePreference(Prefs.PREF_BLOCK_QUIC);
             mMitmproxyOpts = requirePreference(Prefs.PREF_MITMPROXY_OPTS);
             mMitmproxyOpts.setEnabled(mTlsDecryption.isChecked());

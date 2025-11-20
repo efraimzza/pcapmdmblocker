@@ -85,7 +85,7 @@ public class AppUpdater {
                         mainPackageName = getApkPackageName(context, baseApk.getAbsolutePath());
                         mainApkSignatures = getApkSignature(context, baseApk.getAbsolutePath());
                         if (mainPackageName != null && mainApkSignatures != null) {
-                            LogUtil.logToFile("detected main pn");
+                            //LogUtil.logToFile("detected main pn");
                         }
                     } catch (Exception e) {
                         LogUtil.logToFile("e "+e);
@@ -96,7 +96,7 @@ public class AppUpdater {
                                     mainPackageName = getApkPackageName(context, apk.getAbsolutePath());
                                     mainApkSignatures = getApkSignature(context, apk.getAbsolutePath());
                                     if (mainPackageName != null && mainApkSignatures != null) {
-                                        LogUtil.logToFile("detected main pn");
+                                        //LogUtil.logToFile("detected main pn");
                                         break;//breaking the for loop
                                     }
                                 } catch (Exception ee) {}
@@ -108,7 +108,7 @@ public class AppUpdater {
                         //dismissprogress(context);
                         //AppManagementActivity.prgmsg(context,"לא ניתן לזהות את ה-APK הבסיסי בארכיון." + sourceFile.getName(),true);
                         //return;
-                        LogUtil.logToFile("retrying detect pn");
+                        //LogUtil.logToFile("retrying detect pn");
                         for (File apk : apksToInstall) {
                             LogUtil.logToFile("for");
                             if (apk.getName().contains(".apk")) {
@@ -116,7 +116,7 @@ public class AppUpdater {
                                     mainPackageName = getApkPackageName(context, apk.getAbsolutePath());
                                     mainApkSignatures = getApkSignature(context, apk.getAbsolutePath());
                                     if (mainPackageName != null && mainApkSignatures != null) {
-                                        LogUtil.logToFile("detected main pn - "+mainPackageName);
+                                        //LogUtil.logToFile("detected main pn - "+mainPackageName);
                                         break;
                                     }
                                 } catch (Exception e) {
@@ -133,7 +133,7 @@ public class AppUpdater {
                                 mainPackageName = getApkPackageName(context, apk.getAbsolutePath());
                                 mainApkSignatures = getApkSignature(context, apk.getAbsolutePath());
                                 if (mainPackageName != null && mainApkSignatures != null) {
-                                    LogUtil.logToFile("detected main pn");
+                                    //LogUtil.logToFile("detected main pn");
                                     break;
                                 }
                             } catch (Exception e) {
@@ -151,9 +151,9 @@ public class AppUpdater {
             } else if (sourceFile.getName().toLowerCase().endsWith(".apk")) {
                 apksToInstall.add(sourceFile);
                 //LogUtil.logToFile("in 1");
-                LogUtil.logToFile(sourceFile.getAbsolutePath());
+                //LogUtil.logToFile(sourceFile.getAbsolutePath());
                 mainPackageName = getApkPackageName(context, sourceFile.getAbsolutePath());
-                LogUtil.logToFile(mainPackageName);
+                //LogUtil.logToFile(mainPackageName);
                 mainApkSignatures = getApkSignature(context, sourceFile.getAbsolutePath());
                 //LogUtil.logToFile("in 2");
             } else {
@@ -260,7 +260,7 @@ public class AppUpdater {
              addApkToSession(session, apk);
              }*/
             //LogUtil.logToFile("in 5");
-            LogUtil.logToFile(mainPackageName);
+            //LogUtil.logToFile(mainPackageName);
             Intent callbackIntent = new Intent(context, InstallReceiver.class);
             callbackIntent.setAction(ACTION_INSTALL_COMPLETE);
             //callbackIntent.putExtra(EXTRA_PACKAGE_NAME, mainPackageName);
@@ -280,7 +280,7 @@ public class AppUpdater {
             session.commit(pendingIntent.getIntentSender());
             //AppManagementActivity.progressDialog.setMessage("session commit");
             AppManagementActivity.prgmsg(context,"ביצוע סשן",false);
-            LogUtil.logToFile("starting installation...");
+            //LogUtil.logToFile("starting installation...");
             //Toast.makeText(context, "מתחיל התקנת/עדכון APK...", Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
@@ -707,12 +707,12 @@ public class AppUpdater {
         } finally {
             
             if (zis != null) zis.close();
-            LogUtil.logToFile("in 9");
+            //LogUtil.logToFile("in 9");
             if (!suc) {
-                LogUtil.logToFile("e1");
+                //LogUtil.logToFile("e1");
                 if (session != null)
                     session.abandon();
-                LogUtil.logToFile("e2");
+                //LogUtil.logToFile("e2");
                 suc = false;
                 return suc;
             }
@@ -799,12 +799,12 @@ public class AppUpdater {
             try{
             if (is != null) is.close();
             }catch(Exception e){}
-            LogUtil.logToFile("in 9");
+            //LogUtil.logToFile("in 9");
             if (!suc) {
-                LogUtil.logToFile("e1");
+                //LogUtil.logToFile("e1");
                 if (session != null)
                     session.abandon();
-                LogUtil.logToFile("e2");
+                //LogUtil.logToFile("e2");
                 suc = false;
                 return suc;
             }

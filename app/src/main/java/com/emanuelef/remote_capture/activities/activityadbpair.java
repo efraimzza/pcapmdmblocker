@@ -270,7 +270,8 @@ public class activityadbpair extends Activity {
                     // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
                     budisacccon.setEnabled(false);
                     String dis="pm disable-user --user -0 com.google.android.gms\npm disable-user --user -0 com.google.android.gm\npm disable-user --user -0 me.bluemail.mail\npm disable-user --user -0 com.azure.authenticator\nexit\n";
-                    String cmddpmnew="\nadb.so -s "+edtxip.getText().toString()+":"+edtxport.getText().toString()+" shell\n"+dis+"exit\n";
+                    dis="\"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
+                    String cmddpmnew="\nadb.so -s "+edtxip.getText().toString()+":"+edtxport.getText().toString()+" shell "+dis+"exit\n";
                     String exc="/system/bin/sh -"+menv+adb+" kill-server\nadb.so disconnect\nadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nadb.so devices\nsleep 5\nadb.so devices\n"+cmddpmnew;
                     
                     commandEditText.setText(exc);
@@ -293,7 +294,8 @@ public class activityadbpair extends Activity {
                     // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
                     buenacccon.setEnabled(false);
                     String ena="pm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
-                    String cmddpmnew="\nadb.so -s "+edtxip.getText().toString()+":"+edtxport.getText().toString()+" shell\n"+ena+"exit\n";
+                    ena="\"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
+                    String cmddpmnew="\nadb.so -s "+edtxip.getText().toString()+":"+edtxport.getText().toString()+" shell "+ena+"exit\n";
                     String exc="/system/bin/sh -"+menv+adb+" kill-server\nadb.so disconnect\nadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nadb.so devices\nsleep 5\nadb.so devices\n"+cmddpmnew;
                     
                     commandEditText.setText(exc);
@@ -316,7 +318,8 @@ public class activityadbpair extends Activity {
                     // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
                     budisaccmult.setEnabled(false);
                     String dis="pm disable-user --user -0 com.google.android.gms\npm disable-user --user -0 com.google.android.gm\npm disable-user --user -0 me.bluemail.mail\npm disable-user --user -0 com.azure.authenticator\nexit\n";
-                    String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nadb.so kill-server\nadb.so disconnect\nadb.so devices\nadb.so connect localhost:5555\nadb.so devices\nadb.so -s localhost:5555 shell\n"+dis+"exit\n";
+                    dis="\"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
+                    String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nadb.so kill-server\nadb.so disconnect\nadb.so devices\nadb.so connect localhost:5555\nadb.so devices\nadb.so -s localhost:5555 shell "+dis+"exit\n";
                     //"TERM=screen\nexport TMPDIR\nexport PATH\nadb.so kill-server\nadb.so disconnect\nadb.so connect localhost:5555\nadb.so disconnect\nadb.so connect localhost:5555\n#adb.so\nadb.so devices -l\nadb -t 1\nadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
                     commandEditText.setText(multcmd);
                     final String commandToExecute = commandEditText.getText().toString();
@@ -338,7 +341,8 @@ public class activityadbpair extends Activity {
                     // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
                     buenaccmult.setEnabled(false);
                     String ena="pm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
-                    String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nadb.so kill-server\nadb.so disconnect\nadb.so devices\nadb.so connect localhost:5555\nadb.so devices\nadb.so -s localhost:5555 shell\n"+ena+"exit\n";
+                    ena="\"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
+                    String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nadb.so kill-server\nadb.so disconnect\nadb.so devices\nadb.so connect localhost:5555\nadb.so devices\nadb.so -s localhost:5555 shell "+ena+"exit\n";
                     //"TERM=screen\nexport TMPDIR\nexport PATH\nadb.so kill-server\nadb.so disconnect\nadb.so connect localhost:5555\nadb.so disconnect\nadb.so connect localhost:5555\n#adb.so\nadb.so devices -l\nadb -t 1\nadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
                     commandEditText.setText(multcmd);
                     final String commandToExecute = commandEditText.getText().toString();
@@ -361,6 +365,7 @@ public class activityadbpair extends Activity {
                     // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
                     budisacc.setEnabled(false);
                     String dis="su\npm disable com.google.android.gms\npm disable com.google.android.gm\npm disable me.bluemail.mail\npm disable com.azure.authenticator\nexit\n";
+                    dis="su\ncmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\nexit\nexit\n";
                     commandEditText.setText("/system/bin/sh -\n"+dis);
                     final String commandToExecute = commandEditText.getText().toString();
                     
@@ -382,6 +387,7 @@ public class activityadbpair extends Activity {
                     // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
                     buenacc.setEnabled(false);
                     String ena="su\npm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
+                    ena="su\npm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\nexit\nexit\n";
                     commandEditText.setText("/system/bin/sh -\n"+ena);
                     final String commandToExecute = commandEditText.getText().toString();
                     //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);

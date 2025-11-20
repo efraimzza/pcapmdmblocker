@@ -338,7 +338,7 @@
     <string name="import_action">יבוא</string>
     <string name="import_failed">היבוא נכשל</string>
     <string name="invalid_backup">פורמט גיבוי לא חוקי</string>
-    <string name="rules_import_success">מיובא %1$D כללים</string>
+    <string name="rules_import_success">מיובא %1$d כללים</string>
     <string name="no_rules_to_export">אין כללים לייצוא</string>
     <string name="rules_merge_msg">לשמור על הכללים הקיימים?</string>
     <string name="keep_action">לשמור</string>

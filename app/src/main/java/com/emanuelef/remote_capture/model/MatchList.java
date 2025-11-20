@@ -144,7 +144,7 @@ public class MatchList {
     public void reload() {
         String serialized = mPrefs.getString(mPrefName, "");
         //Log.d(TAG, serialized);
-        LogUtil.logToFile(mPrefName+"res="+ serialized);
+        //LogUtil.logToFile(mPrefName+"res="+ serialized);
         if(!serialized.isEmpty()) {
             fromJson(serialized);
 
@@ -320,7 +320,7 @@ public class MatchList {
                     reader.nextName();
                     String val= reader.nextString();
                     reader.endObject();
-                    LogUtil.logToFile("try-t="+typ+"v="+val);
+                    //LogUtil.logToFile("try-t="+typ+"v="+val);
                     RuleType type;
                     try {
                         type = RuleType.valueOf(typ);
@@ -370,7 +370,7 @@ public class MatchList {
                         if((max_rules > 0) && (num_rules >= max_rules))
                             break;
                     }
-                    LogUtil.logToFile("end-t="+typ+"v="+val);
+                    //LogUtil.logToFile("end-t="+typ+"v="+val);
                 }
                     reader.endArray();
                 }
@@ -811,8 +811,16 @@ public class MatchList {
 
         String serialized = gson.toJson(this);*/
         //Log.d(TAG, "toJson: " + serialized);
-        return new Serializer().serialize(this).toString();
+        try {
+            if (pretty_print)
+                return new Serializer().serialize(this).toString(2);
+             else
+                return new Serializer().serialize(this).toString();
+        } catch (JSONException e) {
+            LogUtil.logToFile(e.toString());
+        }
         //return serialized;
+        return null;
     }
     public int fromJson(String json_str, int max_rules) {
         try {

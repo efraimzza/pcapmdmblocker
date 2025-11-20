@@ -93,11 +93,11 @@ public class VpnReconnectService extends Service {
             return START_NOT_STICKY;
         }
 
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-           // startForeground(NOTIFY_ID_VPNRECONNECT, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
-        //else
+        if (Build.VERSION.SDK_INT >= 34)
+            startForeground(NOTIFY_ID_VPNRECONNECT, buildNotification(), 1073741824);
+        else
             startForeground(NOTIFY_ID_VPNRECONNECT, buildNotification());
-
+        
         mHandler.postDelayed(new Runnable(){
 
                 @Override
