@@ -77,5 +77,24 @@ public class MoreFeaturesActivity extends Activity {
                     }
                 });
         }
+        Button btnenaccwifi = findViewById(R.id.btn_enaccwifi);
+        if (btnenaccwifi != null) {
+            btnenaccwifi.setOnClickListener(new View.OnClickListener() {
+                    @Deprecated
+                    @Override
+                    public void onClick(View v) {
+                        PasswordManager.requestPasswordAndSave(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try{
+                                        Intent intent = new Intent(MoreFeaturesActivity.this, nsdactivity.class);
+                                        startActivity(intent);
+                                    } catch (Exception e){}
+                                }
+                            },MoreFeaturesActivity.this);
+
+                    }
+                });
+        }
     }
 }

@@ -37,6 +37,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.view.View.OnClickListener;
 
 public class RuleAddDialog implements View.OnClickListener {
     private final Context mContext;
@@ -71,6 +72,14 @@ public class RuleAddDialog implements View.OnClickListener {
         mComboText = view.findViewById(R.id.combo_text);
         mEditText = view.findViewById(R.id.text_value);
 
+        mComboText.setOnClickListener(new OnClickListener(){
+
+                @Override
+                public void onClick(View p1) {
+                    ((AutoCompleteTextView)p1).showDropDown();
+                }
+            });
+        
         mDialog = new AlertDialog.Builder(ctx)
                 .setView(view)
                 .setTitle(title_res)

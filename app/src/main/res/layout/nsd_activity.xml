@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:padding="16dp">
+	<ScrollView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<Button
+				android:id="@+id/start_discovery_button"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="התחל גילוי ADB לחיבור עם קוד התאמה (כולל גילוי חיבור רגיל להרצת הפקודות אחרי הצימוד)"/>
+
+			<Button
+				android:id="@+id/start_conn_discovery_button"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="התחל גילוי adb לחיבור רגיל כשצימוד הצליח ונתקע אחרי זה"/>
+
+			<Switch
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="הפעלת חסימת MDM"
+				android:checked="true"
+				android:id="@+id/swacti"/>
+
+			<Switch
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="השבתת חשבונות"
+				android:checked="true"
+				android:id="@+id/swdisacc"/>
+
+			<Switch
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="הפעלת חשבונות"
+				android:checked="true"
+				android:id="@+id/swenacc"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:text="מצב כללי"/>
+
+			<TextView
+				android:id="@+id/status_text"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textSize="20sp"
+				android:text=""/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:text="מצב צימוד"/>
+
+			<TextView
+				android:id="@+id/pairst"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textSize="20sp"
+				android:text=""/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:text="מצב חיבור"/>
+
+			<TextView
+				android:id="@+id/connst"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textSize="20sp"
+				android:text=""/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:text="תוצאה"/>
+
+			<TextView
+				android:id="@+id/resst"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textSize="20sp"
+				android:text=""/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:text="מצב גילוי"/>
+
+			<TextView
+				android:id="@+id/discost"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textSize="20sp"
+				android:text=""/>
+
+			<Button
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="רענון לוג"
+				android:id="@+id/mrlog"/>
+
+			<TextView
+				android:id="@+id/logst"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textSize="10sp"
+				android:textIsSelectable="true"
+				android:text=""/>
+
+		</LinearLayout>
+
+	</ScrollView>
+
+</LinearLayout>
+

@@ -27,6 +27,7 @@
     <string name="settings_shortcut">קיצור להגדרות למולטימדיה</string>
     <string name="tvremove_root">אם המכשיר שלך מושרש, הסר את השורש אחרי ההפעלה כדי למנוע מעקפים!</string>
     <string name="bucpcmd">להפעלה עם ADB לחץ כאן כדי להעתיק את הפקודה!</string>
+    <string name="buadbmult">חיבור והשבתה למולטימדיה ולרוט(והאפשרות הישנה לויפי)!</string>
     <string name="buadbwifi">adb pair/connect עם ויפי!</string>
     <string name="buqrmdm">ברקוד qr ממכשיר למכשיר!</string>
     <string name="sq">"התקנת \"חסימת mdm\" ממכשיר אנדרואיד למכשיר אחר\nבאמצעות ברקוד QR"</string>

@@ -27,6 +27,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:imeOptions="actionNext"
+                android:completionThreshold="1"
                 tools:text="Combo" />
         </LinearLayout>
 

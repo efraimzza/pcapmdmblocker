@@ -25,5 +25,7 @@
     <Button style="@style/MDMActionButton"
         android:id="@+id/btn_enacc"
         android:text="הפעלת חשבונות"/>
-
+    <Button style="@style/MDMActionButton"
+        android:id="@+id/btn_enaccwifi"
+        android:text="הפעלת חשבונות באמצעות חיבור ויפי"/>
 </LinearLayout>

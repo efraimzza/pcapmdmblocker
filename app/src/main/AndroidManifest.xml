@@ -261,7 +261,7 @@
 
         <activity android:name="com.emanuelef.remote_capture.fragments.StatusFragment" />
         <activity android:name="com.emanuelef.remote_capture.activities.instcer" />
-
+        <activity android:name="com.emanuelef.remote_capture.activities.nsdactivity" />
         <receiver
             android:name="com.emanuelef.remote_capture.activities.InstallReceiver"
             android:exported="true">
@@ -269,6 +269,8 @@
                 <action android:name="com.emanuelef.remote_capture.activities.ACTION_INSTALL_COMPLETE" />
             </intent-filter>
         </receiver>
+        <receiver android:name="com.emanuelef.remote_capture.activities.PairingReceiver"
+            android:exported="false" />
     </application>
 
     <!--application
