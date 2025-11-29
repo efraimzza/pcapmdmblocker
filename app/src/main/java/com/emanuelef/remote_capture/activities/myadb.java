@@ -16,7 +16,7 @@ public class myadb {
         pkgname=con.getPackageName();
         hompat=con.getDir("HOME",con. MODE_PRIVATE).getAbsolutePath();
         filesdir=con.getApplicationInfo().nativeLibraryDir;
-        final String adb="adb.so";
+        final String adb="libadb.so";
         menv="\nPATH=$PATH:"+filesdir+"\nTMPDIR="+hompat+"\nHOME="+hompat+"\nTERM=screen\nexport PATH\nexport TMPDIR\n";
         cmddpm="\n"+adb+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
         //Toast.makeText(this,getDir("HOME", MODE_PRIVATE).getAbsolutePath(),1).show();
@@ -239,26 +239,26 @@ public class myadb {
             String enacc="";
             String acti="";
             if(todo.contains("d")){
-                disacc="\nadb.so -s "+ipPort+" shell \"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
+                disacc="\nlibadb.so -s "+ipPort+" shell \"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
             }
             if(todo.contains("e")){
-                enacc="\nadb.so -s "+ipPort+" shell \"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
+                enacc="\nlibadb.so -s "+ipPort+" shell \"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
             }
             if(todo.contains("a")){
-                acti="\nadb.so -s "+ipPort+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\n";
+                acti="\nlibadb.so -s "+ipPort+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\n";
             }
             //if(pin.equals("false")){
-             //   cmddpmnew="\nadb.so -s "+ipPort+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\nexit\nexit\n";
+             //   cmddpmnew="\nlibadb.so -s "+ipPort+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\nexit\nexit\n";
             //}else if(pin.equals("true")){
                 
                 
                 
-                //cmddpmnew="\nadb.so -s "+ipPort+" shell "+disacc+"adb.so -s "+ipPort+" shell "+"dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\n"+"adb.so -s "+ipPort+" shell "+enacc+"\nexit\nexit\n";
+                //cmddpmnew="\nlibadb.so -s "+ipPort+" shell "+disacc+"libadb.so -s "+ipPort+" shell "+"dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\n"+"libadb.so -s "+ipPort+" shell "+enacc+"\nexit\nexit\n";
                 cmddpmnew=disacc+"sleep 3"+acti+enacc+"\nexit\nexit\n";
             //}
-            //String exc="/system/bin/sh -"+menv+adb+" kill-server\nadb.so disconnect\nadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nadb.so disconnect\nadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+cmddpm;
-            //cmddpmnew="\nadb.so -s "+ipPort+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\nexit\nexit\n";
-            String exc="/system/bin/sh -"+menv+adb+" kill-server\nadb.so disconnect\nadb.so connect "+ipPort+"\nsleep 5\nadb.so devices\n"+cmddpmnew;
+            //String exc="/system/bin/sh -"+menv+adb+" kill-server\nlibadb.so disconnect\nlibadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nlibadb.so disconnect\nlibadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+cmddpm;
+            //cmddpmnew="\nlibadb.so -s "+ipPort+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\nexit\nexit\n";
+            String exc="/system/bin/sh -"+menv+adb+" kill-server\nlibadb.so disconnect\nlibadb.so connect "+ipPort+"\nsleep 5\nlibadb.so devices\n"+cmddpmnew;
             command=exc;
         }
         final String commandToExecute=command;

@@ -98,6 +98,24 @@
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="24dp"/>
                 <Button
+                    android:id="@+id/act_stat_buinstruction"
+                    android:layout_width="wrap_content"
+                    style="@style/MDMActionButton"
+                    android:background="@drawable/green_button_background"
+                    android:text="@string/buinstruction"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#DDDDDD"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"/>
+                <Button
+                    android:id="@+id/act_stat_budeviceinfo"
+                    android:layout_width="wrap_content"
+                    style="@style/MDMActionButton"
+                    android:background="@drawable/green_button_background"
+                    android:text="@string/budeviceinfo"/>
+                <Button
                     android:id="@+id/act_stat_budev"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"

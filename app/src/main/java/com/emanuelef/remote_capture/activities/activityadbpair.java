@@ -43,11 +43,16 @@ public class activityadbpair extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try{
+            try{
+                if(getActionBar().isShowing())
+                    getActionBar().hide();
+            }catch(Exception e){}
+            
         setContentView(R.layout.activity_adb_pair);
         pkgname=activityadbpair.this.getPackageName();
         hompat=getDir("HOME", MODE_PRIVATE).getAbsolutePath();
         filesdir=getApplicationInfo().nativeLibraryDir;
-        final String adb="adb.so";
+        final String adb="libadb.so";
         menv="\nPATH=$PATH:"+filesdir+"\nTMPDIR="+hompat+"\nHOME="+hompat+"\nTERM=screen\nexport PATH\nexport TMPDIR\n";
         cmddpm="\n"+adb+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
         //Toast.makeText(this,getDir("HOME", MODE_PRIVATE).getAbsolutePath(),1).show();
@@ -81,8 +86,19 @@ public class activityadbpair extends Activity {
                             if (outputTextView != null) {
                                 outputTextView.append("o: " + line + "\n");
                                 if(line.toLowerCase().contains("success: device owner set to package")){
-                                    outputTextView.setText("הפעלה הצליחה\n");
+                                    outputTextView.append("הפעלה הצליחה\n");
                                     outputTextView.setTextColor(Color.parseColor("#FF00FF00"));
+                                    act="act";
+                                }
+                                if(line.toLowerCase().contains("new state: disabled-user")){
+                                    outputTextView.append("השבתת אפליקציה הצליחה\n");
+                                    i++;
+                                    dis="dis";
+                                }
+                                if(line.toLowerCase().contains("new state: enabled")){
+                                    outputTextView.append("הפעלת אפליקציה הצליחה\n");
+                                    i2++;
+                                    ena="ena";
                                 }
                                 // גלילה אוטומטית לתחתית
                                 if (outputTextView != null && outputScrollView != null) {
@@ -128,7 +144,15 @@ public class activityadbpair extends Activity {
                                 outputTextView.append("Exit Code: " + exitCode + "\n");
                                 //outputTextView.append("Final Output:\n" + finalOutput + "\n");
                                 //outputTextView.append("Final Error:\n" + finalError + "\n");
-                                
+                                if(dis.equals("dis")){
+                                    outputTextView.append("השבתת "+i+" אפליקציות הצליח");
+                                }
+                                if(act.equals("act")){
+                                    outputTextView.append("\nהפעלה הצליחה");
+                                }
+                                if(ena.equals("ena")){
+                                    outputTextView.append("\nהפעלת "+i2+" אפליקציות הצליח");
+                                }
                                 if (outputTextView != null && outputScrollView != null) { // ודא ששניהם לא null
                                     //outputTextView.append("Output: " + line + "\n");
                                     
@@ -184,9 +208,9 @@ public class activityadbpair extends Activity {
                     //String mpropport = "setprop service.adb.tcp.port 5555\n";
                     //String mproprestart = "setprop ctl.restart adbd\n";
                     //String mproprestartb = "adb kill-server\nadb start-server\n";
-                    String exc="/system/bin/sh -"+menv+adb+" kill-server\nadb.so disconnect\nadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nadb.so disconnect\nadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+cmddpm;
-                    String cmddpmnew="\nadb.so -s "+edtxip.getText().toString()+":"+edtxport.getText().toString()+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
-                    exc="/system/bin/sh -"+menv+adb+" kill-server\nadb.so disconnect\nadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nadb.so devices\nsleep 5\nadb.so devices\n"+cmddpmnew;
+                    String exc="/system/bin/sh -"+menv+adb+" kill-server\nlibadb.so disconnect\nlibadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nlibadb.so disconnect\nlibadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+cmddpm;
+                    String cmddpmnew="\nlibadb.so -s "+edtxip.getText().toString()+":"+edtxport.getText().toString()+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+                    exc="/system/bin/sh -"+menv+adb+" kill-server\nlibadb.so disconnect\nlibadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nlibadb.so devices\nsleep 5\nlibadb.so devices\n"+cmddpmnew;
                     
                     commandEditText.setText(exc);
                     final String commandToExecute = commandEditText.getText().toString();
@@ -233,33 +257,7 @@ public class activityadbpair extends Activity {
                 @Override
                 public void onClick(View v) {
                     //
-                    outputTextView.setText("מבצע פקודה...\n");
-                    // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
-                    buconmult.setEnabled(false);
-                    //String mpropport = "setprop service.adb.tcp.port 5555\n";
-                    //String mproprestart = "setprop ctl.restart adbd\n"+adb+" disconnect\n"+adb+" devices\n";
-                    //String mproprestartb = "adb kill-server\nadb start-server\n";
-                    //String patadb = "/data/user/0/com.emanuelef.remote_capture.debug/files/adb";
-                    //patadb = adb;
-                    //String multcmd = "/system/bin/sh -\nTMPDIR=/storage/emulated/0/\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\n"+patadb+" kill-server\n"+patadb+" disconnect\n"+patadb+" devices\n"+patadb+" connect localhost:5555\n"+patadb+" devices\n"+patadb+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
-                    //multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nadb.so kill-server\nadb.so disconnect\nadb.so devices\nadb.so connect localhost:5555\nadb.so devices\nadb.so disconnect\nadb.so connect localhost:5555\n#adb.so\nadb.so devices -l\n#adb -t 1\nadb.so -s localhost:5555 shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
-                    String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nadb.so kill-server\nadb.so disconnect\nadb.so devices\nadb.so connect localhost:5555\nadb.so devices\nadb.so -s localhost:5555 shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
-                    //"TERM=screen\nexport TMPDIR\nexport PATH\nadb.so kill-server\nadb.so disconnect\nadb.so connect localhost:5555\nadb.so disconnect\nadb.so connect localhost:5555\n#adb.so\nadb.so devices -l\nadb -t 1\nadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
-                    commandEditText.setText(multcmd);
-                    final String commandToExecute = commandEditText.getText().toString();
-                    if (commandToExecute.isEmpty()) {
-                        outputTextView.append("שגיאה: נא הכנס פקודה לביצוע.\n");
-                        buconmult.setEnabled(true);
-                        return;
-                    }
-                    //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
-                    
-                    new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                executeRootCommandInternal(commandToExecute, commandListener);
-                            }
-                        }).start();
+                    conmult();
                 }
             });
         budisacccon.setOnClickListener(new View.OnClickListener() {
@@ -271,8 +269,8 @@ public class activityadbpair extends Activity {
                     budisacccon.setEnabled(false);
                     String dis="pm disable-user --user -0 com.google.android.gms\npm disable-user --user -0 com.google.android.gm\npm disable-user --user -0 me.bluemail.mail\npm disable-user --user -0 com.azure.authenticator\nexit\n";
                     dis="\"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
-                    String cmddpmnew="\nadb.so -s "+edtxip.getText().toString()+":"+edtxport.getText().toString()+" shell "+dis+"exit\n";
-                    String exc="/system/bin/sh -"+menv+adb+" kill-server\nadb.so disconnect\nadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nadb.so devices\nsleep 5\nadb.so devices\n"+cmddpmnew;
+                    String cmddpmnew="\nlibadb.so -s "+edtxip.getText().toString()+":"+edtxport.getText().toString()+" shell "+dis+"exit\n";
+                    String exc="/system/bin/sh -"+menv+adb+" kill-server\nlibadb.so disconnect\nlibadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nlibadb.so devices\nsleep 5\nlibadb.so devices\n"+cmddpmnew;
                     
                     commandEditText.setText(exc);
                     final String commandToExecute = commandEditText.getText().toString();
@@ -295,8 +293,8 @@ public class activityadbpair extends Activity {
                     buenacccon.setEnabled(false);
                     String ena="pm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
                     ena="\"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
-                    String cmddpmnew="\nadb.so -s "+edtxip.getText().toString()+":"+edtxport.getText().toString()+" shell "+ena+"exit\n";
-                    String exc="/system/bin/sh -"+menv+adb+" kill-server\nadb.so disconnect\nadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nadb.so devices\nsleep 5\nadb.so devices\n"+cmddpmnew;
+                    String cmddpmnew="\nlibadb.so -s "+edtxip.getText().toString()+":"+edtxport.getText().toString()+" shell "+ena+"exit\n";
+                    String exc="/system/bin/sh -"+menv+adb+" kill-server\nlibadb.so disconnect\nlibadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nlibadb.so devices\nsleep 5\nlibadb.so devices\n"+cmddpmnew;
                     
                     commandEditText.setText(exc);
                     final String commandToExecute = commandEditText.getText().toString();
@@ -314,47 +312,14 @@ public class activityadbpair extends Activity {
                 @Override
                 public void onClick(View v) {
                     //
-                    outputTextView.setText("מבצע פקודה...\n");
-                    // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
-                    budisaccmult.setEnabled(false);
-                    String dis="pm disable-user --user -0 com.google.android.gms\npm disable-user --user -0 com.google.android.gm\npm disable-user --user -0 me.bluemail.mail\npm disable-user --user -0 com.azure.authenticator\nexit\n";
-                    dis="\"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
-                    String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nadb.so kill-server\nadb.so disconnect\nadb.so devices\nadb.so connect localhost:5555\nadb.so devices\nadb.so -s localhost:5555 shell "+dis+"exit\n";
-                    //"TERM=screen\nexport TMPDIR\nexport PATH\nadb.so kill-server\nadb.so disconnect\nadb.so connect localhost:5555\nadb.so disconnect\nadb.so connect localhost:5555\n#adb.so\nadb.so devices -l\nadb -t 1\nadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
-                    commandEditText.setText(multcmd);
-                    final String commandToExecute = commandEditText.getText().toString();
-                    //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
-                    
-                    new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                executeRootCommandInternal(commandToExecute, commandListener);
-                            }
-                        }).start();
+                    disaccmult();
                 }
             });
         buenaccmult.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //
-                    outputTextView.setText("מבצע פקודה...\n");
-                    // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
-                    buenaccmult.setEnabled(false);
-                    String ena="pm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
-                    ena="\"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
-                    String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nadb.so kill-server\nadb.so disconnect\nadb.so devices\nadb.so connect localhost:5555\nadb.so devices\nadb.so -s localhost:5555 shell "+ena+"exit\n";
-                    //"TERM=screen\nexport TMPDIR\nexport PATH\nadb.so kill-server\nadb.so disconnect\nadb.so connect localhost:5555\nadb.so disconnect\nadb.so connect localhost:5555\n#adb.so\nadb.so devices -l\nadb -t 1\nadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
-                    commandEditText.setText(multcmd);
-                    final String commandToExecute = commandEditText.getText().toString();
-
-                    //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
-                    
-                    new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                executeRootCommandInternal(commandToExecute, commandListener);
-                            }
-                        }).start();
+                    enaccmult();
                 }
             });
         budisacc.setOnClickListener(new View.OnClickListener() {
@@ -464,6 +429,159 @@ public class activityadbpair extends Activity {
         } catch (Exception e) {
             LogUtil.logToFile(""+e);
         }
+        try{
+        String strextra=getIntent().getStringExtra("butt");
+        if(strextra!=null){
+            if(strextra.equals("disaccmult")){
+                disaccmult();
+            }else if(strextra.equals("activmult")){
+                conmult();
+            }else if(strextra.equals("actenaccmult")){
+                actenaccmult();
+            }else if(strextra.equals("disactenaccmult")){
+                disactenaccmult();
+            }
+        }
+        }catch(Exception e){
+            LogUtil.logToFile(""+e);
+        }
+    }
+    void conmult(){
+        outputTextView.setText("מבצע פקודה...\n");
+        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+        buconmult.setEnabled(false);
+        //String mpropport = "setprop service.adb.tcp.port 5555\n";
+        //String mproprestart = "setprop ctl.restart adbd\n"+adb+" disconnect\n"+adb+" devices\n";
+        //String mproprestartb = "adb kill-server\nadb start-server\n";
+        //String patadb = "/data/user/0/com.emanuelef.remote_capture.debug/files/adb";
+        //patadb = adb;
+        //String multcmd = "/system/bin/sh -\nTMPDIR=/storage/emulated/0/\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\n"+patadb+" kill-server\n"+patadb+" disconnect\n"+patadb+" devices\n"+patadb+" connect localhost:5555\n"+patadb+" devices\n"+patadb+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        //multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\n#adb -t 1\nlibadb.so -s localhost:5555 shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        //"TERM=screen\nexport TMPDIR\nexport PATH\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so connect localhost:5555\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\nadb -t 1\nlibadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        commandEditText.setText(multcmd);
+        final String commandToExecute = commandEditText.getText().toString();
+        if (commandToExecute.isEmpty()) {
+            outputTextView.append("שגיאה: נא הכנס פקודה לביצוע.\n");
+            buconmult.setEnabled(true);
+            return;
+        }
+        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
+
+        new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    executeRootCommandInternal(commandToExecute, commandListener);
+                }
+            }).start();
+    }
+    void disaccmult(){
+        outputTextView.setText("מבצע פקודה...\n");
+        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+        budisaccmult.setEnabled(false);
+        String dis="pm disable-user --user -0 com.google.android.gms\npm disable-user --user -0 com.google.android.gm\npm disable-user --user -0 me.bluemail.mail\npm disable-user --user -0 com.azure.authenticator\nexit\n";
+        dis="\"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
+        String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell "+dis+"exit\n";
+        //"TERM=screen\nexport TMPDIR\nexport PATH\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so connect localhost:5555\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\nadb -t 1\nlibadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        commandEditText.setText(multcmd);
+        final String commandToExecute = commandEditText.getText().toString();
+        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
+
+        new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    executeRootCommandInternal(commandToExecute, commandListener);
+                }
+            }).start();
+    }
+    void enaccmult(){
+        outputTextView.setText("מבצע פקודה...\n");
+        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+        buenaccmult.setEnabled(false);
+        String ena="pm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
+        ena="\"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
+        String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell "+ena+"exit\n";
+        //"TERM=screen\nexport TMPDIR\nexport PATH\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so connect localhost:5555\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\nadb -t 1\nlibadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        commandEditText.setText(multcmd);
+        final String commandToExecute = commandEditText.getText().toString();
+
+        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
+
+        new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    executeRootCommandInternal(commandToExecute, commandListener);
+                }
+            }).start();
+    }
+    void actenaccmult(){
+        outputTextView.setText("מבצע פקודה...\n");
+        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+        buconmult.setEnabled(false);
+        //String mpropport = "setprop service.adb.tcp.port 5555\n";
+        //String mproprestart = "setprop ctl.restart adbd\n"+adb+" disconnect\n"+adb+" devices\n";
+        //String mproprestartb = "adb kill-server\nadb start-server\n";
+        //String patadb = "/data/user/0/com.emanuelef.remote_capture.debug/files/adb";
+        //patadb = adb;
+        //String multcmd = "/system/bin/sh -\nTMPDIR=/storage/emulated/0/\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\n"+patadb+" kill-server\n"+patadb+" disconnect\n"+patadb+" devices\n"+patadb+" connect localhost:5555\n"+patadb+" devices\n"+patadb+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        //multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\n#adb -t 1\nlibadb.so -s localhost:5555 shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        String ena="pm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
+        ena="\"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
+        //String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell "+ena+"exit\n";
+        
+        String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell \"dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin\" < /dev/null\nlibadb.so -s localhost:5555 shell "+ena+"exit\n";
+        //"TERM=screen\nexport TMPDIR\nexport PATH\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so connect localhost:5555\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\nadb -t 1\nlibadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        commandEditText.setText(multcmd);
+        final String commandToExecute = commandEditText.getText().toString();
+        if (commandToExecute.isEmpty()) {
+            outputTextView.append("שגיאה: נא הכנס פקודה לביצוע.\n");
+            buconmult.setEnabled(true);
+            return;
+        }
+        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
+
+        new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    executeRootCommandInternal(commandToExecute, commandListener);
+                }
+            }).start();
+    }
+    
+    void disactenaccmult(){
+        outputTextView.setText("מבצע פקודה...\n");
+        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+        buconmult.setEnabled(false);
+        //String mpropport = "setprop service.adb.tcp.port 5555\n";
+        //String mproprestart = "setprop ctl.restart adbd\n"+adb+" disconnect\n"+adb+" devices\n";
+        //String mproprestartb = "adb kill-server\nadb start-server\n";
+        //String patadb = "/data/user/0/com.emanuelef.remote_capture.debug/files/adb";
+        //patadb = adb;
+        //String multcmd = "/system/bin/sh -\nTMPDIR=/storage/emulated/0/\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\n"+patadb+" kill-server\n"+patadb+" disconnect\n"+patadb+" devices\n"+patadb+" connect localhost:5555\n"+patadb+" devices\n"+patadb+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        //multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\n#adb -t 1\nlibadb.so -s localhost:5555 shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        String dis="pm disable-user --user -0 com.google.android.gms\npm disable-user --user -0 com.google.android.gm\npm disable-user --user -0 me.bluemail.mail\npm disable-user --user -0 com.azure.authenticator\nexit\n";
+        dis="\"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
+        String ena="pm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
+        ena="\"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
+        //String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell "+ena+"exit\n";
+        
+        String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell "+dis+"\nsleep 5\nlibadb.so -s localhost:5555 shell \"dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin\" < /dev/null\nlibadb.so -s localhost:5555 shell "+ena+"exit\n";
+        //"TERM=screen\nexport TMPDIR\nexport PATH\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so connect localhost:5555\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\nadb -t 1\nlibadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        commandEditText.setText(multcmd);
+        final String commandToExecute = commandEditText.getText().toString();
+        if (commandToExecute.isEmpty()) {
+            outputTextView.append("שגיאה: נא הכנס פקודה לביצוע.\n");
+            buconmult.setEnabled(true);
+            return;
+        }
+        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
+
+        new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    executeRootCommandInternal(commandToExecute, commandListener);
+                }
+            }).start();
     }
     public static String wifiip="";
     //int pport=0;
@@ -509,9 +627,18 @@ public class activityadbpair extends Activity {
      * @param command הפקודה לביצוע
      * @param listener הליסטנר לקבלת עדכונים על פלט
      */
+     int i=0;
+     int i2=0;
+     String ena="";
+    String dis="";
+    String act="";
     Process process = null;
     private void executeRootCommandInternal(final String command, final CommandOutputListener listener) {
-        
+        i=0;
+        i2=0;
+        ena="";
+        dis="";
+        act="";
         DataOutputStream os = null;
         final StringBuilder finalOutput = new StringBuilder();
         final StringBuilder finalErrorOutput = new StringBuilder();

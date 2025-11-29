@@ -71,10 +71,12 @@ public class AppManagementActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_management);
-
         mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminComponentName = new ComponentName(this, admin.class);
-
+        try{
+            if(getActionBar().isShowing())
+                getActionBar().hide();
+        }catch(Exception e){}
         lvApps = (ListView) findViewById(R.id.lv_apps);
 
         // טען את הרשימה באופן אסינכרוני

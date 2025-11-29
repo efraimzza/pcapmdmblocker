@@ -27,15 +27,21 @@
     <string name="settings_shortcut">קיצור להגדרות למולטימדיה</string>
     <string name="tvremove_root">אם המכשיר שלך מושרש, הסר את השורש אחרי ההפעלה כדי למנוע מעקפים!</string>
     <string name="bucpcmd">להפעלה עם ADB לחץ כאן כדי להעתיק את הפקודה!</string>
-    <string name="buadbmult">חיבור והשבתה למולטימדיה ולרוט(והאפשרות הישנה לויפי)!</string>
-    <string name="buadbwifi">adb pair/connect עם ויפי!</string>
+    <string name="buadbmult">הפעלה והשבתת חשבונות למולטימדיה ולרוט(והאפשרות הישנה לויפי)!</string>
+    <string name="buadbwifi">הפעלה באמצעות adb pair/connect עם ויפי! (תואם לסמסונג לדוגמא)</string>
     <string name="buqrmdm">ברקוד qr ממכשיר למכשיר!</string>
     <string name="sq">"התקנת \"חסימת mdm\" ממכשיר אנדרואיד למכשיר אחר\nבאמצעות ברקוד QR"</string>
+    <string name="buinstruction">הוראות הפעלת החסימה!</string>
+    <string name="budeviceinfo">פתיחת מידע על הטלפון!</string>
     <string name="budev">פתיחת מצב מפתחים!</string>
     <string name="bucppwd">העתקת הקוד הנפוץ לפתוח adb למולטימדיה!</string>
     <string name="sendtodev">שלח קובץ csv למפתח!</string>
     <string name="buaccount">פתיחת חשבונות בהגדרות!</string>
     <string name="noneedpwd">לא לבקש סיסמא עד שחוזרים למסך הראשי - סטטוס</string>
+    <string name="buwifi">פתיחת ויפי!</string>
+    <string name="budisaccmult">השבתת חשבונות</string>
+    <string name="buactivmult">הפעלת החסימה למולטימדיה</string>
+    <string name="buactenaccmult">הפעלת החסימה והפעלת חשבונות</string>
     
     <string name="start_button">התחלה</string>
     <string name="stop_button">להפסיק</string>

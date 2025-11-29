@@ -73,6 +73,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ActivityInfo;
 import com.emanuelef.remote_capture.R;
 import android.annotation.Nullable;
+import android.view.ViewGroup;
 
 public class actqrmdm extends Activity {
     ServerSocket ss;
@@ -115,7 +116,11 @@ public class actqrmdm extends Activity {
         ((WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getRealMetrics(dm);
         ((WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getSize(poi);
         //getActionBar().hide();//is hiding anyway... and because this creashing
-        mdeviwidth = dm.widthPixels;
+        try{
+            if(getActionBar().isShowing())
+                getActionBar().hide();
+        }catch(Exception e){}
+        mdeviwidth = dm.widthPixels-30;
         mdeviheigth = poi.y;
         
         if (dm.widthPixels <= dm.heightPixels) {
@@ -154,6 +159,8 @@ public class actqrmdm extends Activity {
         tvinstuctions.setTextSize(15);
         linl.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         linl.setOrientation(linl.VERTICAL);
+        //LinearLayout linlol=new LinearLayout(this);
+        //linlol.addView(linl);
         scl.addView(linl);
         hscl.addView(scl);
         setContentView(hscl);
@@ -197,7 +204,10 @@ public class actqrmdm extends Activity {
     private void mai() {
         
         lima.removeAllViews();
-        hscl.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+        //hscl.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+        FrameLayout.LayoutParams lllp= new FrameLayout.LayoutParams(mdeviwidth, FrameLayout.LayoutParams.FILL_PARENT);
+        lllp.setMargins(15,15,15,15);
+        hscl.setLayoutParams(lllp);
         scl.setLayoutParams(new FrameLayout.LayoutParams(mdeviwidth, LinearLayout.LayoutParams.FILL_PARENT));
         linl.setLayoutParams(new FrameLayout.LayoutParams(mdeviwidth, LinearLayout.LayoutParams.FILL_PARENT));
         lima.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
@@ -740,7 +750,10 @@ public class actqrmdm extends Activity {
     LinearLayout lisq() {
         LinearLayout lil=new LinearLayout(mcon);
         lil.setOrientation(lil.VERTICAL);
-        lil.setLayoutParams(new FrameLayout.LayoutParams(mdeviwidth, LinearLayout.LayoutParams.FILL_PARENT));
+        ViewGroup.MarginLayoutParams vmlp= new ViewGroup.MarginLayoutParams(mdeviwidth,LinearLayout.LayoutParams.FILL_PARENT);
+        //vmlp.setMargins(15,15,15,15);
+        //lil.setLayoutParams(new FrameLayout.LayoutParams(mdeviwidth, LinearLayout.LayoutParams.FILL_PARENT));
+        lil.setLayoutParams(vmlp);
         TextView tvtit=new TextView(mcon);
         tvtit.setText("הבהרה:");
 

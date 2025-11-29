@@ -78,7 +78,14 @@ public class MDMSettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         try{
         setContentView(R.layout.activity_mdm_settings);
+        if(getIntent().getStringExtra("err")!=null){
+            findViewById(R.id.tvupold).setVisibility(TextView.VISIBLE);
+        }
         try{
+            try{
+            if(getActionBar().isShowing())
+                getActionBar().hide();
+            }catch(Exception e){}
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         handler = new Handler(Looper.getMainLooper());
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
@@ -119,7 +126,7 @@ public class MDMSettingsActivity extends Activity {
         setupButton(R.id.btn_update_whitelist, "עדכון לרשימת דומיינים לבנה", null); // תצטרך לוגיקה לזה
         setupButton(R.id.btn_more_features, "פיצ'רים נוספים", MoreFeaturesActivity.class);
         setupButton(R.id.btn_pwopen, "אימות סיסמה לכל ההגדרות", null);
-        setupabodeb();
+            setuplongclick();
         }  catch(Exception e){
             Toast.makeText(this, e+"",1).show();
         }
@@ -169,7 +176,7 @@ public class MDMSettingsActivity extends Activity {
             } else if (buttonId == R.id.btn_activate_frp) {
                 activatefrp();
             } else if (buttonId == R.id.btn_update_mdm_app) {
-                updateMdm();
+                updateMdm("");
                 //startDownload();
             } else if (buttonId == R.id.btn_lock_mdm) {
                 showLockMDMConfirmationDialog(MDMSettingsActivity.this);
@@ -344,7 +351,7 @@ public class MDMSettingsActivity extends Activity {
 		    Toast.makeText(MDMSettingsActivity.this, "e-frp2"+e , Toast.LENGTH_SHORT).show();
 		}
     }
-    private void setupabodeb(){
+    private void setuplongclick(){
         Button but=findViewById(R.id.btn_more_features);
         but.setOnLongClickListener(new OnLongClickListener(){
 
@@ -379,12 +386,42 @@ public class MDMSettingsActivity extends Activity {
                     return true;
                 }
             });
+        Button buta=findViewById(R.id.btn_update_mdm_app);
+        buta.setOnLongClickListener(new OnLongClickListener(){
+
+                @Override
+                public boolean onLongClick(View p1) {
+                    PasswordManager.requestPasswordAndSave(new Runnable() {
+                            @Override
+                            public void run() {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MDMSettingsActivity.this);
+                                builder.setTitle("גירסה ישנה...");
+                                builder.setMessage("לעדכן לגירסה ישנה? (0.3.7)");
+                                builder.setPositiveButton("אישור", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            updateMdm("old");
+                                            dialog.cancel();
+                                        }
+                                    });
+                                builder.setNegativeButton("ביטול", new DialogInterface.OnClickListener(){
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int p2) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                                builder.show();
+                            }
+                        },MDMSettingsActivity.this);
+                    return true;
+                }
+            });
     }
 
     boolean succ=false;
     boolean mend=false;
     @Deprecated
-    private void updateMdm(){
+    private void updateMdm(String which){
     //first abandon all old sessions
     try {
        List<PackageInstaller.SessionInfo> lses= MDMSettingsActivity.this.getPackageManager().getPackageInstaller().getAllSessions();
@@ -405,7 +442,7 @@ public class MDMSettingsActivity extends Activity {
          Toast.makeText(MDMSettingsActivity.this, "" + e, 0).show();
       }
       try{
-         startDownload();
+         startDownload(which);
       } catch (Exception e) {
          Toast.makeText(MDMSettingsActivity.this, "" + e, 0).show();
       }
@@ -494,9 +531,13 @@ public class MDMSettingsActivity extends Activity {
             //tv1.setText(editable);
         }
     }
-    private void startDownload() {
-        
-        Uri uri = Uri.parse("https://raw.githubusercontent.com/efraimzz/whitelist/refs/heads/main/whitelistbeta.apk");
+    private void startDownload(String which) {
+        Uri uri;
+        if(which.equals("old")){
+            uri = Uri.parse("https://raw.githubusercontent.com/efraimzz/whitelist/refs/heads/main/whitelistbetaold.apk");
+        }else{
+            uri = Uri.parse("https://raw.githubusercontent.com/efraimzz/whitelist/refs/heads/main/whitelistbeta.apk");
+        }
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
         // הגדר כותרת ותיאור עבור ההתראה

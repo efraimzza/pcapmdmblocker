@@ -176,11 +176,11 @@
                 </category>
             </intent-filter>
         </activity>
-
+        <!--android:foregroundServiceType="specialUse"-->
         <service
             android:name="com.emanuelef.remote_capture.CaptureService"
             android:permission="android.permission.BIND_VPN_SERVICE"
-
+            
             android:exported="false">
 
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
@@ -192,7 +192,7 @@
         </service>
         <service
             android:name="com.emanuelef.remote_capture.VpnReconnectService"
-
+            
             android:exported="false">
 
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
@@ -258,10 +258,12 @@
         <activity android:name="com.emanuelef.remote_capture.activities.picker" />
         <activity android:name="com.emanuelef.remote_capture.activities.enactivityadbpair" />
         <activity android:name="com.emanuelef.remote_capture.activities.confirmationinstall" />
-
         <activity android:name="com.emanuelef.remote_capture.fragments.StatusFragment" />
         <activity android:name="com.emanuelef.remote_capture.activities.instcer" />
         <activity android:name="com.emanuelef.remote_capture.activities.nsdactivity" />
+        <activity android:name="com.emanuelef.remote_capture.debug" />
+        <activity android:name="com.emanuelef.remote_capture.activities.MdmProvisioningActivity" />
+        <activity android:name="com.emanuelef.remote_capture.activities.instructionactivity" />
         <receiver
             android:name="com.emanuelef.remote_capture.activities.InstallReceiver"
             android:exported="true">

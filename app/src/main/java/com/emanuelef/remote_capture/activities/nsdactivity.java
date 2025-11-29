@@ -23,7 +23,7 @@ public class nsdactivity extends Activity implements AdbNsdResolver.AdbServiceFo
 
     private AdbNsdResolver mAdbResolver;
     private TextView mStatusText,pairst,connst,resst,discost,logst,mrlog;
-    private Button mDiscoveryButton,mconDiscoveryButton;
+    private Button mDiscoveryButton,mconDiscoveryButton,mstopDiscobu;
     Switch swacti,swdisacc,swenacc;
     private String storedconnect;
     String todo="";
@@ -35,7 +35,10 @@ public class nsdactivity extends Activity implements AdbNsdResolver.AdbServiceFo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
       //  mNotificationHelper = new NotificationHelper(this);
-        
+        try{
+            if(getActionBar().isShowing())
+                getActionBar().hide();
+        }catch(Exception e){}
         setContentView(R.layout.nsd_activity);
         try{
         //startForegroundService(new Intent(this,ser.class));
@@ -52,6 +55,7 @@ public class nsdactivity extends Activity implements AdbNsdResolver.AdbServiceFo
         
         mDiscoveryButton = (Button) findViewById(R.id.start_discovery_button);
         mconDiscoveryButton=findViewById(R.id.start_conn_discovery_button);
+        mstopDiscobu=findViewById(R.id.stop_discoverys);
         swacti=findViewById(R.id.swacti);
         swdisacc=findViewById(R.id.swdisacc);
         swenacc=findViewById(R.id.swenacc);
@@ -76,16 +80,31 @@ public class nsdactivity extends Activity implements AdbNsdResolver.AdbServiceFo
         mconDiscoveryButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // ללא lambda
+                    if(mAdbResolver.pairactive){
+                        mAdbResolver.stopDiscovery();
+                    }
                     mStatusText.setText("מחפש שירות חיבור רגיל");
                     connst.setText("מחפש");
-                    
+                    pairst.setText("");
                     mAdbResolver.startConnectDiscovery();
                     refresh=true;
                     logres="";
                     mstartlog();
                     //mNotificationHelper.sendSimpleNotification("adb", "מתחיל", 104);
                     
+                }
+            });
+        mstopDiscobu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAdbResolver.stopDiscovery();
+                    mAdbResolver.stopconDiscovery();
+                    refresh=false;
+                    mStatusText.setText("גילוי כבוי");
+                    pairst.setText("");
+                    connst.setText("");
+                    discost.setText("גילוי כבוי");
+                    logres="";
                 }
             });
         mrlog.setOnClickListener(new View.OnClickListener(){

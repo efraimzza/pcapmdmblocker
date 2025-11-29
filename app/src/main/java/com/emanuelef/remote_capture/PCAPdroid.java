@@ -39,7 +39,16 @@ import com.emanuelef.remote_capture.model.Prefs;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Set;
-
+import android.os.Process;
+import com.emanuelef.remote_capture.activities.LogUtil;
+import com.emanuelef.remote_capture.activities.MDMSettingsActivity;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import android.widget.Toast;
+import com.emanuelef.remote_capture.activities.AppState;
+import com.emanuelef.remote_capture.activities.PathType;
 //import cat.ereza.customactivityoncrash.config.CaocConfig;
 
 /* The PCAPdroid app class.
@@ -64,11 +73,65 @@ public class PCAPdroid extends Application {
     private boolean mIsUsharkAvailable = false;
     private static WeakReference<PCAPdroid> mInstance;
     protected static boolean isUnderTest = false;
-
+    SharedPreferences sp;
+    SharedPreferences.Editor spe;
+    public static final String modesp="mode";
+    
     @Override
     public void onCreate() {
+        Thread.setDefaultUncaughtExceptionHandler(
+            new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread thread, Throwable throwable) {
+                    //startActivity(new Intent(getApplicationContext(),debug.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    Intent intent = new Intent(getApplicationContext(), MDMSettingsActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra("err","");
+                    //intent.putExtra("error", android.util.Log.getStackTraceString(throwable)+throwable.getStackTrace()[0].getClassName()+throwable.getStackTrace()[0].getMethodName()+throwable.getStackTrace()[0].getLineNumber()+throwable.getStackTrace()[0].getFileName());
+                    startActivity(intent);
+                    intent = new Intent(getApplicationContext(), debug.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("error", android.util.Log.getStackTraceString(throwable)+throwable.getStackTrace()[0].getClassName()+throwable.getStackTrace()[0].getMethodName()+throwable.getStackTrace()[0].getLineNumber()+throwable.getStackTrace()[0].getFileName());
+                    startActivity(intent);
+                    try {
+                        String LOG_PATH = "/storage/emulated/0/log.txt";
+                        FileWriter writer = new FileWriter(LOG_PATH, true);
+                        String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
+                        writer.write("[" + time + "] " + throwable.toString() + "\n");
+                        writer.close();
+                    } catch (IOException ee) {
+                        // silent
+                    }
+                    Process.killProcess(Process.myPid());
+                    System.exit(1);
+                }
+            });
         super.onCreate();
-
+        sp=this.getSharedPreferences(this.getPackageName(),this.MODE_PRIVATE);
+        spe=sp.edit();
+        try{
+            if(sp.getString(modesp,"").equals("")){
+                if(AppState.getInstance()!=null){
+                    AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
+                    spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
+                    spe.commit();
+                    Toast.makeText(this,AppState.getInstance().getCurrentPath().name()+" is default",1).show();
+                }
+            }else{
+                try{
+                    AppState.getInstance().setCurrentPath(PathType.valueOf(sp.getString(modesp,"")));
+                    //Toast.makeText(this, AppState.getInstance().getCurrentPath().name()+ " is now",1).show();
+                }catch(Exception e){
+                    Toast.makeText(this, e+"",1).show();
+                    //importnt if it isnt found like old version
+                    AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
+                    spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
+                    spe.commit();
+                    Toast.makeText(this,AppState.getInstance().getCurrentPath().name()+" is default",1).show();
+                }
+            }
+        }catch(Exception e){}
+try{
         if(!isUnderTest())
             Log.init(getFilesDir().getAbsolutePath());
 
@@ -118,7 +181,29 @@ public class PCAPdroid extends Application {
         }, filter);
 
         removeUninstalledAppsFromAppFilter();
-        
+        }catch(RuntimeException | Exception | ExceptionInInitializerError | Throwable e){
+            //LogUtil.logToFile(e.toString());
+            Intent intent = new Intent(getApplicationContext(), MDMSettingsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("err","");
+            //intent.putExtra("error", ""+android.util.Log.getStackTraceString(e));
+            startActivity(intent);
+            intent = new Intent(getApplicationContext(), debug.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("error", ""+android.util.Log.getStackTraceString(e));
+            startActivity(intent);
+            try {
+                String LOG_PATH = "/storage/emulated/0/log.txt";
+                FileWriter writer = new FileWriter(LOG_PATH, true);
+                String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
+                writer.write("[" + time + "] " + e.toString() + "\n");
+                writer.close();
+            } catch (IOException ee) {
+                // silent
+            }
+            //Process.killProcess(Process.myPid());
+            //System.exit(1);
+        }
     }
 
     public static @NonNull PCAPdroid getInstance() {

@@ -32,7 +32,10 @@ public class RestrictionManagementActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restriction_management); // שם קובץ layout חדש
-        
+        try{
+            if(getActionBar().isShowing())
+                getActionBar().hide();
+        }catch(Exception e){}
         sp = this.getSharedPreferences(this.getPackageName(), this.MODE_PRIVATE);
         spe = sp.edit();
         

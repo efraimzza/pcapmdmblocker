@@ -88,7 +88,7 @@ public class MDMStatusActivity extends Activity {
     public static final String locksp="lock";
     LinearLayout linlactivate,linldetails;
     TextView tvappname,tvstate,tvtinst,tvtlogin,tvroute,tvdescription,tvremoveroot,tvstartbarcode;
-    Button bucpcmd,bucert,bucppwd,budev,buaccount,busavebarcode,bustartroot,buadbmult,buadbwifi,buqrmdm;
+    Button bucpcmd,bucert,bucppwd,buinstruction,budeviceinfo,budev,buaccount,busavebarcode,bustartroot,buadbmult,buadbwifi,buqrmdm;
     ImageView ivbarcode;
     Bitmap bmp;
     InputStream is;
@@ -133,6 +133,11 @@ public class MDMStatusActivity extends Activity {
                 //Toast.makeText(this, AppState.getInstance().getCurrentPath().name()+ " is now",1).show();
             }catch(Exception e){
                 Toast.makeText(this, e+"",1).show();
+                //importnt if it isnt found like old version
+                AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
+                spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
+                spe.commit();
+                Toast.makeText(this,AppState.getInstance().getCurrentPath().name()+" is default",1).show();
             }
         }
         }catch(Exception e){}
@@ -145,6 +150,8 @@ public class MDMStatusActivity extends Activity {
         bucpcmd=findViewById(R.id.act_stat_bucpcmd);
         bucert=findViewById(R.id.act_stat_bucert);
         bucppwd=findViewById(R.id.act_stat_bucppwd);
+        buinstruction=findViewById(R.id.act_stat_buinstruction);
+        budeviceinfo=findViewById(R.id.act_stat_budeviceinfo);
         budev=findViewById(R.id.act_stat_budev);
         buaccount=findViewById(R.id.act_stat_buaccount);
         buadbmult=findViewById(R.id.act_stat_buadbmult);
@@ -178,6 +185,27 @@ public class MDMStatusActivity extends Activity {
                     clbo.setText("john@tw-desktop");
                     Toast.makeText(MDMStatusActivity.this, "הועתק ללוח!",1).show();
                     
+                }
+            });
+        buinstruction.setOnClickListener(new OnClickListener(){
+                @Deprecated
+                @Override
+                public void onClick(View p1) {
+                    Intent intent = new Intent(MDMStatusActivity.this, instructionactivity.class);
+                    startActivity(intent);
+                }
+            });
+        budeviceinfo.setOnClickListener(new OnClickListener(){
+                @Deprecated
+                @Override
+                public void onClick(View p1) {
+                    try{
+                        Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$MyDeviceInfoActivity");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }catch(Exception e){
+                        
+                    }
                 }
             });
         budev.setOnClickListener(new OnClickListener(){
@@ -234,7 +262,7 @@ public class MDMStatusActivity extends Activity {
 
                 @Override
                 public void onClick(View p1) {
-                    Intent intent = new Intent(MDMStatusActivity.this, actqrmdm.class);
+                    Intent intent = new Intent(MDMStatusActivity.this, MdmProvisioningActivity.class);
                     startActivity(intent);
                 }
             });

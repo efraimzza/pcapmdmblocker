@@ -25,7 +25,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal">
-
+            <TextView
+                android:id="@+id/tvupold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="לחץ לחיצה ארוכה על עדכון אפליקציית mdm כדי לעדכן לגירסה ישנה"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:paddingBottom="24dp"
+                android:visibility="gone"
+                android:textColor="@android:color/black"/>
+            
             <Button style="@style/MDMActionButton"
                 android:id="@+id/btn_manage_restrictions"
                 android:text="ניהול הגבלות מכשיר"/>

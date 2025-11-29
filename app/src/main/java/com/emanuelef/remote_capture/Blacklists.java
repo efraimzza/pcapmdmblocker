@@ -470,6 +470,9 @@ public class Blacklists {
             }
         }
         Toast.makeText(mContext, "lists up: " + num_loaded + " lists, " + num_domains + " domains, " + num_ips + " IPs",1).show();
+        if(num_loaded==0||num_domains==0||num_ips==0){
+            Toast.makeText(mContext, "אזהרה: מסלול לא עודכן נדרש חיבור אינטרנט. נסה שוב...",1).show();
+        }
         Log.i(TAG, "Blacklists loaded: " + num_loaded + " lists, " + num_domains + " domains, " + num_ips + " IPs");
         mNumDomainRules = num_domains;
         mNumIPRules = num_ips;
