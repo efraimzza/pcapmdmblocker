@@ -59,7 +59,7 @@ public final class ErrorActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
        // Utils.enableEdgeToEdge(this);
         super.onCreate(savedInstanceState);
-
+        Utils.setTheme(this);
         View toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             // Fix padding of content below the toolbar

@@ -107,6 +107,7 @@ public class PCAPdroid extends Application {
                 }
             });
         super.onCreate();
+        //Utils.setTheme(this);
         sp=this.getSharedPreferences(this.getPackageName(),this.MODE_PRIVATE);
         spe=sp.edit();
         try{
@@ -115,19 +116,19 @@ public class PCAPdroid extends Application {
                     AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
                     spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
                     spe.commit();
-                    Toast.makeText(this,AppState.getInstance().getCurrentPath().name()+" is default",1).show();
+                    Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
                 }
             }else{
                 try{
                     AppState.getInstance().setCurrentPath(PathType.valueOf(sp.getString(modesp,"")));
                     //Toast.makeText(this, AppState.getInstance().getCurrentPath().name()+ " is now",1).show();
                 }catch(Exception e){
-                    Toast.makeText(this, e+"",1).show();
+                    Toast.makeText(getApplicationContext(), e+"",1).show();
                     //importnt if it isnt found like old version
                     AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
                     spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
                     spe.commit();
-                    Toast.makeText(this,AppState.getInstance().getCurrentPath().name()+" is default",1).show();
+                    Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
                 }
             }
         }catch(Exception e){}

@@ -92,7 +92,7 @@ public class ConnectionDetailsActivity extends BaseActivity implements Connectio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Utils.setTheme(this);
         setTitle(R.string.connection_details);
         displayBackAction();
         setContentView(R.layout.fragment_activity);

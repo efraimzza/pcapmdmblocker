@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import java.util.List;
 import android.content.Context;
+import com.emanuelef.remote_capture.Utils;
 
 public class hom extends Activity {
     Context mcon=this;
@@ -15,6 +16,7 @@ public class hom extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         String ap="";
@@ -35,7 +37,7 @@ public class hom extends Activity {
                 
             }
         }
-        Toast.makeText(mcon, ""+ap, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), ""+ap, Toast.LENGTH_SHORT).show();
         
         
     }

@@ -76,6 +76,7 @@ public class MDMSettingsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         try{
         setContentView(R.layout.activity_mdm_settings);
         if(getIntent().getStringExtra("err")!=null){
@@ -97,7 +98,7 @@ public class MDMSettingsActivity extends Activity {
         }  catch(Exception e){
             MDMSettingsActivity.this.requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 55);
             LogUtil.logToFile(""+e);
-            Toast.makeText(this, e+"",1).show();
+            Toast.makeText(getApplicationContext(), e+"",1).show();
         }
         mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminComponentName = new ComponentName(this,admin.class);
@@ -114,21 +115,21 @@ public class MDMSettingsActivity extends Activity {
         // אתחול כפתורים
         setupButton(R.id.btn_manage_restrictions, "ניהול הגבלות מכשיר", RestrictionManagementActivity.class);
         setupButton(R.id.btn_manage_apps, "ניהול אפליקציות", AppManagementActivity.class);
-        setupButton(R.id.btn_manage_vpn, "ניהול vpn", MainActivity.class);
+        setupButton(R.id.btn_manage_vpn, "ניהול ניטור רשת (vpn)", MainActivity.class);
         setupButton(R.id.btn_change_password, "שנה סיסמה", null);
         setupButton(R.id.btn_remove_frp, "הסר frp", null); 
         setupButton(R.id.btn_activate_frp, "הפעל frp", null); 
         setupButton(R.id.btn_update_mdm_app, "עדכון אפליקציית MDM", null);
         setupButton(R.id.btn_lock_mdm, "נעילת הגדרות והסרה", null);
-        setupButton(R.id.btn_select_route, "בחירת מסלול", null); // תצטרך אקטיביטי לזה
+            setupButton(R.id.btn_select_route, "בחירת מסלול לניטור רשת (vpn)", null); // תצטרך אקטיביטי לזה
         setupButton(R.id.btn_def_rest_multi, "השבתות מומלצות למולטימדיה", null);
         setupButton(R.id.btn_def_rest_cube, "השבתות מומלצות לקוביית אנדרואיד", null);
-        setupButton(R.id.btn_update_whitelist, "עדכון לרשימת דומיינים לבנה", null); // תצטרך לוגיקה לזה
+            setupButton(R.id.btn_update_whitelist, "עדכון דומיינים לרשימות לבנות", null); // תצטרך לוגיקה לזה
         setupButton(R.id.btn_more_features, "פיצ'רים נוספים", MoreFeaturesActivity.class);
         setupButton(R.id.btn_pwopen, "אימות סיסמה לכל ההגדרות", null);
             setuplongclick();
         }  catch(Exception e){
-            Toast.makeText(this, e+"",1).show();
+            Toast.makeText(getApplicationContext(), e+"",1).show();
         }
         }
 
@@ -143,6 +144,7 @@ public class MDMSettingsActivity extends Activity {
                         if (v.getId() == R.id.btn_change_password ||
                             v.getId() == R.id.btn_remove_frp ||
                             v.getId() == R.id.btn_activate_frp ||
+                            v.getId() == R.id.btn_update_mdm_app ||
                             v.getId() == R.id.btn_lock_mdm ||
                             v.getId() ==  R.id.btn_select_route ||
                             v.getId() == R.id.btn_def_rest_multi ||
@@ -201,7 +203,7 @@ public class MDMSettingsActivity extends Activity {
                             TextView tvcurroute=findViewById(R.id.tv_cur_route);
                             tvcurroute.setText("המסלול הפעיל - "+AppState.getInstance().getCurrentPath().getDescription());
                             
-                            Toast.makeText(MDMSettingsActivity.this, "המסלול שנבחר: " + selectedPath.getDescription(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "המסלול שנבחר: " + selectedPath.getDescription(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 builder.create().show();  
@@ -234,13 +236,13 @@ public class MDMSettingsActivity extends Activity {
                 //mDpm.setApplicationHidden(mAdminComponentName, "com.google.android.apps.maps", true);//maps
                 
                 
-                Toast.makeText(MDMSettingsActivity.this, "הופעלו השבתות מומלצות למולטימדיה!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "הופעלו השבתות מומלצות למולטימדיה!", Toast.LENGTH_SHORT).show();
                 } catch (Exception e){
-                    Toast.makeText(MDMSettingsActivity.this, ""+e, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
                 }
                     
                 }else{
-                    Toast.makeText(MDMSettingsActivity.this, "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
                 }
             }else if (buttonId == R.id.btn_def_rest_cube) {
                 boolean mdmstate=mDpm.isDeviceOwnerApp(MDMSettingsActivity.this.getPackageName());
@@ -270,18 +272,18 @@ public class MDMSettingsActivity extends Activity {
                 
                 
                 
-                Toast.makeText(MDMSettingsActivity.this, "הופעלו השבתות מומלצות לקוביית אנדרואיד!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "הופעלו השבתות מומלצות לקוביית אנדרואיד!", Toast.LENGTH_SHORT).show();
                 } catch (Exception e){
-                    Toast.makeText(MDMSettingsActivity.this, ""+e, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
                 }
                     
                 }else{
-                    Toast.makeText(MDMSettingsActivity.this, "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
                 }
             } else if (buttonId == R.id.btn_update_whitelist) {
                if(CaptureService.isServiceActive()){
                    CaptureService.requestBlacklistsUpdate();
-                   Toast.makeText(MDMSettingsActivity.this, "updating...",1).show();
+                   Toast.makeText(getApplicationContext(), "updating...",1).show();
                }
             } else if (buttonId == R.id.btn_pwopen) {
                pwopen();
@@ -298,7 +300,7 @@ public class MDMSettingsActivity extends Activity {
                  .build();
                  mDpm.setFactoryResetProtectionPolicy(mAdminComponentName, frp);
            } catch (Exception e) {
-                Toast.makeText(activity, "e-frp" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.getApplicationContext(), "e-frp" , Toast.LENGTH_SHORT).show();
            }
         }
            try {
@@ -311,9 +313,9 @@ public class MDMSettingsActivity extends Activity {
               intent.setPackage(str);
               intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
               activity.sendBroadcast(intent);
-              Toast.makeText(activity, "frp removed", Toast.LENGTH_SHORT).show();
+              Toast.makeText(activity.getApplicationContext(), "frp removed", Toast.LENGTH_SHORT).show();
            } catch (Exception e) {
-             Toast.makeText(activity, "" + e, Toast.LENGTH_SHORT).show();
+             Toast.makeText(activity.getApplicationContext(), "" + e, Toast.LENGTH_SHORT).show();
            }
                     
     }
@@ -332,7 +334,7 @@ public class MDMSettingsActivity extends Activity {
                         .build();
                     mDpm.setFactoryResetProtectionPolicy(mAdminComponentName, frp);
                 } catch (Exception e) {
-                    Toast.makeText(MDMSettingsActivity.this, "e-frp"+e , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "e-frp"+e , Toast.LENGTH_SHORT).show();
                 }
             }
             Bundle bundle = new Bundle();
@@ -346,9 +348,9 @@ public class MDMSettingsActivity extends Activity {
             intent.setPackage(str);
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
             MDMSettingsActivity.this.sendBroadcast(intent);
-            Toast.makeText(MDMSettingsActivity.this, "frp..", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "frp..", Toast.LENGTH_SHORT).show();
 		} catch (Exception e) {
-		    Toast.makeText(MDMSettingsActivity.this, "e-frp2"+e , Toast.LENGTH_SHORT).show();
+		    Toast.makeText(getApplicationContext(), "e-frp2"+e , Toast.LENGTH_SHORT).show();
 		}
     }
     private void setuplongclick(){
@@ -433,18 +435,18 @@ public class MDMSettingsActivity extends Activity {
                        MDMSettingsActivity.this.getPackageManager().getPackageInstaller().abandonSession(pses.getSessionId());
                     }
                 } catch (Exception e) {  
-                    Toast.makeText(MDMSettingsActivity.this, "" + e, 0).show();
+                    Toast.makeText(getApplicationContext(), "" + e, 0).show();
                 }
              }
          }
       }
       } catch (Exception e) {
-         Toast.makeText(MDMSettingsActivity.this, "" + e, 0).show();
+          Toast.makeText(getApplicationContext(), "" + e, 0).show();
       }
       try{
          startDownload(which);
       } catch (Exception e) {
-         Toast.makeText(MDMSettingsActivity.this, "" + e, 0).show();
+          Toast.makeText(getApplicationContext(), "" + e, 0).show();
       }
         /*
         new Thread(){public void run(){
@@ -487,7 +489,7 @@ public class MDMSettingsActivity extends Activity {
            // editable = edtx1.getText().toString();
             editable = mappath;
             if (editable.equals("")) {
-                Toast.makeText(MDMSettingsActivity.this, "write the path!", 1).show();
+                Toast.makeText(getApplicationContext(), "write the path!", 1).show();
                 openses.abandon();
                 return;
             }
@@ -516,7 +518,7 @@ public class MDMSettingsActivity extends Activity {
                     }
                 }
             }
-            Toast.makeText(MDMSettingsActivity.this, "not exsist or not readable!", 1).show();
+            Toast.makeText(getApplicationContext(), "not exsist or not readable!", 1).show();
             openses.abandon();
         } catch (Exception e2) {
             try {
@@ -527,7 +529,7 @@ public class MDMSettingsActivity extends Activity {
             for (StackTraceElement stackTraceElement : stackTrace) {
                 editable = editable+stackTraceElement;
             }
-            Toast.makeText(MDMSettingsActivity.this, ""+e2+editable, 1).show();
+            Toast.makeText(getApplicationContext(), ""+e2+editable, 1).show();
             //tv1.setText(editable);
         }
     }
@@ -581,7 +583,7 @@ public class MDMSettingsActivity extends Activity {
                     handler.removeCallbacks(updateProgressRunnable);
                     // סגור את הדיאלוג
                     dialog.dismiss();
-                    Toast.makeText(MDMSettingsActivity.this, "ההורדה בוטלה.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "ההורדה בוטלה.", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -630,7 +632,7 @@ public class MDMSettingsActivity extends Activity {
                     progressDialog.dismiss();
                     // אם לא בוטל על ידי המשתמש, ייתכן שהייתה בעיה אחרת
                     if (!isDownloadCanceled) {
-                        Toast.makeText(MDMSettingsActivity.this, "הורדה בוטלה או לא נמצאה.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "הורדה בוטלה או לא נמצאה.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -666,12 +668,12 @@ public class MDMSettingsActivity extends Activity {
                         int reason = cursor.getInt(reasonColumnIndex);
 
                         if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                            Toast.makeText(context, "הורדה הושלמה בהצלחה!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "הורדה הושלמה בהצלחה!", Toast.LENGTH_LONG).show();
                             // התקן את הקובץ שהורד
                             //installApk(localUriString);
                             appone(MDMSettingsActivity.this.getExternalFilesDir("")+"/updatebeta.apk");
                         } else if (status == DownloadManager.STATUS_FAILED) {
-                            Toast.makeText(context, "הורדה נכשלה: " + reason, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "הורדה נכשלה: " + reason, Toast.LENGTH_LONG).show();
                         }
    
                     }
@@ -679,14 +681,14 @@ public class MDMSettingsActivity extends Activity {
                 }
             }
         }  catch(Exception e){
-            Toast.makeText(context, e+"",1).show();
+            Toast.makeText(getApplicationContext(), e+"",1).show();
         }
         }
     };
 
     private void installApk(String fileUriString) {
         if (fileUriString == null) {
-            Toast.makeText(this, "קובץ לא נמצא להתקנה.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "קובץ לא נמצא להתקנה.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -707,7 +709,7 @@ public class MDMSettingsActivity extends Activity {
         try {
             startActivity(installIntent);
         } catch (Exception e) {
-            Toast.makeText(this, "לא ניתן להתקין קובץ: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "לא ניתן להתקין קובץ: " + e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }

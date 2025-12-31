@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:text="השבתת חשבונות למולטימדיה"
             style="@style/MDMActionButton"
-            android:background="@drawable/green_button_background"
+            android:background="@drawable/rounded_button_background"
             android:layout_marginTop="8dp" />
         <Button
             android:id="@+id/buconmult"
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:text="הפעלה למולטימדיה"
             style="@style/MDMActionButton"
-            android:background="@drawable/green_button_background"
+            android:background="@drawable/rounded_button_background"
             android:layout_marginTop="8dp" />
         <Button
             android:id="@+id/buenaccmult"
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:text="הפעלת חשבונות למולטימדיה"
             style="@style/MDMActionButton"
-            android:background="@drawable/green_button_background"
+            android:background="@drawable/rounded_button_background"
             android:layout_marginTop="8dp" />
         <Button
             android:id="@+id/bupair"
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:text="חיבור עם קוד"
             style="@style/MDMActionButton"
-            android:background="@drawable/green_button_background"
+            android:background="@drawable/rounded_button_background"
             android:layout_marginTop="8dp" />
         <Button
             android:id="@+id/budisacccon"
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:text="השבתת חשבונות עם חיבור"
             style="@style/MDMActionButton"
-            android:background="@drawable/green_button_background"
+            android:background="@drawable/rounded_button_background"
             android:layout_marginTop="8dp" />
         <Button
             android:id="@+id/bucon"
@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:text="הפעלה עם חיבור"
             style="@style/MDMActionButton"
-            android:background="@drawable/green_button_background"
+            android:background="@drawable/rounded_button_background"
             android:layout_marginTop="8dp" />
         <Button
             android:id="@+id/buenacccon"
@@ -111,7 +111,7 @@
             android:layout_height="wrap_content"
             android:text="הפעלת חשבונות עם חיבור"
             style="@style/MDMActionButton"
-            android:background="@drawable/green_button_background"
+            android:background="@drawable/rounded_button_background"
             android:layout_marginTop="8dp" />
         <Button
             android:id="@+id/budisacc"
@@ -119,7 +119,7 @@
             android:layout_height="wrap_content"
             android:text="השבתת חשבונות עם רוט"
             style="@style/MDMActionButton"
-            android:background="@drawable/green_button_background"
+            android:background="@drawable/rounded_button_background"
             android:layout_marginTop="8dp" />
         <Button
             android:id="@+id/buenacc"
@@ -127,7 +127,7 @@
             android:layout_height="wrap_content"
             android:text="הפעלת חשבונות עם רוט"
             style="@style/MDMActionButton"
-            android:background="@drawable/green_button_background"
+            android:background="@drawable/rounded_button_background"
             android:layout_marginTop="8dp" />
         <Button
             android:id="@+id/buexecall"
@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:text="הרץ הכל"
             style="@style/MDMActionButton"
-            android:background="@drawable/green_button_background"
+            android:background="@drawable/rounded_button_background"
             android:layout_marginTop="8dp" />
     </LinearLayout>
     </HorizontalScrollView>

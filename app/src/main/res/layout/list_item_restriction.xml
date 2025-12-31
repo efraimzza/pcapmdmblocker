@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
+          
             android:text="שם הגבלה"/>
 
         <TextView
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="#666666"
+           
             android:text="תיאור מפורט של ההגבלה הזו."/>
 
     </LinearLayout>

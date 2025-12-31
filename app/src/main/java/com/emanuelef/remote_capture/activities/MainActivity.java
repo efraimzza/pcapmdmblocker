@@ -200,6 +200,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         minstance=this;
         setContentView(R.layout.main_activity);
         setTitle(R.string.pcapdroid_app_name);
@@ -224,7 +225,7 @@ public class MainActivity extends BaseActivity {
         mIab = Billing.newInstance(this);
         mIab.setLicense(mIab.getLicense());
 
-        initPeerAppInfo();
+       // initPeerAppInfo();
         initAppState();
         checkPermissions();
 
@@ -379,17 +380,17 @@ public class MainActivity extends BaseActivity {
             navMenu.findItem(R.id.tls_decryption).setVisible(Prefs.getTlsDecryptionEnabled(mPrefs) && !Prefs.isRootCaptureEnabled(mPrefs));
         }*/
 
-        checkPaidDrawerEntries();
+       // checkPaidDrawerEntries();
         
         
        /* if(this != null&&lsta!=null)
             lsta.onResume();*/
     }
 
-    private void setupNavigationDrawer() {
+  //  private void setupNavigationDrawer() {
         
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setActionBar(toolbar);
+    //    Toolbar toolbar = findViewById(R.id.toolbar);
+     //   setActionBar(toolbar);
 /*
         mDrawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_nav_drawer, R.string.close_nav_drawer);
@@ -427,8 +428,8 @@ public class MainActivity extends BaseActivity {
             //Utils.startActivity(this, browserIntent);
             //can check version update hare
         });*/
-    }
-
+  //  }
+/*
     private void showWhatsNew() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.whats_new)
@@ -447,15 +448,15 @@ public class MainActivity extends BaseActivity {
             })
                 .show();
     }
-
+*/
     // keep this in a separate function, used by play billing code
-    private void checkPaidDrawerEntries() {
+   // private void checkPaidDrawerEntries() {
         //if(mNavView == null)
          //   return;
        // Menu navMenu = mNavView.getMenu();
        // navMenu.findItem(R.id.malware_detection).setVisible(Prefs.isMalwareDetectionEnabled(this, mPrefs));
       //  navMenu.findItem(R.id.firewall).setVisible(mIab.isFirewallVisible());
-    }
+    //}
 
     @Override
     @SuppressWarnings("deprecation")
@@ -524,7 +525,7 @@ public class MainActivity extends BaseActivity {
 
     // On debug builds, if the user also has the non-debug app installed (peer app), unlock the
     // already-purchased features also on this beta app
-    private void initPeerAppInfo() {
+   // private void initPeerAppInfo() {
       /*  if(!BuildConfig.APPLICATION_ID.equals("com.emanuelef.remote_capture.debug"))
             return;
 
@@ -563,7 +564,7 @@ public class MainActivity extends BaseActivity {
             Log.d(TAG, "Peer app launch failed");
             mIab.clearPeerSkus();
         }*/
-    }
+   // }
 /*
     private void peerInfoResult(final ActivityResult result) {
         if((result.getResultCode() == RESULT_OK) && (result.getData() != null)) {
@@ -627,8 +628,10 @@ public class MainActivity extends BaseActivity {
         new TabLayoutMediator(findViewById(R.id.tablayout), mPager, (tab, position) ->
                 tab.setText(getString(stateAdapter.getPageTitle(position)))
         ).attach();*/
-        maddtab(new StatusFragment(),getText(R.string.status));
-        maddtab(new ConnectionsFragment(),getText(R.string.connections_view));
+        Fragment sf=new StatusFragment();
+        Fragment cf=new ConnectionsFragment();
+        maddtab(sf,getText(R.string.status));
+        maddtab(cf,getText(R.string.connections_view));
 
         getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     }
@@ -945,7 +948,7 @@ public class MainActivity extends BaseActivity {
                         }
                     },MainActivity.this);
             return true;
-        } else if(id==R.id.action_firewall){
+        }/* else if(id==R.id.action_firewall){
             Intent intent = new Intent(MainActivity.this, FirewallActivity.class);
             startActivity(intent);
             return true;
@@ -962,7 +965,7 @@ public class MainActivity extends BaseActivity {
             Intent intent = new Intent(MainActivity.this, LogviewActivity.class);
             startActivity(intent);
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -1008,6 +1011,7 @@ public class MainActivity extends BaseActivity {
         mCapHelper.startCapture(settings);
         }catch(Exception e){
             Log.e("l",e.toString());
+            LogUtil.logToFile(e.toString());
         }
     }
 
@@ -1187,6 +1191,7 @@ public class MainActivity extends BaseActivity {
                 deleted = new File(fpath).delete();
             } catch (Exception e) {
                 e.printStackTrace();
+                LogUtil.logToFile(e.toString());
             }
         } else {
             Log.d(TAG, "deletePcapFile: uri=" + pcapUri);
@@ -1195,6 +1200,7 @@ public class MainActivity extends BaseActivity {
                 deleted = (getContentResolver().delete(pcapUri, null, null) == 1);
             } catch (UnsupportedOperationException | SecurityException e) {
                 e.printStackTrace();
+                LogUtil.logToFile(e.toString());
             }
         }
 

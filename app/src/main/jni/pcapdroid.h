@@ -212,6 +212,9 @@ typedef struct pcapdroid {
     jint mitm_addon_uid;
     bool vpn_capture;
     bool pcap_file_capture;
+    //new
+    bool is_payload;
+    //end new
     payload_mode_t payload_mode;
 
     // stats

@@ -206,6 +206,7 @@ public class CaptureService extends VpnService implements Runnable {
         } catch (UnsatisfiedLinkError e) {
             // This should only happen while running tests
             //e.printStackTrace();
+            //LogUtil.logToFile(e.toString());
         }
     }
 
@@ -261,6 +262,7 @@ public class CaptureService extends VpnService implements Runnable {
             String always_on_vpn_app = Settings.Secure.getString(getContentResolver(), "always_on_vpn_app");
             return always_on_vpn_app.equals(getPackageName());
         } catch (Exception e) {
+            LogUtil.logToFile(e.toString());
             if (!alwaysOnVpnErrorLogged) {
                 Log.w(TAG, "Querying the always-on VPN state failed: " + e);
                 alwaysOnVpnErrorLogged = true;
@@ -412,6 +414,7 @@ public class CaptureService extends VpnService implements Runnable {
             } catch (UnknownHostException e) {
                 reportError(e.getLocalizedMessage());
                 e.printStackTrace();
+                LogUtil.logToFile(e.toString());
                 return abortStart();
             }
 
@@ -424,6 +427,7 @@ public class CaptureService extends VpnService implements Runnable {
             } catch (UnknownHostException e) {
                 reportError(e.getLocalizedMessage());
                 e.printStackTrace();
+                LogUtil.logToFile(e.toString());
                 return abortStart();
             }
 
@@ -449,6 +453,7 @@ public class CaptureService extends VpnService implements Runnable {
                         return abortStart();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    LogUtil.logToFile(e.toString());
                     return abortStart();
                 }
             } else {
@@ -478,6 +483,7 @@ public class CaptureService extends VpnService implements Runnable {
                     uid = Utils.getPackageUid(getPackageManager(), package_name, 0);
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
+                    LogUtil.logToFile(e.toString());
                     continue;
                 }
 
@@ -526,6 +532,7 @@ public class CaptureService extends VpnService implements Runnable {
                     builder.addDnsServer(InetAddress.getByName(Prefs.getDnsServerV6(mPrefs)));
                 } catch (UnknownHostException | IllegalArgumentException e) {
                     Log.w(TAG, "Could not set IPv6 DNS server");
+                    LogUtil.logToFile(e.toString());
                 }
             }
 
@@ -540,7 +547,8 @@ public class CaptureService extends VpnService implements Runnable {
                         builder.addAllowedApplication(package_name);
                 } catch (PackageManager.NameNotFoundException e) {
                     String msg = String.format(getResources().getString(R.string.app_not_found), mSettings.app_filter);
-                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    LogUtil.logToFile(e.toString());
                     return abortStart();
                 }
             } else {
@@ -551,6 +559,7 @@ public class CaptureService extends VpnService implements Runnable {
                         builder.addDisallowedApplication(packageName);
                     } catch (PackageManager.NameNotFoundException e) {
                         e.printStackTrace();
+                        LogUtil.logToFile(e.toString());
                     }
                 }
 
@@ -578,6 +587,7 @@ public class CaptureService extends VpnService implements Runnable {
                 mParcelFileDescriptor = builder.setSession(CaptureService.VpnSessionName).establish();
             } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {
                 e.printStackTrace();
+                LogUtil.logToFile(e.toString());
                 Utils.showToast(this, R.string.vpn_setup_failed);
                 return abortStart();
             }
@@ -865,7 +875,7 @@ public class CaptureService extends VpnService implements Runnable {
         } catch (SecurityException e) {
             // this is a bug in Android 11 - https://issuetracker.google.com/issues/175055271?pli=1
             e.printStackTrace();
-
+            LogUtil.logToFile(e.toString());
             Log.w(TAG, "registerNetworkCallback failed, DNS server detection disabled");
             dns_server = fallbackDns;
             mNetworkCallback = null;
@@ -881,6 +891,7 @@ public class CaptureService extends VpnService implements Runnable {
                 cm.unregisterNetworkCallback(mNetworkCallback);
             } catch(IllegalArgumentException e) {
                 Log.w(TAG, "unregisterNetworkCallback failed: " + e);
+                LogUtil.logToFile(e.toString());
             }
 
             mNetworkCallback = null;
@@ -943,6 +954,7 @@ public class CaptureService extends VpnService implements Runnable {
                     mConnUpdateThread.join();
                 } catch (InterruptedException ignored) {
                     mPendingUpdates.offer(new Pair<>(null, null));
+                    LogUtil.logToFile(ignored.toString());
                 }
             }
             mConnUpdateThread = null;
@@ -953,6 +965,7 @@ public class CaptureService extends VpnService implements Runnable {
                     mDumperThread.join();
                 } catch (InterruptedException ignored) {
                     stopPcapDump();
+                    LogUtil.logToFile(ignored.toString());
                 }
             }
             mDumperThread = null;
@@ -963,10 +976,11 @@ public class CaptureService extends VpnService implements Runnable {
                     mMitmReceiver.stop();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    LogUtil.logToFile(e.toString());
                 }
                 mMitmReceiver = null;
             }
-        } catch (Exception e){}
+        } catch (Exception e){LogUtil.logToFile(e.toString());}
     }
 
     /* Stops the running Service. The SERVICE_STATUS_STOPPED notification is sent asynchronously
@@ -991,7 +1005,7 @@ public class CaptureService extends VpnService implements Runnable {
             if(captureService == null)
                 return;
             captureService.stopSelf();
-        } catch (Exception e){}
+        } catch (Exception e){LogUtil.logToFile(e.toString());}
     }
 
     /* Check if the VPN service was launched */
@@ -1067,7 +1081,7 @@ public class CaptureService extends VpnService implements Runnable {
         NetworkInterface iface = null;
         try {
             iface = NetworkInterface.getByIndex(ifidx);
-        } catch (SocketException ignored) {}
+        } catch (SocketException ignored) {LogUtil.logToFile(ignored.toString());}
         rv = (iface != null) ? iface.getName() : "";
 
         // store it even if not found, to avoid looking up it again
@@ -1225,6 +1239,7 @@ public class CaptureService extends VpnService implements Runnable {
                 mParcelFileDescriptor.close();
             } catch (IOException e) {
                 e.printStackTrace();
+                LogUtil.logToFile(e.toString());
             }
             mParcelFileDescriptor = null;
         }
@@ -1291,6 +1306,10 @@ public class CaptureService extends VpnService implements Runnable {
                 if(conns_updates.length > 0)
                     conn_reg.connectionsUpdates(conns_updates);
             }
+            //new Automatically clean after 5000 connections
+            if(conn_reg.getConnCount()>5000)
+                conn_reg.reset();
+            //end new
         }
     }
 
@@ -1301,6 +1320,7 @@ public class CaptureService extends VpnService implements Runnable {
             mDumper.startDumper();
         } catch (IOException | SecurityException e) {
             e.printStackTrace();
+            LogUtil.logToFile(e.toString());
             reportError(e.getLocalizedMessage());
             mHandler.post(new Runnable(){
 
@@ -1318,6 +1338,7 @@ public class CaptureService extends VpnService implements Runnable {
             try {
                 data = mDumpQueue.take();
             } catch (InterruptedException e) {
+                LogUtil.logToFile(e.toString());
                 continue;
             }
 
@@ -1329,6 +1350,7 @@ public class CaptureService extends VpnService implements Runnable {
             } catch (IOException e) {
                 // Stop the capture
                 e.printStackTrace();
+                LogUtil.logToFile(e.toString());
                 reportError(e.getLocalizedMessage());
                 mHandler.post(new Runnable(){
 
@@ -1343,6 +1365,7 @@ public class CaptureService extends VpnService implements Runnable {
             mDumper.stopDumper();
         } catch (IOException e) {
             e.printStackTrace();
+            LogUtil.logToFile(e.toString());
         }
     }
 
@@ -1472,6 +1495,10 @@ public class CaptureService extends VpnService implements Runnable {
 
     public int getBlockQuickMode() { return mSettings.block_quic_mode.ordinal(); }
 
+    //new
+    public int isPayload() { return (Prefs.ispayload(mPrefs)) ? 1 : 0; }
+    //end new
+    
     // returns 1 if dumpPcapData should be called
     public int pcapDumpEnabled() {
         return((mSettings.dump_mode != Prefs.DumpMode.NONE) ? 1 : 0);
@@ -1529,7 +1556,7 @@ public class CaptureService extends VpnService implements Runnable {
     // called from native
     public void sendStatsDump(CaptureStats stats) {
         //Log.d(TAG, "sendStatsDump");
-
+        try{
         last_bytes = stats.bytes_sent + stats.bytes_rcvd;
         last_connections = stats.tot_conns;
         mHandler.post(new Runnable(){
@@ -1539,6 +1566,7 @@ public class CaptureService extends VpnService implements Runnable {
 
         // notify the observers
         lastStats.postValue(stats);
+        }catch(Exception e){LogUtil.logToFile(e.toString());}
        //Log.d("request notify stat","lol");
         //LogUtil.logToFile("request notify stat");
     }
@@ -1640,6 +1668,7 @@ public class CaptureService extends VpnService implements Runnable {
                     mDumpQueue.put(data);
                     break;
                 } catch (InterruptedException e) {
+                    LogUtil.logToFile(e.toString());
                     // retry
                 }
             }
@@ -1692,7 +1721,7 @@ public class CaptureService extends VpnService implements Runnable {
                     break;
             }
 
-            Toast.makeText(CaptureService. this, err, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), err, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -1806,7 +1835,7 @@ public class CaptureService extends VpnService implements Runnable {
             while(INSTANCE.mCaptureThread != null) {
                 try {
                     INSTANCE.mCaptureStopped.await();
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {LogUtil.logToFile(ignored.toString());}
             }
         } finally {
             INSTANCE.mLock.unlock();

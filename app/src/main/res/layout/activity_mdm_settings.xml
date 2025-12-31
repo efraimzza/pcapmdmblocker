@@ -4,16 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F5F5F5"> 
+    > 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ניהול MDM"
+        android:text="ניהול החסימה (MDM)"
         android:textSize="28sp"
         android:textStyle="bold"
         android:gravity="center_horizontal"
         android:paddingBottom="24dp"
-        android:textColor="@android:color/black"/>
+        />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                 android:gravity="center_horizontal"
                 android:paddingBottom="24dp"
                 android:visibility="gone"
-                android:textColor="@android:color/black"/>
+                />
             
             <Button style="@style/MDMActionButton"
                 android:id="@+id/btn_manage_restrictions"
@@ -47,28 +47,29 @@
                 
             <Button style="@style/MDMActionButton"
                 android:id="@+id/btn_manage_vpn"
-                android:text="ניהול vpn"/>
+                android:text="ניהול ניטור רשת (vpn)"/>
 
-            <Button style="@style/MDMActionButton"
-                android:id="@+id/btn_change_password"
-                android:text="שנה סיסמה"/>
+            
 
+            
+            
             <Button style="@style/MDMActionButton"
-                android:id="@+id/btn_activate_frp"
-                android:text="הפעל frp" /> 
-                
+                android:id="@+id/btn_select_route"
+                android:text="בחירת מסלול לניטור רשת (vpn)"/>
+            <TextView
+                android:id="@+id/tv_cur_route"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="המסלול הפעיל - "
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:padding="20dp"
+            />
             <Button style="@style/MDMActionButton"
-                android:id="@+id/btn_remove_frp"
-                android:text="הסר frp"/> 
-                
-            <Button style="@style/MDMActionButton"
-                android:id="@+id/btn_update_mdm_app"
-                android:text="עדכון אפליקציית MDM"/>
-
-            <Button style="@style/MDMActionButton"
-                android:id="@+id/btn_lock_mdm"
-                android:text="נעילת הגדרות והסרה"/>
-
+                android:id="@+id/btn_update_whitelist"
+                android:text="עדכון דומיינים לרשימות לבנות"/>
+            
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -76,19 +77,53 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"/>
             <TextView
-                android:id="@+id/tv_cur_route"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="המסלול הפעיל - "
+                android:text="אבטחה"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:gravity="center_horizontal"
                 android:paddingBottom="24dp"
-                android:textColor="@android:color/black"/>
+            />
             <Button style="@style/MDMActionButton"
-                android:id="@+id/btn_select_route"
-                android:text="בחירת מסלול"/>
+                android:id="@+id/btn_pwopen"
+                android:text="אימות סיסמה לכל ההגדרות"/>
+            <Button style="@style/MDMActionButton"
+                android:id="@+id/btn_change_password"
+                android:text="שנה סיסמה"/>
 
+            <Button style="@style/MDMActionButton"
+                android:id="@+id/btn_activate_frp"
+                android:text="הפעל frp" /> 
+
+            <Button style="@style/MDMActionButton"
+                android:id="@+id/btn_remove_frp"
+                android:text="הסר frp"/> 
+
+            <Button style="@style/MDMActionButton"
+                android:id="@+id/btn_lock_mdm"
+                android:text="נעילת הגדרות והסרה"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#DDDDDD"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="עוד"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:paddingBottom="24dp"
+            />
+            
+            <Button style="@style/MDMActionButton"
+                android:id="@+id/btn_update_mdm_app"
+                android:text="עדכון אפליקציית MDM"/>
+            
+            
             <Button style="@style/MDMActionButton"
                 android:id="@+id/btn_def_rest_multi"
                 android:text="השבתות מומלצות למולטימדיה"/>
@@ -97,31 +132,17 @@
                 android:id="@+id/btn_def_rest_cube"
                 android:text="השבתות מומלצות לקוביית אנדרואיד"/>
                 
-            <Button style="@style/MDMActionButton"
-                android:id="@+id/btn_update_whitelist"
-                android:text="עדכון לרשימת דומיינים לבנה"/>
+            
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#DDDDDD"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"/>
+            
 
             <Button style="@style/MDMActionButton"
                 android:id="@+id/btn_more_features"
                 android:text="פיצ'רים נוספים"/>
                 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#DDDDDD"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"/>
+            
 
-            <Button style="@style/MDMActionButton"
-                android:id="@+id/btn_pwopen"
-                android:text="אימות סיסמה לכל ההגדרות"/>
+            
         </LinearLayout>
     </ScrollView>
 

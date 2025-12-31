@@ -11,11 +11,13 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
 
 public class MoreFeaturesActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setContentView(R.layout.activity_more_features);
 
         // כפתור לדוגמה: הוספת קיצור דרך להגדרות מולטימדיה

@@ -69,7 +69,7 @@ public class PrAppListAdapter extends ArrayAdapter<AppItem> {
                 @Override
                 public void onClick(View v) {
                     if (appItem.getPackageName().equals(mdmPackageName)||appItem.getPackageName().equals("io.github.huskydg.magisk")) {
-                        Toast.makeText(context, "לא ניתן לשנות אפליקציה זו.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context.getApplicationContext(), "לא ניתן לשנות אפליקציה זו.", Toast.LENGTH_SHORT).show();
                     } else {
                         boolean newCheckedState = !holder.hideSwitch.isChecked();
                         holder.hideSwitch.setChecked(newCheckedState);
@@ -86,6 +86,6 @@ public class PrAppListAdapter extends ArrayAdapter<AppItem> {
         TextView appName;
         TextView appPackage;
         TextView appLastUpdated;
-        Switch hideSwitch; // שינוי ל-Switch
+        Switch hideSwitch;
     }
 }

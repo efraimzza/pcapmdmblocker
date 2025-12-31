@@ -98,6 +98,7 @@ public class AboutActivity extends BaseActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setTitle(R.string.about);
         setContentView(R.layout.about_activity);
        /* addMenuProvider(this);
@@ -507,7 +508,7 @@ public class AboutActivity extends BaseActivity  {
         showQr.setVisibility(View.VISIBLE);
 
         if((error_msg != null) && !mDialogClosing)
-            Toast.makeText(this, error_msg, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), error_msg, Toast.LENGTH_LONG).show();
 
         stopQrExecutor();
     }

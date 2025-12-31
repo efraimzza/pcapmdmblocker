@@ -74,8 +74,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
-        
+        android:backgroundTint="@color/colorAccent"
         android:tint="@null"
         
-        android:src="@drawable/ic_arrow_drop_down" />
+        android:background="@drawable/ic_arrow_drop_down"
+         />
 </RelativeLayout>

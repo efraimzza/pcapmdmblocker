@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
+            
             android:text="שם אפליקציה"/>
 
         <TextView
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="#666666"
+            
             android:text="com.example.package"/>
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="10sp"
-            android:textColor="#999999"
+            
             android:text="עדכון אחרון: DD/MM/YYYY HH:MM"/>
 
     </LinearLayout>

@@ -103,6 +103,7 @@ public class MDMStatusActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setContentView(R.layout.activity_mdm_status);
         mactivity=this;
         if(!hasManageExternalStoragePermission(this)){
@@ -125,19 +126,19 @@ public class MDMStatusActivity extends Activity {
             AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
             spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
             spe.commit();
-            Toast.makeText(this,AppState.getInstance().getCurrentPath().name()+" is default",1).show();
+                Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
             }
         }else{
             try{
                 AppState.getInstance().setCurrentPath(PathType.valueOf(sp.getString(modesp,"")));
                 //Toast.makeText(this, AppState.getInstance().getCurrentPath().name()+ " is now",1).show();
             }catch(Exception e){
-                Toast.makeText(this, e+"",1).show();
+                Toast.makeText(getApplicationContext(), e+"",1).show();
                 //importnt if it isnt found like old version
                 AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
                 spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
                 spe.commit();
-                Toast.makeText(this,AppState.getInstance().getCurrentPath().name()+" is default",1).show();
+                Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
             }
         }
         }catch(Exception e){}
@@ -173,7 +174,7 @@ public class MDMStatusActivity extends Activity {
                 public void onClick(View p1) {
                     ClipboardManager clbo= (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
                     clbo.setText("dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin");
-                    Toast.makeText(MDMStatusActivity.this, "הועתק ללוח!",1).show();
+                    Toast.makeText(getApplicationContext(), "הועתק ללוח!",1).show();
                     
                 }
             });
@@ -183,7 +184,7 @@ public class MDMStatusActivity extends Activity {
                 public void onClick(View p1) {
                     ClipboardManager clbo= (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
                     clbo.setText("john@tw-desktop");
-                    Toast.makeText(MDMStatusActivity.this, "הועתק ללוח!",1).show();
+                    Toast.makeText(getApplicationContext(), "הועתק ללוח!",1).show();
                     
                 }
             });
@@ -191,7 +192,7 @@ public class MDMStatusActivity extends Activity {
                 @Deprecated
                 @Override
                 public void onClick(View p1) {
-                    Intent intent = new Intent(MDMStatusActivity.this, instructionactivity.class);
+                    Intent intent = new Intent(MDMStatusActivity.this, instructionactivity.class).putExtra("name","mdm");
                     startActivity(intent);
                 }
             });
@@ -315,7 +316,7 @@ public class MDMStatusActivity extends Activity {
                                     getMainExecutor().execute(new Runnable(){
                                             @Override
                                             public void run() {
-                                                Toast.makeText(MDMStatusActivity.this,"הצליח",1).show();
+                                                Toast.makeText(getApplicationContext(),"הצליח",1).show();
                                             }
                                         });
                                 } catch (Exception e) {
@@ -353,7 +354,7 @@ public class MDMStatusActivity extends Activity {
                     while ((read = is.read(buf))>0) {
                         fos.write(buf,0,read);
                     }
-                    Toast.makeText(MDMStatusActivity.this, "נשמר באיחסון פנימי!",1).show();
+                        Toast.makeText(getApplicationContext(), "נשמר באיחסון פנימי!",1).show();
                     }catch(Exception e){
                         
                     }finally{
@@ -477,12 +478,12 @@ public class MDMStatusActivity extends Activity {
                     } while (st != null);
                     in.close();
                     c += edtx1.toString();
-                    Toast.makeText(activity, "" + c, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "" + c, Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
-                    Toast.makeText(activity, "error" + e, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "error" + e, Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
-                Toast.makeText(activity, "error" + e, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "error" + e, Toast.LENGTH_LONG).show();
             }
     }
        public  static  void p(DevicePolicyManager devicePolicyManager, ComponentName componentName, String string, boolean bl) throws PackageManager.NameNotFoundException {
@@ -501,7 +502,7 @@ public class MDMStatusActivity extends Activity {
         tvdes.setTextColor(Color.parseColor("#ffff0000"));
         tvdes.setText("האם אתה בטוח שברצונך להסיר את אפליקציית ה-MDM כמנהל המכשיר?\nאזהרה: אם הסתרת אפליקציות תצטרך להסיר את ההסתרה לפני ההסרה!\nלפעמים ישארו גם כל מיני השבתות שתצטרכו להסיר ידנית בניהול השבתות(כמו השבתת סטטוס בר שאם לא הסרתם את ההשבתה בפעם הבאה תצטרכו להשבית את זה שוב בהגדרות אפילו שזה מושבת ורק אחר כך תצליחו להסיר...)");
         Button buenall=new Button(activity);
-        buenall.setBackgroundResource(R.drawable.green_button_background);
+        buenall.setBackgroundResource(R.drawable.rounded_button_background);
         buenall.setText("הסרת הסתרת כל האפליקציות");
         buenall.setOnClickListener(new OnClickListener(){
 
@@ -532,9 +533,9 @@ public class MDMStatusActivity extends Activity {
                     MDMSettingsActivity.removefrp(activity);
                     try{
                         mDpm.clearDeviceOwnerApp(activity.getPackageName());
-                        Toast.makeText(activity, "mdm removed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.getApplicationContext(), "mdm removed", Toast.LENGTH_SHORT).show();
                     }catch(Exception e){
-                        Toast.makeText(activity, "" + e, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.getApplicationContext(), "" + e, Toast.LENGTH_SHORT).show();
                     }
                     try {
                         StringBuilder stringBuilder = new StringBuilder("package:");
@@ -542,7 +543,7 @@ public class MDMStatusActivity extends Activity {
                         Uri parse = Uri.parse(stringBuilder.toString());
                         activity.startActivity(new Intent(Intent.ACTION_UNINSTALL_PACKAGE, parse).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     } catch (Exception e) {
-                        Toast.makeText(activity, "" + e, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.getApplicationContext(), "" + e, Toast.LENGTH_SHORT).show();
                     }
                 }
             })
@@ -556,7 +557,7 @@ public class MDMStatusActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = new ProgressDialog(mactivity);
-            progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.roundbugreen);
+            progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_button_background);
             progressDialog.setMessage("מסיר הסתרת אפליקציות...");
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -637,6 +638,10 @@ public class MDMStatusActivity extends Activity {
                 return true;
             case R.id.men_ite_about:
                 intent = new Intent(MDMStatusActivity.this, AboutActivitya.class);
+                startActivity(intent);
+                return true;
+            case R.id.men_ite_theme:
+                intent = new Intent(MDMStatusActivity.this, ThemeActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.men_ite_mail:
@@ -752,19 +757,19 @@ public class MDMStatusActivity extends Activity {
                         msg.addRecipients(Message.RecipientType.TO, recipientAddresses);
                         Transport.send(msg);
                         mcon.getMainLooper().myLooper().prepare();
-                        Toast.makeText(mcon, R.string.send_successful, 1).show();
+                            Toast.makeText(getApplicationContext(), R.string.send_successful, 1).show();
                         mcon.getMainLooper().myLooper().loop();
                     } catch (MessagingException mex) {
                         mex.printStackTrace();
                         //res += mex;
                         mcon.getMainLooper().myLooper().prepare();
-                        Toast.makeText(mcon, "" + mex, 1).show();
+                            Toast.makeText(getApplicationContext(), "" + mex, 1).show();
                         mcon.getMainLooper().myLooper().loop();
                     }
 
                 } catch (Exception e) {
                     mcon.getMainLooper().myLooper().prepare();
-                    Toast.makeText(mcon, "" + e, 1).show();
+                        Toast.makeText(getApplicationContext(), "" + e, 1).show();
                     mcon.getMainLooper().myLooper().loop();
                 }
             }}.start();
@@ -780,14 +785,15 @@ public class MDMStatusActivity extends Activity {
             linl.setOrientation(linl.VERTICAL);
             linl.setGravity(Gravity.CENTER);
             tvtc=new TextView(mcon);
-            tvtc.setTextSize(30);
-            tvtc.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_DialogWindowTitle);
+            
+            tvtc.setTextAppearance(R.style.TextTitle);
             edtxd = new EditText(mcon);
             String mailbod =mcon.getResources().getString(R.string.mailbod);
             edtxd.setHint(mailbod);
             //edtxd.setInputType(2);
             tvc = new TextView(mcon);
             bud = new Button(mcon);
+            bud.setBackgroundResource(R.drawable.rounded_button_background);
             bud.setText(R.string.send);
             linl.addView(tvtc);
             linl.addView(edtxd);
@@ -821,7 +827,7 @@ public class MDMStatusActivity extends Activity {
                                 msendmail(md_email, md_password,resa,recipients);
                             } else {
                                 tvc.setText(R.string.empty);
-                                Toast.makeText(mcon, R.string.empty, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), R.string.empty, Toast.LENGTH_LONG).show();
                             }
                         }
                     }
@@ -839,9 +845,10 @@ public class MDMStatusActivity extends Activity {
                 bud.setLayoutParams(llp);
                 //linl.setLayoutParams(flp);
                 tvtc.setText(R.string.send_mail);
-                
+            tvtc.setTextSize(25);
+            
         } catch (Exception e) {
-            Toast.makeText(mcon, e + "", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), e + "", Toast.LENGTH_LONG).show();
             //finish();
         }
     }
@@ -904,10 +911,10 @@ public class MDMStatusActivity extends Activity {
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile), "UTF_8"));//encoding="UTF_8"
                 out.write(c);
                 out.close();*/
-                Toast.makeText(MDMStatusActivity.this, "" + c, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "" + c, Toast.LENGTH_LONG).show();
             } catch (InterruptedException e) {}
         } catch (IOException e) {
-            Toast.makeText(MDMStatusActivity.this, "" + e, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_LONG).show();
         }
     }
     void mchmod(String mfiledestination) {
@@ -922,7 +929,7 @@ public class MDMStatusActivity extends Activity {
                 pr.waitFor();
             } catch (InterruptedException e) {}
         } catch (IOException e) {
-            Toast.makeText(MDMStatusActivity.this, "" + e, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_LONG).show();
         }
     }
 }

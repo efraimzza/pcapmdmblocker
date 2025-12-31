@@ -28,6 +28,7 @@ public class BaseActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         //Utils.enableEdgeToEdge(this);
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
     }
 
     @Override

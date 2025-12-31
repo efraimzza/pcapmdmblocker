@@ -33,6 +33,7 @@ public class instcer extends Activity implements MitmListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         LinearLayout linl= new LinearLayout(this);
         linl.setOrientation(LinearLayout.VERTICAL);
         linl.setGravity(Gravity.CENTER);
@@ -100,7 +101,7 @@ public class instcer extends Activity implements MitmListener{
                            // }});
                 }
             } else {
-                Toast.makeText(context, "addon did not return certificate", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "addon did not return certificate", Toast.LENGTH_LONG).show();
                 certFail();
             }
         }
@@ -204,7 +205,7 @@ public class instcer extends Activity implements MitmListener{
             startActivityForResult(intent,57);
             // certInstallLauncher.launch(intent);
         } catch (ActivityNotFoundException e) {
-            Utils.showToastLong(getContext(), R.string.no_intent_handler_found);
+            Utils.showToastLong(getApplicationContext(), R.string.no_intent_handler_found);
             fallbackToCertExport();
         }
     }
@@ -215,7 +216,7 @@ public class instcer extends Activity implements MitmListener{
             return;
 
         if(!mAddon.requestCaCertificate()) {
-            Toast.makeText(ctx, "requestCaCertificate failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "requestCaCertificate failed", Toast.LENGTH_LONG).show();
             certFail();
         }
     }
@@ -227,7 +228,7 @@ public class instcer extends Activity implements MitmListener{
             return;
 
         if(mCaPem == null) {
-            Toast.makeText(ctx, "addon disconnected", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "addon disconnected", Toast.LENGTH_LONG).show();
             certFail();
         }
     }

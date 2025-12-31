@@ -71,6 +71,9 @@ import android.annotation.Nullable;
 import java.io.FileOutputStream;
 import android.content.ClipboardManager;
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
+import android.content.res.Resources;
+import android.util.TypedValue;
 
 
 public class instructionactivity extends Activity {
@@ -84,25 +87,27 @@ public class instructionactivity extends Activity {
     private Button instructionsButton, barcodeButton, wifiButton, hotspotButton;
     private HorizontalScrollView horizontalScrollView;
     private ScrollView verticalScrollView;
-
-    // --- 3. משתני מימדי מסך (Screen Dimensions) ---
+    
     private int deviceWidth, deviceHeight;
-    private int qrCodeSize; // גודל מותאם אישית לקוד QR
+    private int qrCodeSize;
 
-
-    // --- 4. משתנים פנימיים למעקב ---
     private String currentScreenState = "home"; // "home" or "barcode"
     private Bitmap qrCodeBitmap;
-
+    String extra="";
+    
     @Deprecated
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Utils.setTheme(this);
         context = this;
-        requestStoragePermissions();
-        checkAndRequestFileAccess();
-
+        //requestStoragePermissions();
+        //checkAndRequestFileAccess();
+        
+        String getextra=getIntent().getStringExtra("name");
+        if(getextra!=null){
+            extra=getextra;
+        }
         initializeScreenDimensions();
         setupLayoutsAndViews();
 
@@ -110,7 +115,7 @@ public class instructionactivity extends Activity {
            // startServerSocketThread();
             displayHomeScreen();
         } catch (Exception e) {
-            Toast.makeText(this, "שגיאה באתחול: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "שגיאה באתחול: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -196,7 +201,8 @@ public class instructionactivity extends Activity {
         statusTextView = new TextView(context);
         titleTextView = new TextView(context);
         instructionsTextView = new TextView(context);
-
+        
+        
         // הגדרות טקסט כלליות - שימוש ב-TextAppearance
 
         // Status Text (פונט גדול ומודגש)
@@ -221,7 +227,8 @@ public class instructionactivity extends Activity {
 
         instructionsTextView.setTextSize(20);
         instructionsTextView.setGravity(Gravity.CENTER);
-        instructionsTextView.setTextAppearance(context,android.R.style.TextAppearance_Material_Title);
+        //instructionsTextView.setTextAppearance(context,android.R.style.TextAppearance_Material_Title);
+        instructionsTextView.setTextAppearance(context,R.style.TextTitle);
         verticalScrollView.addView(mainLayout);
         horizontalScrollView.addView(verticalScrollView);
         setContentView(horizontalScrollView);
@@ -258,7 +265,12 @@ public class instructionactivity extends Activity {
         LinearLayout.LayoutParams instructionsParams = new LinearLayout.LayoutParams(deviceWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
         instructionsParams.topMargin = 30; // הגדלת המרווח מהכותרת
         instructionsParams.bottomMargin = 30;
-        LinearLayout instructionsList = createInstructionsList(getResources().getString(R.string.in4));
+        LinearLayout instructionsList = null;
+        if(extra.equals("mdm")){
+            instructionsList = createInstructionsList(getResources().getString(R.string.in4));
+        }else if(extra.equals("vpn")){
+            instructionsList = createInstructionsList(getResources().getString(R.string.in5));
+        }
         instructionsList.setLayoutParams(instructionsParams);
         titleContainer.addView(instructionsList);
 
@@ -434,7 +446,12 @@ public class instructionactivity extends Activity {
 
         // text (מודגש)
         TextView text = new TextView(context);
-        text.setText(getResources().getString(R.string.sq2)); 
+        if(extra.equals("mdm")){
+            text.setText(getResources().getString(R.string.sq2));
+        }else if(extra.equals("vpn")){
+            text.setText(getResources().getString(R.string.sq3));
+        }
+         
         text.setGravity(Gravity.CENTER);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //text.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
@@ -444,7 +461,9 @@ public class instructionactivity extends Activity {
             text.setTextAppearance(context, android.R.style.TextAppearance_Material_Title);
         }
         text.setTextSize(20);
-
+        TypedValue tv = new TypedValue();
+        this.getTheme().resolveAttribute(android.R.attr.colorPrimary, tv, true);
+        //text.setTextColor(tv.data);
         //layout.addView(title);
         layout.addView(text);
         layout.setBackground(createWarningDrawable());
@@ -479,7 +498,9 @@ public class instructionactivity extends Activity {
     public GradientDrawable createWarningDrawable() {
         final GradientDrawable drawable = new GradientDrawable();
         drawable.setCornerRadius(35); 
-        drawable.setColor(Color.parseColor("#ffCEEBDE")); 
+        TypedValue tv = new TypedValue();
+        this.getTheme().resolveAttribute(R.attr.colorBackItem, tv, true);
+        drawable.setColor(tv.data); 
         drawable.setShape(GradientDrawable.RECTANGLE);
         return drawable;
     }
@@ -532,16 +553,23 @@ public class instructionactivity extends Activity {
 
         // כותרות קטנות: שימוש ב-TextAppearance_Large (שבדרך כלל מודגש)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            textView.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Large);
-            textView.setTextAppearance(android.R.style.TextAppearance_Material_Title);
+            //textView.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Large);
+            //textView.setTextAppearance(android.R.style.TextAppearance_Material_Title);
+            
+            textView.setTextAppearance(R.style.TextTitle);
         } else {
-            textView.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Large);
-            textView.setTextAppearance(context,android.R.style.TextAppearance_Material_Title);
+            //textView.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Large);
+            //textView.setTextAppearance(context,android.R.style.TextAppearance_Material_Title);
+            textView.setTextAppearance(context,R.style.TextTitle);
+            
         }
         textView.setTextSize(25); 
         textView.setPaintFlags(titleTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         textView.setText(text);
+        TypedValue tv = new TypedValue();
+        this.getTheme().resolveAttribute(android.R.attr.textColorPrimary, tv, true);
+        //textView.setTextColor(tv.data);
         return textView;
     }
 
@@ -552,69 +580,79 @@ public class instructionactivity extends Activity {
         // טקסט רגיל: שימוש ב-TextAppearance_Medium (שבדרך כלל רגיל)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //textView.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
-            textView.setTextAppearance(android.R.style.TextAppearance_Material_Title);
+            //textView.setTextAppearance(android.R.style.TextAppearance_Material_Title);
+            textView.setTextAppearance(R.style.TextTitle);
         } else {
             //textView.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Medium);
-            textView.setTextAppearance(context,android.R.style.TextAppearance_Material_Title);
+            //textView.setTextAppearance(context,android.R.style.TextAppearance_Material_Title);
+            textView.setTextAppearance(context,R.style.TextTitle);
         }
         textView.setTextSize(20); 
 
         textView.setText(text);
+        TypedValue tv = new TypedValue();
+        this.getTheme().resolveAttribute(android.R.attr.textColorPrimary, tv, true);
+        //textView.setTextColor(tv.data);
         return textView;
     }
     public Button createBu(final String text) {
-        Button textView = new Button(context);
-        textView.setGravity(Gravity.CENTER);
+        Button button = new Button(context);
+        button.setGravity(Gravity.CENTER);
 
         // טקסט רגיל: שימוש ב-TextAppearance_Medium (שבדרך כלל רגיל)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //textView.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
-            textView.setTextAppearance(android.R.style.TextAppearance_Material_Title);
+            //textView.setTextAppearance(android.R.style.TextAppearance_Material_Title);
+            button.setTextAppearance(R.style.TextTitle);
         } else {
             //textView.setTextAppearance(context, android.R.style.TextAppearance_DeviceDefault_Medium);
-            textView.setTextAppearance(context,android.R.style.TextAppearance_Material_Title);
+            //textView.setTextAppearance(context,android.R.style.TextAppearance_Material_Title);
+            button.setTextAppearance(context,R.style.TextTitle);
         }
-        textView.setTextSize(20); 
-        textView.setBackgroundResource(R.drawable.green_button_background);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        button.setTextSize(20);
+        button.setPadding(14,14,14,14);
+        TypedValue tv = new TypedValue();
+        this.getTheme().resolveAttribute(android.R.attr.colorPrimary, tv, true);
+        //textView.setTextColor(tv.data);
+        button.setBackgroundResource(R.drawable.rounded_button_background);
+        button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         switch(text){
             case "bucp":
-                textView.setText(R.string.bucppwd);
+                button.setText(R.string.bucppwd);
                 break;
             case "budev":
-                textView.setText(R.string.budev);
+                button.setText(R.string.budev);
                 break;
             case "bumult":
-                textView.setText(R.string.buadbmult);
+                button.setText(R.string.buadbmult);
                 break;
             case "budisaccmult":
-                textView.setText(R.string.budisaccmult);
+                button.setText(R.string.budisaccmult);
                 break;
             case "buactivmult":
-                textView.setText(R.string.buactivmult);
+                button.setText(R.string.buactivmult);
                 break;
             case "buactenaccmult":
-                textView.setText(R.string.buactenaccmult);
+                button.setText(R.string.buactenaccmult);
                 break;
             case "budisactenaccmult":
-                textView.setText(R.string.budisactenaccmult);
+                button.setText(R.string.budisactenaccmult);
                 break;
             case "buaccounts":
-                textView.setText(R.string.buaccount);
+                button.setText(R.string.buaccount);
                 break;
             case "buinfo":
-                textView.setText(R.string.budeviceinfo);
+                button.setText(R.string.budeviceinfo);
                 break;
             case "buwifi":
-                textView.setText(R.string.buwifi);
+                button.setText(R.string.buwifi);
                 break;
             case "buadbpair":
-                textView.setText(R.string.buadbwifi);
+                button.setText(R.string.buadbwifi);
                 break;
         }
         //textView.setText(text);
-        textView.setOnClickListener(new View.OnClickListener(){
-
+        button.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View p1) {
                     Intent intent;
@@ -622,7 +660,7 @@ public class instructionactivity extends Activity {
                         case "bucp":
                             ClipboardManager clbo= (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
                             clbo.setText("john@tw-desktop");
-                            Toast.makeText(instructionactivity.this, "הועתק ללוח!",1).show();
+                            Toast.makeText(getApplicationContext(), "הועתק ללוח!",1).show();
                             
                             break;
                         case "budev":
@@ -696,7 +734,7 @@ public class instructionactivity extends Activity {
                     }
                 }
             });
-        return textView;
+        return button;
     }
     
 

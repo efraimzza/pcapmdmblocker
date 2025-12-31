@@ -712,7 +712,7 @@ menu.findItem(R.id.add_country).setVisible(false);
         saveAndReload();
 
         String msg = String.format(context.getResources().getString(R.string.rules_import_success), num_imported);
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 
         if (mList instanceof Blocklist) {
             Blocklist blocklist = PCAPdroid.getInstance().getBlocklist();

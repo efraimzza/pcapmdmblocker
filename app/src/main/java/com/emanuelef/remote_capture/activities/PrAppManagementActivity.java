@@ -40,6 +40,10 @@ import java.util.zip.ZipEntry; // וודא שזה מיובא
 import android.content.pm.PackageInstaller;
 
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
+import android.content.SharedPreferences;
+import java.util.Set;
+import android.preference.PreferenceManager;
 
 @Deprecated
 public class PrAppManagementActivity extends Activity {
@@ -65,11 +69,15 @@ public class PrAppManagementActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setContentView(R.layout.practivity_app_management);
 
         mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminComponentName = new ComponentName(this, admin.class);
-
+        try{
+            if(getActionBar().isShowing())
+                getActionBar().hide();
+        }catch(Exception e){}
         lvApps = (ListView) findViewById(R.id.lv_apps);
 
         // טען את הרשימה באופן אסינכרוני
@@ -103,7 +111,9 @@ public class PrAppManagementActivity extends Activity {
                             public void run() {
                                 try{
                                     applyAppVisibilityChanges();
-                                }catch(Exception e){}
+                                }catch(Exception e){
+                                    LogUtil.logToFile(e.toString());
+                                }
                             }
                         },PrAppManagementActivity.this);
                 }
@@ -125,6 +135,38 @@ public class PrAppManagementActivity extends Activity {
                     }
                 });
         }
+        Button btnenableapp = (Button) findViewById(R.id.btn_enable_app);
+        if (btnenableapp != null) {
+            btnenableapp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PrPasswordManager.requestPasswordAndSave(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try{
+                                        enadisapps(false);
+                                    }catch(Exception e){}
+                                }
+                            },PrAppManagementActivity.this);
+                    }
+                });
+        }
+        Button btndisableapp = (Button) findViewById(R.id.btn_disable_app);
+        if (btndisableapp != null) {
+            btndisableapp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PrPasswordManager.requestPasswordAndSave(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try{
+                                        enadisapps(true);
+                                    }catch(Exception e){}
+                                }
+                            },PrAppManagementActivity.this);
+                    }
+                });
+        }
     }
 
     // הוסף AsyncTask חדש לטעינת אפליקציות
@@ -136,7 +178,7 @@ public class PrAppManagementActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = new ProgressDialog(PrAppManagementActivity.this);
-            progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.roundbugreen);
+            progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_button_background);
             progressDialog.setMessage("טוען רשימת אפליקציות משתמש...");
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -339,22 +381,41 @@ public class PrAppManagementActivity extends Activity {
     }
 
     
-
+    final private String msetapps="setapps";
     private void applyAppVisibilityChanges() {
+        List<String> ss=new ArrayList<>();
+        
         for (AppItem appItem : mOriginalAppList) { // עבר על הרשימה המקורית
             // אם מצב ה-hidden השתנה עבור האפליקציה הזו
             boolean currentHiddenState = mDpm.isApplicationHidden(mAdminComponentName, appItem.getPackageName());
             if (currentHiddenState != appItem.isHidden()) {
                 mDpm.setApplicationHidden(mAdminComponentName, appItem.getPackageName(), appItem.isHidden());
             }
+            if(appItem.isHidden())
+                ss.add(appItem.getPackageName());
+            
         }
-        Toast.makeText(PrAppManagementActivity.this, "שינויים באפליקציות נשמרו!", Toast.LENGTH_SHORT).show();
-        // רענן את הרשימה לאחר שמירה כדי לשקף שינויים (לדוגמה, בסינון 'מוסתרות')
-        // טען מחדש את הרשימה המקורית מהמערכת
+        String[] sa={};
+        sa=ss.toArray(sa);
+        Set<String> s= Set.of(sa);
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(PrAppManagementActivity.this).edit();
+        editor.putStringSet(msetapps, s).commit();
+        Toast.makeText(getApplicationContext(), "שינויים באפליקציות נשמרו!", Toast.LENGTH_SHORT).show();
         new LoadAppsTask().execute();
         applyFiltersAndSort(); // סנן ומיין אותה מחדש
     }
     
-    
+    private void enadisapps(boolean enadis){
+        Set<String> s= Set.of();
+        SharedPreferences mpref= PreferenceManager.getDefaultSharedPreferences(PrAppManagementActivity.this);
+        s=mpref.getStringSet(msetapps, s);
+        for(String pn:s){
+            mDpm.setApplicationHidden(mAdminComponentName, pn, enadis);
+        }
+        String mstat=enadis?"אפליקציות הושבתו!":"אפליקציות הופעלו!";
+        Toast.makeText(getApplicationContext(), mstat, Toast.LENGTH_SHORT).show();
+        new LoadAppsTask().execute();
+        applyFiltersAndSort();
+    }
     
 }

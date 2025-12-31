@@ -179,6 +179,9 @@ import android.app.NotificationManager;
 import android.widget.SearchView;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.util.TypedValue;
 
 public class Utils {
     static final String TAG = "Utils";
@@ -708,15 +711,15 @@ public class Utils {
 
         return null;
     }
-
+    //new set the context to get application context to set the original color for the text
     public static void showToast(Context context, int id, Object... args) {
         String msg = context.getResources().getString(id, (Object[]) args);
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     public static void showToastLong(Context context, int id, Object... args) {
         String msg = context.getResources().getString(id, (Object[]) args);
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(context.getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
 
     public static void showHelpDialog(Context context, int id) {
@@ -2145,5 +2148,61 @@ public class Utils {
     public static boolean isSemanticVersionCompatible(String a, String b) {
         int va = getMajorVersion(a);
         return (va >= 0) && (va == getMajorVersion(b));
+    }
+    public static void setTheme(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        try{prefs.getBoolean("dark_theme",false);
+            if(prefs.getBoolean("dark_theme",false)||!prefs.getBoolean("dark_theme",false)){
+            prefs.edit().remove("dark_theme").commit();
+            prefs.edit().putString("dark_theme","auto").commit();
+            }
+        }catch(Exception e){}
+        boolean dark=false;
+        String pdark = prefs.getString("dark_theme", "auto");
+        if(pdark.equals("auto")){
+            Configuration newConfig= context.getResources().getConfiguration();
+            dark=(newConfig.uiMode&Configuration.UI_MODE_NIGHT_YES)==Configuration.UI_MODE_NIGHT_YES;
+        }else if(pdark.equals("white")){
+            dark=false;
+        }else if(pdark.equals("dark")){
+            dark=true;
+        }
+        String theme = prefs.getString("theme", "dpurplet");
+        if (theme.equals("dpurplet"))
+            context.setTheme(dark ? R.style.AppThemePurpleTDark : R.style.AppThemePurpleT);
+        else if (theme.equals("dpurpler"))
+            context.setTheme(dark ? R.style.AppThemePurpleRDark : R.style.AppThemePurpleR);
+        else if (theme.equals("teal"))
+            context.setTheme(dark ? R.style.AppThemeTealDark : R.style.AppThemeTeal);
+        else if (theme.equals("blue"))
+            context.setTheme(dark ? R.style.AppThemeBlueDark : R.style.AppThemeBlue);
+        else if (theme.equals("purple"))
+            context.setTheme(dark ? R.style.AppThemePurpleDark : R.style.AppThemePurple);
+        else if (theme.equals("amber"))
+            context.setTheme(dark ? R.style.AppThemeAmberDark : R.style.AppThemeAmber);
+        else if (theme.equals("orange"))
+            context.setTheme(dark ? R.style.AppThemeOrangeDark : R.style.AppThemeOrange);
+        else if (theme.equals("green"))
+            context.setTheme(dark ? R.style.AppThemeGreenDark : R.style.AppThemeGreen);
+        else if (theme.equals("classic"))
+            context.setTheme(dark ? R.style.AppThemeClassicDark : R.style.AppThemeClassic);
+        else if (theme.equals("dgreen"))
+            context.setTheme(dark ? R.style.AppThemeGrdDark : R.style.AppThemeGrd);
+        else if (theme.equals("rpurple"))
+            context.setTheme(dark ? R.style.AppThemePuDark : R.style.AppThemePu);
+        else if (theme.equals("modern"))
+            context.setTheme(dark ? R.style.AppThemeMoDark : R.style.AppThemeMo);
+        else if (theme.equals("cold"))
+            context.setTheme(dark ? R.style.AppThemeCoDark : R.style.AppThemeCo);
+        
+        if (context instanceof Activity && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            setTaskColor(context);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static void setTaskColor(Context context) {
+        TypedValue tv = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.colorPrimary, tv, true);
+        ((Activity) context).setTaskDescription(new ActivityManager.TaskDescription(null, null, tv.data));
     }
 }

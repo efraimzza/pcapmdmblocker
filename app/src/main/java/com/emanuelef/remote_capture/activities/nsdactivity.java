@@ -18,6 +18,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.RemoteInput;
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
 
 public class nsdactivity extends Activity implements AdbNsdResolver.AdbServiceFoundListener {
 
@@ -34,6 +35,7 @@ public class nsdactivity extends Activity implements AdbNsdResolver.AdbServiceFo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
       //  mNotificationHelper = new NotificationHelper(this);
         try{
             if(getActionBar().isShowing())

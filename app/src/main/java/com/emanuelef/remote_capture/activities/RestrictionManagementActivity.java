@@ -17,6 +17,7 @@ import java.util.List;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
 
 public class RestrictionManagementActivity extends Activity {
 
@@ -31,6 +32,7 @@ public class RestrictionManagementActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setContentView(R.layout.activity_restriction_management); // שם קובץ layout חדש
         try{
             if(getActionBar().isShowing())
@@ -231,7 +233,7 @@ public class RestrictionManagementActivity extends Activity {
                                 ));
            }
         }catch(Exception e){
-            Toast.makeText(this, "c"+e, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "c"+e, Toast.LENGTH_SHORT).show();
         }
         
     }
@@ -284,7 +286,7 @@ public class RestrictionManagementActivity extends Activity {
                         // שנה ל-package name של אפליקציית ה-VPN שלך!
                         //Toast.makeText(this, "הגדרת VPN תמידי: " + (item.isEnabled() ? "הופעל" : "בוטל"), Toast.LENGTH_SHORT).show();
                     } catch (PackageManager.NameNotFoundException e) {
-                        Toast.makeText(this, "שגיאה: אפליקציית ה-VPN לא נמצאה.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "שגיאה: אפליקציית ה-VPN לא נמצאה.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     //Toast.makeText(this, "אפשרות VPN תמידי זמינה מ-Android 7.0 (API 24) ואילך.", Toast.LENGTH_SHORT).show();
@@ -294,7 +296,7 @@ public class RestrictionManagementActivity extends Activity {
                     try {
                         mDpm.setCameraDisabled(mAdminComponentName, item.isEnabled());
                     } catch (Exception e) {
-                        Toast.makeText(this, ""+e, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
                     }
                 }
             } else if (item.getKey().equals("DISALLOW_STATUSBAR")) {
@@ -304,7 +306,7 @@ public class RestrictionManagementActivity extends Activity {
                         spe.putBoolean("dis_statusbar",item.isEnabled());
                         spe.commit();
                     } catch (Exception e) {
-                        Toast.makeText(this, ""+e, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -317,6 +319,6 @@ public class RestrictionManagementActivity extends Activity {
                 }
             }
         }
-        Toast.makeText(this, "ההגבלות נשמרו בהצלחה!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "ההגבלות נשמרו בהצלחה!", Toast.LENGTH_SHORT).show();
     }
 }

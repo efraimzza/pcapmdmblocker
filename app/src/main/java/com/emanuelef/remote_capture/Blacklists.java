@@ -195,6 +195,14 @@ public class Blacklists {
                 addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
                         "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
                 break;
+            case WHATSAPP:
+                //domains
+                addList("domains whatsapp", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"whatsapp.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/whatsapp/whatsapp-domains.txt");
+                // IPs
+                addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
+                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
+                break;
             case MANUAL:
                 //domains
                 addList("domains MANUAL", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"manualdom.txt",
@@ -202,6 +210,14 @@ public class Blacklists {
                 // IPs
                 addList("ips MANUAL", BlacklistDescriptor.Type.IP_BLACKLIST, "manualip.txt",
                         "manual");
+                break;
+            case MANUALINK:
+                //domains
+                addList("domains MANUALINK", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"manualdomlink.txt",
+                        "manualink");
+                // IPs
+                addList("ips MANUALINK", BlacklistDescriptor.Type.IP_BLACKLIST, "manualiplink.txt",
+                        "manualink");
                 break;
             default:
                 break;
@@ -352,36 +368,43 @@ public class Blacklists {
             //end old
             if(bl.url.equals("manual")){
                 /*if(bl.fname.equals("manualdom.txt")){
-                    //copying dom.txt for the first check
-                    try{
-                        FileInputStream in = new FileInputStream("/storage/emulated/0/Download/dom.txt");
-                        FileOutputStream out= new FileOutputStream(getListPath(bl));
-                        byte[] bytesIn = new byte[4096];
-                        int read;
-                        while((read = in.read(bytesIn)) != -1)
-                            out.write(bytesIn, 0, read);
-                    }catch(Exception e){
-                        LogUtil.logToFile(bl.fname+bl.url+ e.toString());
-                    }
-                }else if(bl.fname.equals("manualip.txt")){
-                    //copying ip.txt for the first check
-                    try{
-                        FileInputStream in = new FileInputStream("/storage/emulated/0/Download/ip.txt");
-                        FileOutputStream out= new FileOutputStream(getListPath(bl));
-                        byte[] bytesIn = new byte[4096];
-                        int read;
-                        while((read = in.read(bytesIn)) != -1)
-                            out.write(bytesIn, 0, read);
-                    }catch(Exception e){
-                        LogUtil.logToFile(bl.fname+bl.url+ e.toString());
-                    }
-                }*/
+                 //copying dom.txt for the first check
+                 try{
+                 FileInputStream in = new FileInputStream("/storage/emulated/0/Download/dom.txt");
+                 FileOutputStream out= new FileOutputStream(getListPath(bl));
+                 byte[] bytesIn = new byte[4096];
+                 int read;
+                 while((read = in.read(bytesIn)) != -1)
+                 out.write(bytesIn, 0, read);
+                 }catch(Exception e){
+                 LogUtil.logToFile(bl.fname+bl.url+ e.toString());
+                 }
+                 }else if(bl.fname.equals("manualip.txt")){
+                 //copying ip.txt for the first check
+                 try{
+                 FileInputStream in = new FileInputStream("/storage/emulated/0/Download/ip.txt");
+                 FileOutputStream out= new FileOutputStream(getListPath(bl));
+                 byte[] bytesIn = new byte[4096];
+                 int read;
+                 while((read = in.read(bytesIn)) != -1)
+                 out.write(bytesIn, 0, read);
+                 }catch(Exception e){
+                 LogUtil.logToFile(bl.fname+bl.url+ e.toString());
+                 }
+                 }*/
                 //self select your file
                 bl.setUpdated(System.currentTimeMillis());
                 notifyListeners();
-            }else{
-            try{
-            Utils.startDownload(mContext,bl.url, getListPath(bl),new Runnable(){
+            }else if(bl.url.equals("manualink")){
+                String murl="";
+                if(bl.fname.equals("manualdomlink.txt")){
+                    murl= mPrefs.getString("manualdomlink", "");
+                }else if(bl.fname.equals("manualiplink.txt")){
+                    murl= mPrefs.getString("manualiplink", "");
+                }
+                if(!murl.equals("")){
+                try{
+                    Utils.startDownload(mContext,murl, getListPath(bl),new Runnable(){
                             @Override
                             public void run() {
                                 //success
@@ -391,20 +414,47 @@ public class Blacklists {
                                 notifyListeners();
                             }
                         },
-                    new Runnable(){
-                        @Override
-                        public void run() {
-                            //fail
-                            LogUtil.logToFile("fail");
-                            //Toast.makeText(mContext, "fail", Toast.LENGTH_SHORT).show();
-                            bl.setOutdated();
-                            notifyListeners();
-                        }
-                    });
-            } catch (Exception e){
-                LogUtil.logToFile(""+e);
-                //Toast.makeText(mContext,e+ "", Toast.LENGTH_SHORT).show();
-            }
+                        new Runnable(){
+                            @Override
+                            public void run() {
+                                //fail
+                                LogUtil.logToFile("fail");
+                                //Toast.makeText(mContext, "fail", Toast.LENGTH_SHORT).show();
+                                bl.setOutdated();
+                                notifyListeners();
+                            }
+                        });
+                } catch (Exception e){
+                    LogUtil.logToFile(""+e);
+                    //Toast.makeText(mContext,e+ "", Toast.LENGTH_SHORT).show();
+                }
+                }
+            }else{
+                try{
+                    Utils.startDownload(mContext,bl.url, getListPath(bl),new Runnable(){
+                            @Override
+                            public void run() {
+                                //success
+                                LogUtil.logToFile("suc");
+                                //Toast.makeText(mContext, "suc", Toast.LENGTH_SHORT).show();
+                                bl.setUpdated(System.currentTimeMillis());
+                                notifyListeners();
+                            }
+                        },
+                        new Runnable(){
+                            @Override
+                            public void run() {
+                                //fail
+                                LogUtil.logToFile("fail");
+                                //Toast.makeText(mContext, "fail", Toast.LENGTH_SHORT).show();
+                                bl.setOutdated();
+                                notifyListeners();
+                            }
+                        });
+                } catch (Exception e){
+                    LogUtil.logToFile(""+e);
+                    //Toast.makeText(mContext,e+ "", Toast.LENGTH_SHORT).show();
+                }
             }
             //notifyListeners();
         }
@@ -469,9 +519,9 @@ public class Blacklists {
                 CaptureService.reloadMalwareWhitelist();
             }
         }
-        Toast.makeText(mContext, "lists up: " + num_loaded + " lists, " + num_domains + " domains, " + num_ips + " IPs",1).show();
+        Toast.makeText(mContext.getApplicationContext(), "lists up: " + num_loaded + " lists, " + num_domains + " domains, " + num_ips + " IPs",1).show();
         if(num_loaded==0||num_domains==0||num_ips==0){
-            Toast.makeText(mContext, "אזהרה: מסלול לא עודכן נדרש חיבור אינטרנט. נסה שוב...",1).show();
+            Toast.makeText(mContext.getApplicationContext(), "אזהרה: מסלול לא עודכן נדרש חיבור אינטרנט. נסה שוב...",1).show();
         }
         Log.i(TAG, "Blacklists loaded: " + num_loaded + " lists, " + num_domains + " domains, " + num_ips + " IPs");
         mNumDomainRules = num_domains;

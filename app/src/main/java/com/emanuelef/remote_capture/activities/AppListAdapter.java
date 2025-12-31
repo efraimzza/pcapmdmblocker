@@ -69,7 +69,7 @@ public class AppListAdapter extends ArrayAdapter<AppItem> {
                 @Override
                 public void onClick(View v) {
                     if (appItem.getPackageName().equals(mdmPackageName)) {
-                        Toast.makeText(context, "לא ניתן להסתיר את אפליקציית ה-MDM.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context.getApplicationContext(), "לא ניתן להסתיר את אפליקציית ה-MDM.", Toast.LENGTH_SHORT).show();
                     } else {
                         boolean newCheckedState = !holder.hideSwitch.isChecked();
                         holder.hideSwitch.setChecked(newCheckedState);

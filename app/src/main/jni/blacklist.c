@@ -342,6 +342,21 @@ static char* get_second_level_domain(const char *domain) {
     return dot + 1;
 }
 
+static char* get_three_level_domain(const char *domain) {
+    char *dot = (char*) memrchr(domain, '.', strlen(domain));
+    if(!dot || (dot == domain))
+        return (char*)domain;
+
+    dot = (char*) memrchr(domain, '.', dot - domain);
+    if(!dot)
+        return (char*)domain;
+    char *dota=dot;
+    dot = (char*) memrchr(domain, '.', dot - domain);
+    if(!dot)
+        return (char*)dota+1;
+    return dot + 1;
+}
+
 /* ******************************************************* */
 
 bool blacklist_match_domain(blacklist_t *bl, const char *domain) {
@@ -383,6 +398,19 @@ bool blacklist_match_domain(blacklist_t *bl, const char *domain) {
         return true;
     /*end new*/
     
+    //new
+    //first find chat.google.com itself using *.+itself ...
+       snprintf(wildcard_key, sizeof(wildcard_key), "*.%s", domain);
+    entry = HashFind(ht, PTR_KEY(ht, wildcard_key));
+    if(entry != NULL)
+        return true;
+    //for c.chat.google.com ...
+        char *domain3 = get_three_level_domain(domain);
+        snprintf(wildcard_key, sizeof(wildcard_key), "*.%s", domain3);
+    entry = HashFind(ht, PTR_KEY(ht, wildcard_key));
+    if(entry != NULL)
+        return true;
+    //end new
     return false;
 }
 

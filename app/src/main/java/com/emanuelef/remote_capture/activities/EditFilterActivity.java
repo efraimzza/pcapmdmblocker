@@ -72,6 +72,7 @@ public class EditFilterActivity extends BaseActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setContentView(R.layout.edit_filter_activity);
         setTitle(R.string.edit_filter);
         //addMenuProvider(this);
@@ -253,6 +254,12 @@ public class EditFilterActivity extends BaseActivity  {
         finish();
     }
 
+    @Override
+    public boolean onNavigateUp() {
+        finishOk();
+        return true;
+    }
+    
    // @Override
     public boolean onSupportNavigateUp() {
         finishOk();

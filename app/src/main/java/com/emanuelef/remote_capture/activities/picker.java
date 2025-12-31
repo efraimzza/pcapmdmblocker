@@ -25,6 +25,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.fragments.BlacklistsFragment;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import com.emanuelef.remote_capture.Utils;
 
 public class picker extends Activity { 
 
@@ -34,11 +37,14 @@ public class picker extends Activity {
     List<FileItem> fileList;
     String from="";
     //final ReentrantLock mLock = new ReentrantLock();
-
+    private SharedPreferences mPrefs;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setContentView(R.layout.activity_picker);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         //LogUtil.initlogpat(getExternalFilesDir("")+"/log.txt");
         try {
             if(getIntent().getStringExtra("from")!=null&&!getIntent().getStringExtra("from").equals("")){
@@ -53,7 +59,17 @@ public class picker extends Activity {
             mpath = Environment.getExternalStorageDirectory().getAbsolutePath();
             mpath = "/storage";
             //mpath="/storage";
-            reloadlist(mpath);
+            String histpat=mPrefs.getString("historyPicker", "");
+            if(!histpat.equals("")){
+                if(new File(histpat).exists()&&new File(histpat).canRead()&&new File(histpat).isDirectory()){
+                    reloadlist(histpat);
+                }else{
+                    reloadlist(mpath);
+                    //LogUtil.logToFile("history pat isnt available");
+                }
+            }else{
+                reloadlist(mpath);
+            }
             //LogUtil.logToFile("res");
             /*
              List<FileItem> fileList=new ArrayList<>();
@@ -76,6 +92,8 @@ public class picker extends Activity {
                         //if (clickedItem.mimeType.equals(DocumentsContract.Document.MIME_TYPE_DIR)) {
                         if (new File(clickedItem.path).isDirectory()) {
                             reloadlist(clickedItem.path);
+                            //store the path for history
+                            mPrefs.edit().putString("historyPicker", clickedItem.path.toString()).commit();
                             // Folder click: Navigate to the new path (load files from the new path/URI)
                             // You'd need to re-run your loadFilesFromUri/loadFilesFromFile method with the new path/URI
                             // e.g., loadFilesFromUri(Uri.parse(clickedItem.path));
@@ -331,13 +349,13 @@ public class picker extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        finish();
+        //finish();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        finish();
+        //finish();
     }
     
     

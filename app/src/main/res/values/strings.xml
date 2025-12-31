@@ -74,7 +74,7 @@
     <string name="in2">כאן תוכלו להתקין את אפליקציית \"חסימת mdm\" על מכשיר חדש או מכשיר מאופס להגדרות יצרן.\n--לפניכם 2 אפשרויות התקנה:--\n--התקנה דרך נקודה חמה--מיועדת להתקנה ישירות ממכשיר זה, במידה והוא מחובר לאינטרנט.\n--התקנה דרך רשת Wi-Fi--מיועדת להתקנה דרך רשת Wi-Fi משותפת למכשיר זה ולמכשיר החדש או המאופס (הנקודה חמה צריכה להיות כבויה).\n\nלאחר שבחרתם את שיטת ההתקנה המועדפת עליכם, האפליקציה תיצור עבורכם ברקוד מתאים.</string>
     <string name="in3">כעת, בצעו את הפעולות הבאות:\n\nהפעילו את המכשיר החדש / המאופס.\nהקישו 6 פעמים רצופות על מסך הפתיחה, עד שהמצלמה תיפתח.\nסרקו את הברקוד שמופיע על המכשיר השולט.\nהתחברו לרשת ה-Wi-Fi או לנקודה החמה שהוקמה במכשיר השולט.\nהמשיכו לפעול על פי ההוראות שתופענה על המסך.\nמזל טוב! יש לכם מכשיר עם \"חסימת mdm\".\n\nשימו לב:\nייתכן ואפליקציית \"חסימת mdm\" לא תעבור אוטומטית למכשיר החדש. במקרה כזה, פשוט התקינו אותה בעצמכם – ההרשאה כבר הוקמה.\n\nנ.ב. המכשיר אינו מוגן עד להפעלת ההשבתות בפועל.</string>
 	<string name="sq">"Installing \"MDM blocking\" from an Android device to another device \n using a QR barcode"</string>
-    <string name="buinstruction">Instructions for activating the block!</string>
+    <string name="buinstructionmdm">Instructions for activating the block!</string>
     <string name="budeviceinfo">open device information!</string>
     <string name="budev">Opening developer options!</string>
     <string name="bucppwd">Copy the common code to open ADB for multimedia!</string>
@@ -88,6 +88,60 @@
     <string name="buactivmult">הפעלת החסימה למולטימדיה</string>
     <string name="buactenaccmult">הפעלת החסימה והפעלת חשבונות</string>
     <string name="budisactenaccmult">השבתת חשבונות הפעלת החסימה והפעלת חשבונות</string>
+    <string name="payloadvi">הצגת עומס</string>
+    <string name="payloadvi_summary">הצגת עומס של חיבורים(עשוי רק לבדוק על המקום ולא להשאיר דלוק...)</string>
+    <string name="clear_conn">clean connections</string>
+    <string name="buinstructionvpn">Instructions for vpn!</string>
+    <string name="sq3">כאן יש לכם הוראות הפעלה לסינון האינטרנט על ידי ניטור הרשת - vpn</string>
+    <string name="in5">הוראות ניהול ניטור רשת (vpn)--\n--החלק הראשון - \"סטאטוס\"--\n--הפעלת ניטור רשת--\nמפעילים לבדיקה ראשונית שהכל תקין ופעיל ומוודאים שיש רשת לפי המסלול או/ו הכללים שבחרתם, נכנסים לרשימות לבנות במסך הראשי מנווטים לחלק השני - רשימות לבנות ומעדכנים את הרשימות. אפשרי לעדכן גם במסך הראשי של ניהול החסימה (mdm) / עדכון דומיינים לרשימות לבנות.\n\n--הפעלת ניטור רשת באמצעות החסימה--\nאחרי שהכל תקין אפשר להפעיל באמצעות החסימה - אי אפשר לבטל מהגדרות אנדרואיד ואין רשת אם הניטור רשת לא פעיל (או עדיין לא פעיל)\n\n--הסרת ניטור רשת באמצעות החסימה--\nמסיר את הניטור רשת.\n\n--חסימת אש--\nאפשר לחסום אפליקציות ברשימה השחורה של חסימת אש\nאפשר להגדיר (יש למעלה 3 נקודות) מצב רשימה לבנה - כל מה שלא נמצא ברשימה הלבנה יחסם, וכל מה שנמצא ברשימה שחורה יחסם (למשל אם פותחים אפליקציה לרשימה לבנה וחוסמים לו מארח (דומיין) ברשימה השחורה.\nאפשר להשבית מצב חומת אש בסוויטש למעלה...\nסימן החסימה בחיבורים - עיגול עם פס עקום באמצע\n\n--רשימות לבנות--\nכל מה שלא נמצא ברשימות הלבנות (בחלק השני זה הקישורים) יחסם, הרשימות הם לפי המסלול שבחרתם - בניהול החסימה / בחירת מסלול לניטור רשת (vpn) (המסלול הראשוני והכי מתעדכן - מולטימדיה)\nכל מה שנמצא ברשימה הלבנה (החלק השלישי) לא יחסם\nאפשר להשבית מצב רשימות לבנות בהגדרות.\nסימן החסימה בחיבורים - גולגולת\n\n--עדיפות הבדיקה--\nהאם המארח (דומיין) נמצא ברשימה הלבנה של רשימות לבנות (אם לא זה חסום אלא אם כן זה יהיה ברשימות הלבנות -)\nהאם המארח (דומיין) נמצא ברשימות לבנות (אם כן זה לא נחסם אלא אם זה לא יעבור את החסימת אש)\nהאם המארח (דומיין) נמצא ברשימה הלבנה של חסימת אש (אם פעיל...) (אם כן זה לא נחסם אלא אם זה יהיה ברשימה השחורה) \nהאם המארח (דומיין) נמצא ברשימה השחורה של חסימת אש (נחסם עקב חסימת אש)\n\nלדוגמא אם תרצו להוסיף אפליקציה שהדומיינים וה ip שלו לא נמצאים ברשימות הלבנות - תצטרכו להוסיף אותם ברשימה הלבנה של \"רשימות לבנות\", ואם הפעלתם מצב רשימה לבנה בחומת אש תצטרכו גם להוסיף אותו ברשימה לבנה של החומת אש ולוודא שזה לא נמצא ברשימה השחורה...\n\n--החלק השני - \"חיבורים\"--\nאפשר לראות את כל חיבורי הרשת של המכשיר.\nאפשר לחפש חסומים ולראות למה הוא נחסם - גולגולת = רשימות לבנות, עיגול עם פס עקום = חסימת אש. (מתי שיש גולגולת יש גם את העיגול...)\nמתבצע ניקוי אוטומטי כל 5000 חיבורים\n\n--3 נקודות למעלה--\n--שמור בקובץ--\nנשמר בפורמט csv - טבלה של טקסט\nאפשר לראות מה נחסם - החלק האחרון בכל שורה אם חסום כתוב yes\nאפשר לסנן עם ריגקס - סינון טקסט חכם (.*[^s]\\n לדוגמא מסנן כל מה שלא חסום (לא נגמר השורה עם s -של yes...)אפשר להחליף בכלום ואז נשאר רק החסומים...)\n\n--שלח קובץ csv למפתח--\nשולח את הקובץ למפתח כדי לפתוח משהו חסום תכתבו למה בדיוק אתם מתכוונים.\n\n--ניקוי חיבורים--\nמנקה כל החיבורים לצורך מיקוד על חסימה שאתם רוצים לבדוק (מומלץ לנקות לפני כל בדיקה של אפליקציה)\n\n--הגדרות (מה שחשוב)--\n--פטור vpn--\nמה שמופעל שם יחסם לצמיתות כי ה vpn במצב תמידי וחסימת כל החיבורים שלא עוברים ב vpn...\n\n--רשימות לבנות--\nכשזה לא מופעל הבדיקה של החיבורי רשת - רק לפי חסימת אש...</string>
+        
+    <string-array name="themeNames">
+        <item>dark purple/teal</item>
+        <item>dark purple/red</item>
+        <item>teal/orange</item>
+        <item>blue/orange</item>
+        <item>purple/red</item>
+        <item>amber/blue</item>
+        <item>orange/grey</item>
+        <item>green</item>
+        <item>classic</item>
+        <item>deep green</item>
+        <item>royal purple</item>
+        <item>modern</item>
+        <item>cold</item>
+    </string-array>
+    
+    <string-array name="themeValues" translatable="false">
+        <item>dpurplet</item>
+        <item>dpurpler</item>
+        <item>teal</item>
+        <item>blue</item>
+        <item>purple</item>
+        <item>amber</item>
+        <item>orange</item>
+        <item>green</item>
+        <item>classic</item>
+        <item>dgreen</item>
+        <item>rpurple</item>
+        <item>modern</item>
+        <item>cold</item>
+    </string-array>
+    <string-array name="dthemeNames">
+        <item>system default</item>
+        <item>Bright</item>
+        <item>Dark</item>
+    </string-array>
+    <string-array name="dthemeValues" translatable="false">
+        <item>auto</item>
+        <item>white</item>
+        <item>dark</item>
+    </string-array>
+    <string name="setting_options">Options</string>
+    <string name="setting_theme">Theme: %1$s</string>
+    <string name="setting_dtheme">brightness state: %1$s</string>
+    <string name="setting_dark">Use dark theme</string>
+    
+    
     
     <string name="start_button">Start</string>
     <string name="stop_button">Stop</string>

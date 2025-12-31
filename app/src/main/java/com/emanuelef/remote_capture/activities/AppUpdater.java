@@ -322,7 +322,7 @@ public class AppUpdater {
                             }
                         }
                         progressDialog = new ProgressDialog(context);
-                        progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.roundbugreen);
+     progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_button_background);
                         progressDialog.setMessage("מתחיל.");
                         progressDialog.setCancelable(false);
                         progressDialog.show();

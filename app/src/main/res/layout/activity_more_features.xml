@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F5F5F5">
+    >
 
     <TextView
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:textStyle="bold"
         android:gravity="center_horizontal"
         android:paddingBottom="16dp"
-        android:textColor="@android:color/black"/>
+        />
 
     <Button style="@style/MDMActionButton"
         android:id="@+id/btn_add_multimedia_settings_shortcut"

@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import com.emanuelef.remote_capture.Utils;
 
 public class confirmationinstall extends Activity {
     @Deprecated
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         Intent inte= getIntent().getParcelableExtra("inte");
         if(inte!=null){
             inte.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -32,6 +32,12 @@
         android:id="@+id/senddev"
         android:title="@string/sendtodev"
         android:orderInCategory="40"
-        android:icon="@drawable/ic_save"
+        
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/clear_conn"
+        android:title="@string/clear_conn"
+        android:orderInCategory="50"
+        
         android:showAsAction="never" />
 </menu>

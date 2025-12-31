@@ -164,7 +164,7 @@ public class PasswordManager {
                                 pwopen=cb.isChecked();
                             }
                         } else {
-                            Toast.makeText(activity, "סיסמה שגויה!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity.getApplicationContext(), "סיסמה שגויה!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -238,12 +238,12 @@ public class PasswordManager {
                     String newPasswordb = etNewPasswordb.getText().toString();
                     if (newPassword.equals(newPasswordb)) {
                         if (PasswordManager.setPassword(activity, newPassword)) {
-                            Toast.makeText(activity, "הסיסמה נשמרה בהצלחה!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity.getApplicationContext(), "הסיסמה נשמרה בהצלחה!", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(activity, "שגיאה: הסיסמה קצרה מדי! (מינימום " + PasswordManager.getMinPasswordLength() + " תווים)", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity.getApplicationContext(), "שגיאה: הסיסמה קצרה מדי! (מינימום " + PasswordManager.getMinPasswordLength() + " תווים)", Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Toast.makeText(activity, "שגיאה: הסיסמאות אינם תואמות", Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity.getApplicationContext(), "שגיאה: הסיסמאות אינם תואמות", Toast.LENGTH_LONG).show();
                     }
                 }
             });

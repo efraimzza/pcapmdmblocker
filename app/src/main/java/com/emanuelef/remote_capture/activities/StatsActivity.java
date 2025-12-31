@@ -64,6 +64,7 @@ public class StatsActivity extends BaseActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setTitle(R.string.stats);
         displayBackAction();
         setContentView(R.layout.activity_stats);

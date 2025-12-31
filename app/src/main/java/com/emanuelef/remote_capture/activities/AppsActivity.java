@@ -22,6 +22,7 @@ package com.emanuelef.remote_capture.activities;
 import android.os.Bundle;
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.fragments.AppsFragment;
+import com.emanuelef.remote_capture.Utils;
 
 public class AppsActivity extends BaseActivity {
     private static final String TAG = "AppsActivity";
@@ -29,7 +30,7 @@ public class AppsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Utils.setTheme(this);
         setTitle(R.string.apps);
         setContentView(R.layout.fragment_activity);
         getFragmentManager().beginTransaction()

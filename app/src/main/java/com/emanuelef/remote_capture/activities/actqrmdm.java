@@ -74,6 +74,7 @@ import android.content.pm.ActivityInfo;
 import com.emanuelef.remote_capture.R;
 import android.annotation.Nullable;
 import android.view.ViewGroup;
+import com.emanuelef.remote_capture.Utils;
 
 public class actqrmdm extends Activity {
     ServerSocket ss;
@@ -102,6 +103,7 @@ public class actqrmdm extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         patmdm=getApplicationContext().getApplicationInfo().sourceDir;
         permi();
         try {
@@ -168,7 +170,7 @@ public class actqrmdm extends Activity {
             tha();
             mai();
         } catch (Exception e) {
-            Toast.makeText(this, "" + e, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_LONG).show();
         }
     }
     public void permi() {
@@ -799,7 +801,7 @@ public class actqrmdm extends Activity {
                 mrec=p.packageName+"/"+mrec;
             }
         }catch(Exception e){
-            Toast.makeText(mcon,""+e,1).show();
+            Toast.makeText(getApplicationContext(),""+e,1).show();
         }
         return mrec;
     }

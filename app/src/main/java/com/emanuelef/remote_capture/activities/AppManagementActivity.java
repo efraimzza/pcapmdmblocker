@@ -43,6 +43,7 @@ import java.util.List;
 import android.os.Handler;
 
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
 
 @Deprecated
 public class AppManagementActivity extends Activity {
@@ -54,7 +55,6 @@ public class AppManagementActivity extends Activity {
     private List<AppItem> mFilteredAppList;
     private AppListAdapter mAdapter;
 
-    // משתנים לשמירת מצב הסינון והמיון הנוכחי
     private String currentSearchText = "";
     private String currentSearchPackage = ""; // לחיפוש לפי שם חבילה
     private int currentFilterOptionId = R.id.rb_filter_all_dialog; // ID של כפתור הרדיו הנבחר
@@ -70,6 +70,7 @@ public class AppManagementActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setContentView(R.layout.activity_app_management);
         mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminComponentName = new ComponentName(this, admin.class);
@@ -132,14 +133,14 @@ public class AppManagementActivity extends Activity {
                                             }
                                         } catch (Exception e) {
                                             LogUtil.logToFile(""+e);
-                                            Toast.makeText(AppManagementActivity.this, "" + e, 0).show();
+                                            Toast.makeText(getApplicationContext(), "" + e, 0).show();
                                         }
                                     }
                                 }
                             }
                         } catch (Exception e) {
                             LogUtil.logToFile(""+e);
-                            Toast.makeText(AppManagementActivity.this, "" + e, 0).show();
+                            Toast.makeText(getApplicationContext(), "" + e, 0).show();
                         }
                         //Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         //intent.setType("*/*");
@@ -164,7 +165,7 @@ public class AppManagementActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = new ProgressDialog(AppManagementActivity.this);
-            progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.roundbugreen);
+            progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_button_background);
             progressDialog.setMessage("טוען רשימת אפליקציות...");
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -350,17 +351,7 @@ public class AppManagementActivity extends Activity {
             mfilepath=pickedfilepath;
             pickedfilepath="";
             new Thread(){public void run() {
-
-                    getMainExecutor().execute(new Runnable(){
-                            @Deprecated
-                            @Override
-                            public void run() {
-                                progressDialog = new ProgressDialog(AppManagementActivity.this);
-                                progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.roundbugreen);
-                                progressDialog.setMessage("מתחיל.");
-                                //progressDialog.setCancelable(false);
-                                progressDialog.show();
-                            }});
+                    prgmsg(AppManagementActivity.this,"מתחיל.",false);
                     befsha1 = "";
                     aftsha1 = "";
                  
@@ -507,7 +498,7 @@ public class AppManagementActivity extends Activity {
             //LogUtil.logToFile(new String(cArr));
         } catch (Exception e) {
             LogUtil.logToFile(e.toString());
-            Toast.makeText(this, "" + e, 1).show();
+            Toast.makeText(getApplicationContext(), "" + e, 1).show();
         }
         return res;
     }
@@ -524,7 +515,7 @@ public class AppManagementActivity extends Activity {
                         @Override
                         public void run() {
                             progressDialog = new ProgressDialog(AppManagementActivity.this);
-                            progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.roundbugreen);
+     progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_button_background);
                             progressDialog.setMessage("מתחיל.");
                             //progressDialog.setCancelable(false);
                             progressDialog.show();
@@ -670,9 +661,9 @@ public class AppManagementActivity extends Activity {
         builder.setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(AppManagementActivity.this, "התקנת האפליקציה בוטלה.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "התקנת האפליקציה בוטלה.", Toast.LENGTH_SHORT).show();
                     //AppUpdater.dismissprogress(AppManagementActivity.this);
-                    prgmsg(AppManagementActivity.this,"ביטול!",true);
+                    prgmsg(getApplicationContext(),"ביטול!",true);
                     // נקה את הקובץ הזמני אם ההתקנה בוטלה
                     //if (apkFile != null && apkFile.exists()) {
                     //apkFile.delete();
@@ -712,7 +703,7 @@ public class AppManagementActivity extends Activity {
                 mDpm.setApplicationHidden(mAdminComponentName, appItem.getPackageName(), appItem.isHidden());
             }
         }
-        Toast.makeText(AppManagementActivity.this, "שינויים באפליקציות נשמרו!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "שינויים באפליקציות נשמרו!", Toast.LENGTH_SHORT).show();
         // רענן את הרשימה לאחר שמירה כדי לשקף שינויים (לדוגמה, בסינון 'מוסתרות')
         // טען מחדש את הרשימה המקורית מהמערכת
         new LoadAppsTask().execute();
@@ -787,32 +778,37 @@ public class AppManagementActivity extends Activity {
         return result;
     }
     */
+    static ProgressDialog progressDialo=null;
         @Deprecated
         static void prgmsg(final Context context,final String msg,final boolean end){
         //context.getMainLooper().prepare();
-        context. getMainExecutor().execute(new Runnable(){
+           new Handler(context.getMainLooper()).post(new Runnable(){
                 @Deprecated
                 @Override
                 public void run() {
-                    if(progressDialog!=null){
-                        if(progressDialog.isShowing()){
-                            progressDialog.dismiss();
+                    if(progressDialo!=null){
+                        if(progressDialo.isShowing()){
+                            progressDialo.dismiss();
                         }
                     }
-                    progressDialog = new ProgressDialog(context);
-                    progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.roundbugreen);
-                    progressDialog.setMessage("מתחיל.");
+                    progressDialo = new ProgressDialog(context);
+                        progressDialo.getWindow().setBackgroundDrawableResource(R.drawable.rounded_button_background);
+                    progressDialo.setMessage("מתחיל.");
                     //progressDialog.setCancelable(false);
-                    progressDialog.show();
-                    progressDialog.setMessage(msg);
+                    try{
+                    progressDialo.show();
+                    progressDialo.setMessage(msg);
+                    }catch(Exception e){
+                        LogUtil.logToFile(e.toString());
+                    }
                     if(end){
                         new Handler().postDelayed(new Runnable(){
                                 @Deprecated
                                 @Override
                                 public void run() {
-                                    if(progressDialog!=null){
-                                        if(progressDialog.isShowing()){
-                                            progressDialog.dismiss();
+                                    if(progressDialo!=null){
+                                        if(progressDialo.isShowing()){
+                                            progressDialo.dismiss();
                                         }
                                     }
                                 }

@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
 
 public class AboutActivitya extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setContentView(R.layout.activity_about);
 
         TextView tvAboutContent = findViewById(R.id.tv_about_content);

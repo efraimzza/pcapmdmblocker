@@ -127,9 +127,7 @@ public class InstallCertificate extends StepFragment implements MitmListener {
 
                             @Override
                             public void onClick(DialogInterface p1, int p2) {
-                            
-                            
-                                Toast.makeText(requireContext(), "addon connect failed", Toast.LENGTH_LONG).show();
+                                Toast.makeText(requireContext().getApplicationContext(), "addon connect failed", Toast.LENGTH_LONG).show();
                                 certFail();
                             }})
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
@@ -143,7 +141,7 @@ public class InstallCertificate extends StepFragment implements MitmListener {
                                 if (launchIntent != null)
                                     Utils.startActivity(ctx, launchIntent);
                                 else {
-                                    Toast.makeText(requireContext(), "addon connect failed", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(requireContext().getApplicationContext(), "addon connect failed", Toast.LENGTH_LONG).show();
                                     certFail();
                                 }
                             }}).show();
@@ -277,7 +275,7 @@ public class InstallCertificate extends StepFragment implements MitmListener {
                     }});
                 }
             } else {
-                Toast.makeText(context, "addon did not return certificate", Toast.LENGTH_LONG).show();
+                Toast.makeText(context.getApplicationContext(), "addon did not return certificate", Toast.LENGTH_LONG).show();
                 certFail();
             }
         }
@@ -290,7 +288,7 @@ public class InstallCertificate extends StepFragment implements MitmListener {
             return;
 
         if(!mAddon.requestCaCertificate()) {
-            Toast.makeText(ctx, "requestCaCertificate failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(ctx.getApplicationContext(), "requestCaCertificate failed", Toast.LENGTH_LONG).show();
             certFail();
         }
     }
@@ -302,7 +300,7 @@ public class InstallCertificate extends StepFragment implements MitmListener {
             return;
 
         if(mCaPem == null) {
-            Toast.makeText(ctx, "addon disconnected", Toast.LENGTH_LONG).show();
+            Toast.makeText(ctx.getApplicationContext(), "addon disconnected", Toast.LENGTH_LONG).show();
             certFail();
         }
     }

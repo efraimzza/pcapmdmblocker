@@ -8,8 +8,8 @@
     <string name="connections_csv_fields" translatable="false">Ipproto, srcip, srcport, dstip, dstport, uid, app, packagename, proto, status, info, bytessent, bytesrcvd, pktssent, pktsrcvd, firstseen, lastseen</string>
 
     <!-- Localized -->
-    <string name="mstartmdm">הפעל vpn מ mdm</string>
-    <string name="mremovemdm">הסר vpn מ mdm</string>
+    <string name="mstartmdm">הפעל ניטור רשת (vpn) באמצעות החסימה</string>
+    <string name="mremovemdm">הסר ניטור רשת (vpn) באמצעות החסימה</string>
     <string name="mchangepwd">החלף סיסמה</string>
     <string name="mgetcurrentpwd">הכנס סיסמה</string>
     <string name="mnotmatchpwd">לא תואם או ריק</string>
@@ -31,7 +31,7 @@
     <string name="buadbwifi">הפעלה באמצעות adb pair/connect עם ויפי! (תואם לסמסונג לדוגמא)</string>
     <string name="buqrmdm">ברקוד qr ממכשיר למכשיר!</string>
     <string name="sq">"התקנת \"חסימת mdm\" ממכשיר אנדרואיד למכשיר אחר\nבאמצעות ברקוד QR"</string>
-    <string name="buinstruction">הוראות הפעלת החסימה!</string>
+    <string name="buinstructionmdm">הוראות הפעלת החסימה!</string>
     <string name="budeviceinfo">פתיחת מידע על הטלפון!</string>
     <string name="budev">פתיחת מצב מפתחים!</string>
     <string name="bucppwd">העתקת הקוד הנפוץ לפתוח adb למולטימדיה!</string>
@@ -42,7 +42,34 @@
     <string name="budisaccmult">השבתת חשבונות</string>
     <string name="buactivmult">הפעלת החסימה למולטימדיה</string>
     <string name="buactenaccmult">הפעלת החסימה והפעלת חשבונות</string>
+    <string name="clear_conn">ניקוי חיבורים</string>
+    <string name="buinstructionvpn">הוראות הפעלת הניטור רשת (vpn)!</string>
     
+    <string name="setting_options">אפשרויות</string>
+    <string name="setting_theme">ערכת נושא: %1$s</string>
+    <string name="setting_dtheme">מצב בהירות: %1$s</string>
+    <string name="setting_dark">השתמש בערכת נושא כהה</string>
+    
+    <string-array name="themeNames">
+        <item>סגול כהה/טורקיז</item>
+        <item>סגול כהה/אדום</item>
+        <item>טורקיז/כתום</item>
+        <item>כחול/כתום</item>
+        <item>סגול/אדום</item>
+        <item>עַנבָּר/כחול</item>
+        <item>כתום/אפור</item>
+        <item>ירוק</item>
+        <item>קלאסי</item>
+        <item>ירוק עמוק</item>
+        <item>סגול מלכותי</item>
+        <item>מודרני</item>
+        <item>קר</item>
+    </string-array>
+    <string-array name="dthemeNames">
+        <item>ברירת מחדל של המערכת</item>
+        <item>בהיר</item>
+        <item>כהה</item>
+    </string-array>
     <string name="start_button">התחלה</string>
     <string name="stop_button">להפסיק</string>
     <string name="title_activity_settings">הגדרות</string>
@@ -52,7 +79,7 @@
     <string name="rcvd_and_sent">%1$s קיבל - %2$s נשלח</string>
     <string name="query">שאלה</string>
     <string name="host">מארח</string>
-    <string name="ready">הפעל vpn ללא mdm</string>
+    <string name="ready">הפעל ניטור רשת (vpn)</string>
     <string name="about">אודות</string>
     <string name="status">סטטוס</string>
     <string name="connections_view">חיבורים</string>
@@ -221,7 +248,7 @@
     <string name="start_at_boot_summary">סטארטים אוטומטיים לוכדים לאחר האתחול</string>
     <string name="malware_status_ok">לא התגלתה תנועה זדונית</string>
     <string name="malware_status_detected">חיבורים זדוניים זוהו</string>
-    <string name="whitelist">רשימת לבנים</string>
+    <string name="whitelist">רשימה לבנה</string>
     <string name="blacklists">רשימות לבנות</string>
     <string name="status_outdated">מיושן</string>
     <string name="status_not_loaded">לא נטען</string>
@@ -351,7 +378,7 @@
     <string name="keep_action">לשמור</string>
     <string name="discard_action">להשליך</string>
     <string name="rules_delete_confirm">למחוק את הכללים שנבחרו?</string>
-    <string name="blocklist">רשימת בלוק</string>
+    <string name="blocklist">רשימה שחורה</string>
     <string name="num_configured_rules">כללים מוגדרים</string>
     <string name="connections_blocked">חיבורים חסומים</string>
     <string name="last_firewall_block">החסימה האחרונה</string>
@@ -437,11 +464,11 @@
     <string name="mitmproxy_opts">אפשרויות MITMPROXY נוספות</string>
     <string name="mitmproxy_opts_description">ספק אפשרויות נוספות ל- MITMPROXY</string>
     <string name="mitm_addon_error">שגיאה בזמן התחלת תוסף MITM. בדוק את היומן לקבלת פרטים</string>
-    <string name="whitelist_mode">מצב רשימת לבן</string>
+    <string name="whitelist_mode">מצב רשימה לבנה</string>
     <string name="firewall_whitelist_notice">במצב זה כל החיבורים ייחסמו, אלא אם כן ברשימת הלבנות ידנית. אתה עלול להחמיץ הודעות דחיפה ללא רשימת לבנים מתאימה</string>
-    <string name="firewall_whitelist_help">כללים אלה מציינים אילו חיבורים לאפשר. לכללי רשימת הבלוק יש עדיפות על פני כללי רשימת הלבנים</string>
-    <string name="add_to_fw_whitelist">הוסף לרשימת הלבנים של חומת האש</string>
-    <string name="remove_from_fw_whitelist">הסר מרשימת הלבן של חומת האש</string>
+    <string name="firewall_whitelist_help">כללים אלה מציינים אילו חיבורים לאפשר. לכללי רשימה השחורה יש עדיפות על פני כללי רשימה הלבנה</string>
+    <string name="add_to_fw_whitelist">הוסף לרשימה הלבנה של חומת האש</string>
+    <string name="remove_from_fw_whitelist">הסר מרשימת הלבנה של חומת האש</string>
     <string name="reset_stats_confirm">האם אתה באמת רוצה לאפס את הסטטיסטיקות האלה?</string>
     <string name="port_mapping">מיפוי נמל</string>
     <string name="port_mapping_summary">קבע את התצורה של כללי מיפוי יציאה להפניה מחדש של חיבורים למארח או יציאה שונים</string>

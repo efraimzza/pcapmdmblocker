@@ -17,6 +17,10 @@
         android:title="אודות"
     />
     <item
+        android:id="@+id/men_ite_theme"
+        android:title="שינוי צבע"
+    />
+    <item
         android:id="@+id/men_ite_mail"
         android:title="שלח מייל"
     />

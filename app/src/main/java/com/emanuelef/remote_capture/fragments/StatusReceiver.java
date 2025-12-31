@@ -11,9 +11,9 @@ public class StatusReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Exception exception;
-        Context context2 = context;
+       
         if(intent.getAction()== intent.ACTION_MY_PACKAGE_REPLACED){
-            Toast.makeText(context2, "עודכן בהצלחה", 1).show();
+            Toast.makeText(context, "עודכן בהצלחה", 1).show();
             try {
                // MainActivity.tv1.setText("עודכן בהצלחה");
             } catch (Exception e) {
@@ -37,7 +37,7 @@ public class StatusReceiver extends BroadcastReceiver {
       Toast.makeText(context, ""+e, 1).show();
    }
    
-                Toast.makeText(context2, "מחכה לפעולת משתמש", 1).show();
+                Toast.makeText(context, "מחכה לפעולת משתמש", 1).show();
                 try {
                    // MainActivity.tv1.setText("מחכה לפעולת משתמש");
                 } catch (Exception e2) {
@@ -45,7 +45,7 @@ public class StatusReceiver extends BroadcastReceiver {
                 }
                 return;
             case 0:
-                Toast.makeText(context2, "הצליח", 1).show();
+                Toast.makeText(context, "הצליח", 1).show();
                 try {
                    // MainActivity.tv1.setText("הצליח");
                 } catch (Exception e22) {
@@ -53,7 +53,7 @@ public class StatusReceiver extends BroadcastReceiver {
                 }
                 return;
             case 1:
-                Toast.makeText(context2, "לא הצליח", 1).show();
+                Toast.makeText(context, "לא הצליח", 1).show();
                 try {
                    // MainActivity.tv1.setText("לא הצליח");
                 } catch (Exception e222) {
@@ -61,7 +61,7 @@ public class StatusReceiver extends BroadcastReceiver {
                 }
                 return;
             case 2:
-                Toast.makeText(context2, "לא הצליח נחסם", 1).show();
+                Toast.makeText(context, "לא הצליח נחסם", 1).show();
                 try {
                     //MainActivity.tv1.setText("לא הצליח נחסם");
                 } catch (Exception e2222) {
@@ -69,7 +69,7 @@ public class StatusReceiver extends BroadcastReceiver {
                 }
                 return;
             case 3:
-                Toast.makeText(context2, "לא הצליח הופסק", 1).show();
+                Toast.makeText(context, "לא הצליח הופסק", 1).show();
                 try {
                    // MainActivity.tv1.setText("לא הצליח הופסק");
                 } catch (Exception e22222) {
@@ -77,7 +77,7 @@ public class StatusReceiver extends BroadcastReceiver {
                 }
                 return;
             case 4:
-                Toast.makeText(context2, "לא הצליח בעיית קובץ apk או apks", 1).show();
+                Toast.makeText(context, "לא הצליח בעיית קובץ apk או apks", 1).show();
                 try {
                    // MainActivity.tv1.setText("לא הצליח בעיית קובץ apk או apks");
                 } catch (Exception e222222) {
@@ -85,7 +85,7 @@ public class StatusReceiver extends BroadcastReceiver {
                 }
                 return;
             case 5:
-                Toast.makeText(context2, "לא הצליח התנגשות", 1).show();
+                Toast.makeText(context, "לא הצליח התנגשות", 1).show();
                 try {
                    // MainActivity.tv1.setText("לא הצליח התנגשות");
                 } catch (Exception e2222222) {
@@ -93,7 +93,7 @@ public class StatusReceiver extends BroadcastReceiver {
                 }
                 return;
             case 6:
-                Toast.makeText(context2, "לא הצליח אין מספיק מקום", 1).show();
+                Toast.makeText(context, "לא הצליח אין מספיק מקום", 1).show();
                 try {
                    // MainActivity.tv1.setText("לא הצליח אין מספיק מקום");
                 } catch (Exception e22222222) {
@@ -101,7 +101,7 @@ public class StatusReceiver extends BroadcastReceiver {
                 }
                 return;
             case 7:
-                Toast.makeText(context2, "לא הצליח תאימות מכשיר", 1).show();
+                Toast.makeText(context, "לא הצליח תאימות מכשיר", 1).show();
                 try {
                     //MainActivity.tv1.setText("לא הצליח תאימות מכשיר");
                 } catch (Exception e222222222) {

@@ -70,6 +70,7 @@ import java.util.StringTokenizer;
 import android.annotation.Nullable;
 import java.io.FileOutputStream;
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
 
 
 public class MdmProvisioningActivity extends Activity {
@@ -109,7 +110,7 @@ public class MdmProvisioningActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Utils.setTheme(this);
         context = this;
         mdmApkPath = getApplicationContext().getApplicationInfo().sourceDir;
 
@@ -123,7 +124,7 @@ public class MdmProvisioningActivity extends Activity {
             startServerSocketThread();
             displayHomeScreen();
         } catch (Exception e) {
-            Toast.makeText(this, "שגיאה באתחול: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "שגיאה באתחול: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -565,7 +566,7 @@ public class MdmProvisioningActivity extends Activity {
                 return packageInfo.packageName + "/" + receiverName;
             }
         }catch(Exception e){
-            Toast.makeText(context, "שגיאה ב-MdmReceiverComponentName: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "שגיאה ב-MdmReceiverComponentName: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         return "";
     }
@@ -587,7 +588,7 @@ public class MdmProvisioningActivity extends Activity {
                 signatureBase64 = Base64.encodeToString(digest, Base64.NO_WRAP);
             }
         } catch (Exception e) {
-            Toast.makeText(context, "שגיאה ב-MdmSignatureChecksum: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "שגיאה ב-MdmSignatureChecksum: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             return null;
         }
 

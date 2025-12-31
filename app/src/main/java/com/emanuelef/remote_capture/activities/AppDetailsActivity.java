@@ -57,6 +57,7 @@ public class AppDetailsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setTitle(R.string.app_details);
         displayBackAction();
         setContentView(R.layout.fragment_activity);

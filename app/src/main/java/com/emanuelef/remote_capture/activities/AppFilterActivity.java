@@ -36,6 +36,7 @@ public class AppFilterActivity extends BaseActivity  {
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setTitle(R.string.target_apps);
         setContentView(R.layout.fragment_activity);
        // addMenuProvider(this);

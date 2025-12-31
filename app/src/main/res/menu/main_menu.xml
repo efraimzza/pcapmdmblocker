@@ -26,7 +26,7 @@
         android:icon="@drawable/ic_settings"
         android:showAsAction="ifRoom"
          />
-    <item
+    <!--item
         android:id="@+id/action_firewall"
         android:title="@string/firewall"
         android:orderInCategory="40"
@@ -53,5 +53,5 @@
         android:orderInCategory="60"
         android:icon="@drawable/ic_lock_open_alt"
         android:showAsAction="ifRoom"
-    />
+    /-->
 </menu>

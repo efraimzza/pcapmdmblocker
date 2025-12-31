@@ -37,7 +37,7 @@ public class EditListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Utils.setTheme(this);
         if(getIntent() == null) {
             Log.e(TAG, "null intent");
             finish();

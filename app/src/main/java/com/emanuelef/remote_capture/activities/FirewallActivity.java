@@ -66,6 +66,7 @@ public class FirewallActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setTitle(R.string.firewall);
         PasswordManager.requestPasswordAndSave(new Runnable() {
             @Override

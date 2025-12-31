@@ -145,6 +145,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     private Handler mHandler;
     private ConnectionsAdapter mAdapter;
  //   private FloatingActionButton mFabDown;
+    private Button mFabDown;
     private int mFabDownMargin = 0;
     private EmptyRecyclerView mRecyclerView;
     private TextView mEmptyText;
@@ -157,6 +158,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     private MenuItem mMenuFilter;
     private MenuItem mMenuItemSearch;
     private MenuItem mSave;
+    private MenuItem mClear;
     private Uri mCsvFname;
     private AppsResolver mApps;
     private SearchView mSearchView;
@@ -258,10 +260,10 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mHandler = new Handler(Looper.getMainLooper());
         setHasOptionsMenu(true);
-       // mFabDown = view.findViewById(R.id.fabDown);
+        mFabDown = view.findViewById(R.id.fabDown);
         mRecyclerView = view.findViewById(R.id.connections_view);
         mOldConnectionsText = view.findViewById(R.id.old_connections_notice);
-        EmptyRecyclerView.MyLinearLayoutManager layoutMan = new EmptyRecyclerView.MyLinearLayoutManager(requireContext());
+       // EmptyRecyclerView.MyLinearLayoutManager layoutMan = new EmptyRecyclerView.MyLinearLayoutManager(requireContext());
        // mRecyclerView.setLayoutManager(layoutMan);
         mApps = new AppsResolver(requireContext());
         
@@ -361,7 +363,27 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
 
             return WindowInsetsCompat.CONSUMED;
         });*/
+        mFabDown.setOnClickListener(new View.OnClickListener(){
 
+                @Override
+                public void onClick(View p1) {
+                    scrollToBottom();
+                }
+            });
+        mFabDown.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener(){
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
+                    Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars() |
+                                                           WindowInsets.Type.displayCutout() | WindowInsets.Type.ime());
+                    ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                    if (mFabDownMargin == 0)
+                    // save base margin from the layout
+                        mFabDownMargin = mlp.bottomMargin;
+                    mlp.bottomMargin = mFabDownMargin + insets.bottom;
+                    v.setLayoutParams(mlp);
+                    return WindowInsets.CONSUMED;
+                }
+            });
         mRecyclerView.setOnScrollListener(new ListView.OnScrollListener() {
 
                 @Override
@@ -1000,19 +1022,36 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
             }
         } else
             showFabDown(false);*/
+            
+        int first_visibile_pos = mRecyclerView.getFirstVisiblePosition();
+        int last_visible_pos = mRecyclerView.getLastVisiblePosition();
+        int last_pos = mAdapter.getItemCount() - 1;
+        boolean reached_bottom = (last_visible_pos >= last_pos);
+        boolean is_scrolling = (first_visibile_pos != 0) || (!reached_bottom);
+
+        if(is_scrolling) {
+            if(reached_bottom) {
+                autoScroll = true;
+                showFabDown(false);
+            } else {
+                autoScroll = false;
+                showFabDown(true);
+            }
+        } else
+            showFabDown(false);
     }
 
     private void showFabDown(boolean visible) {
         // compared to setVisibility, .show/.hide provide animations and also properly clear the AnchorId
-      /*  if(visible)
-            mFabDown.show();
+        if(visible)
+            mFabDown.setVisibility(Button.VISIBLE);
         else
-            mFabDown.hide();*/
+            mFabDown.setVisibility(Button.GONE);
     }
 
     private void scrollToBottom() {
         int last_pos = mAdapter.getItemCount() - 1;
-        mRecyclerView.smoothScrollToPosition(last_pos);
+        mRecyclerView.smoothScrollToPositionFromTop(last_pos,0);
 
         showFabDown(false);
     }
@@ -1149,6 +1188,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         inflater.inflate(R.menu.connections_menu, menu);
 
         mSave = menu.findItem(R.id.save);
+        mClear = menu.findItem(R.id.clear_conn);
         mMenuFilter = menu.findItem(R.id.edit_filter);
         mMenuItemSearch = menu.findItem(R.id.search);
         
@@ -1188,6 +1228,10 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
             return true;
         } else if(id == R.id.senddev) {
             sendm();
+            return true;
+        }else if(id == R.id.clear_conn) {
+            if(CaptureService.getConnsRegister() != null)
+                CaptureService.getConnsRegister().reset();
             return true;
         }
 
@@ -1264,9 +1308,9 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
 
                 if(stat != null) {
                     String msg = String.format(getString(R.string.file_saved_with_name), stat.name);
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext().getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 } else
-                    Utils.showToast(requireContext(), R.string.save_ok);
+                    Utils.showToast(requireContext().getApplicationContext(), R.string.save_ok);
 
                 error = false;
             } catch (IOException e) {
@@ -1487,7 +1531,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                         new Handler(mcon.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(mcon, R.string.send_successful, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mcon.getApplicationContext(), R.string.send_successful, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         //Toast.makeText(mcon, R.string.send_successful, 1).show();
@@ -1501,7 +1545,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                                 @Override
                                 public void run() {
                                     // Note: Use Toast.LENGTH_LONG (1) or Toast.LENGTH_SHORT (0)
-                                    Toast.makeText(mcon, "" + errorMsg, Toast.LENGTH_LONG).show(); 
+                                    Toast.makeText(mcon.getApplicationContext(), "" + errorMsg, Toast.LENGTH_LONG).show(); 
                                 }
                             });
                     }
@@ -1509,7 +1553,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                 } catch (Exception e) {
                     LogUtil.logToFile(e.toString());
                     mcon.getMainLooper().myLooper().prepare();
-                    Toast.makeText(mcon, "" + e, 1).show();
+                    Toast.makeText(mcon.getApplicationContext(), "" + e, 1).show();
                     mcon.getMainLooper().myLooper().loop();
                 }
             }}.start();
@@ -1526,14 +1570,15 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
             linl.setOrientation(linl.VERTICAL);
             linl.setGravity(Gravity.CENTER);
             tvtc=new TextView(mcon);
-            tvtc.setTextSize(30);
-            tvtc.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_DialogWindowTitle);
+            
+            tvtc.setTextAppearance(R.style.TextTitle);
             edtxd = new EditText(mcon);
             String mailbod =mcon.getResources().getString(R.string.mailbod);
             edtxd.setHint(mailbod);
             //edtxd.setInputType(2);
             tvc = new TextView(mcon);
             bud = new Button(mcon);
+            bud.setBackgroundResource(R.drawable.rounded_button_background);
             bud.setText(R.string.send);
             linl.addView(tvtc);
             linl.addView(edtxd);
@@ -1567,7 +1612,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                                 msendmail(md_email, md_password,resa,recipients);
                             } else {
                                 tvc.setText(R.string.empty);
-                                Toast.makeText(mcon, R.string.empty, Toast.LENGTH_LONG).show();
+                                Toast.makeText(mcon.getApplicationContext(), R.string.empty, Toast.LENGTH_LONG).show();
                             }
                         }
                     }
@@ -1585,9 +1630,10 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                 bud.setLayoutParams(llp);
                 //linl.setLayoutParams(flp);
                 tvtc.setText(R.string.send_mail);
-                
+            tvtc.setTextSize(25);
+            
         } catch (Exception e) {
-            Toast.makeText(mcon, e + "", Toast.LENGTH_LONG).show();
+            Toast.makeText(mcon.getApplicationContext(), e + "", Toast.LENGTH_LONG).show();
             //finish();
         }
     }

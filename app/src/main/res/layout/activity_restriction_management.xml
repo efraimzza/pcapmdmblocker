@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F5F5F5"> <TextView
+    > 
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ניהול הגבלות מכשיר"
@@ -12,7 +13,7 @@
         android:textStyle="bold"
         android:gravity="center_horizontal"
         android:paddingBottom="16dp"
-        android:textColor="@android:color/black"/>
+        />
 
     <ListView
         android:id="@+id/lv_restrictions"
@@ -30,8 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="שמור הגבלות"
-        android:background="@drawable/green_button_background"
-        android:textColor="@android:color/white"
+        android:background="@drawable/rounded_button_background"
+      
         android:padding="12dp"
         android:gravity="center"
         android:textStyle="bold"

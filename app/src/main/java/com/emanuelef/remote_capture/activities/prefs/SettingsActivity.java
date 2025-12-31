@@ -80,6 +80,8 @@ import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import java.lang.reflect.InvocationTargetException;
 import com.emanuelef.remote_capture.activities.instcer;
+import android.preference.PreferenceScreen;
+import com.emanuelef.remote_capture.activities.MDMStatusActivity;
 
 public class SettingsActivity extends BaseActivity implements 
 FragmentManager.OnBackStackChangedListener,
@@ -280,6 +282,7 @@ FragmentManager.OnBackStackChangedListener,
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
             onCreatePreferences(savedInstanceState,"");
+            
 /*
             ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
                 Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() |

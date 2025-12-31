@@ -114,7 +114,8 @@ public class Prefs {
     public static final String PREF_RESTART_ON_DISCONNECT = "restart_on_disconnect";
     public static final String PREF_IGNORED_MITM_VERSION = "ignored_mitm_version";
     public static final String PREF_DEBUG = "debug";
-        
+    public static final String PREF_PAYLOAD = "payload";
+    
 
     public enum DumpMode {
         NONE,
@@ -249,7 +250,8 @@ public class Prefs {
     public static String getDnsServerV6(SharedPreferences p)    { return(p.getString(PREF_DNS_SERVER_V6, "2606:4700:4700::1111")); }
     public static boolean isIgnoredMitmVersion(SharedPreferences p, String v) { return p.getString(PREF_IGNORED_MITM_VERSION, "").equals(v); }
     public static boolean isdebug(SharedPreferences p)     { return(p.getBoolean(PREF_DEBUG, false)); }
-
+    public static boolean ispayload(SharedPreferences p)     { return(p.getBoolean(PREF_PAYLOAD, false)); }
+    
     // Gets a StringSet from the prefs
     // The preference should either be a StringSet or a String
     // An empty set is returned as the default value

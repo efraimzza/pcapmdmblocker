@@ -264,6 +264,7 @@
         <activity android:name="com.emanuelef.remote_capture.debug" />
         <activity android:name="com.emanuelef.remote_capture.activities.MdmProvisioningActivity" />
         <activity android:name="com.emanuelef.remote_capture.activities.instructionactivity" />
+        <activity android:name="com.emanuelef.remote_capture.activities.ThemeActivity" />
         <receiver
             android:name="com.emanuelef.remote_capture.activities.InstallReceiver"
             android:exported="true">

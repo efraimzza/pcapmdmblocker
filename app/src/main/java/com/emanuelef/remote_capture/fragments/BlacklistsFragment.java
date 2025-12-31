@@ -61,6 +61,13 @@ import com.emanuelef.remote_capture.activities.LogUtil;
 import android.app.Activity;
 import com.emanuelef.remote_capture.activities.picker;
 import com.emanuelef.remote_capture.activities.PasswordManager;
+import android.preference.PreferenceManager;
+import android.content.SharedPreferences;
+import android.app.AlertDialog;
+import android.widget.LinearLayout;
+import android.widget.EditText;
+import android.content.DialogInterface;
+import android.widget.Toast;
 
 public class BlacklistsFragment extends Fragment implements BlacklistsStateListener {
     private static final String TAG = "BlacklistsFragment";
@@ -75,6 +82,7 @@ public class BlacklistsFragment extends Fragment implements BlacklistsStateListe
     static View mvi;
     static ListView listView;
     static Activity act;
+    private SharedPreferences mPrefs;
     
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -86,6 +94,7 @@ public class BlacklistsFragment extends Fragment implements BlacklistsStateListe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         mvi=view;
         mBlacklists = PCAPdroid.getInstance().getBlacklists();
         mAdapter = new BlacklistsAdapter(view.getContext(), PCAPdroid.getInstance().getBlacklists().iter());
@@ -108,8 +117,52 @@ public class BlacklistsFragment extends Fragment implements BlacklistsStateListe
                                         startActivity(intent);  
                                     }
                                 },getActivity());
-                        }else
+                        }else if(bl.url.equals("manualink")){
+
+                            String murl="";
+                            String mnurl="";
+                            if(bl.fname.equals("manualdomlink.txt")){
+                                mnurl="manualdomlink";
+                                murl= mPrefs.getString(mnurl, "");
+
+                            }else if(bl.fname.equals("manualiplink.txt")){
+                                mnurl="manualiplink";
+                                murl= mPrefs.getString(mnurl, "");
+                            }
+                            final String resmnurl=mnurl;
+                            final String resmurl=murl;
+                            //dialog with edtx to select link
+                            LinearLayout linl=new LinearLayout(getContext());
+                            final EditText edtx=new EditText(getContext());
+                            edtx.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
+                            edtx.setText(murl);
+                            edtx.setHint("קישור");
+                            linl.addView(edtx);
+                            AlertDialog.Builder ad=new AlertDialog.Builder(getContext())
+                                .setView(linl)
+                                .setPositiveButton("אישור", new DialogInterface.OnClickListener(){
+
+                                    @Override
+                                    public void onClick(DialogInterface p1, int p2) {
+
+                                        if(!edtx.getText().toString().equals("")&&!edtx.getText().toString().equals(resmurl)){
+                                            PasswordManager.requestPasswordAndSave(new Runnable(){
+                                                    @Override
+                                                    public void run() {
+                                                        mPrefs.edit().putString(resmnurl, edtx.getText().toString()).commit();
+                                                        Toast.makeText(getContext().getApplicationContext(),"הקישור עודכן!",1).show();
+                                                    }
+                                                },getActivity());
+                                        }
+
+                                    }
+                                })
+                                .setNegativeButton("ביטול", null);
+                            ad.show();
+
+                        } else{
                             openUrl(view1.getContext(), bl.url);
+                        }
                     }
         }});
         mHandler = new Handler(Looper.getMainLooper());

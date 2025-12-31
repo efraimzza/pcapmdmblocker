@@ -122,6 +122,12 @@ import com.emanuelef.remote_capture.activities.instcer;
 import com.emanuelef.remote_capture.MitmAddon;
 import com.emanuelef.remote_capture.model.MatchList;
 import android.app.Fragment;
+import com.emanuelef.remote_capture.activities.FirewallActivity;
+import com.emanuelef.remote_capture.activities.MalwareDetection;
+import com.emanuelef.remote_capture.activities.EditListActivity;
+import com.emanuelef.remote_capture.model.ListInfo;
+import com.emanuelef.remote_capture.activities.LogviewActivity;
+import com.emanuelef.remote_capture.activities.instructionactivity;
 
 public class StatusFragment extends Fragment implements AppStateListener {
     private static final String TAG = "StatusFragment";
@@ -130,9 +136,9 @@ public class StatusFragment extends Fragment implements AppStateListener {
     public MenuItem mStopBtn;
     private ImageView mFilterIcon;
     public MenuItem mMenuSettings;
-    public MenuItem mMalware;
+   /* public MenuItem mMalware;
     public MenuItem mDecrypt;
-    public MenuItem mLog;
+    public MenuItem mLog;*/
     private TextView mInterfaceInfo;
     public View mCollectorInfoLayout;
     private TextView mCollectorInfoText;
@@ -162,6 +168,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
     public static final String modesp="mode";
 	//public static sModetype smtype;
 	AlertDialog alertDialogmode;
+    TextView bufirewall,bumalware,budecrypt,bulog,buinstruction;
   /*  public StatusFragment(Context context){
         super(context);
         inStatusFragment(context);
@@ -246,6 +253,11 @@ public class StatusFragment extends Fragment implements AppStateListener {
         mCaptureStatus = view.findViewById(R.id.status_view);
         startmdmvpn = view.findViewById(R.id.startmdm);
         removemdmvpn = view.findViewById(R.id.removemdm);
+        bufirewall=view.findViewById(R.id.bufirewall);
+        bumalware=view.findViewById(R.id.bumalware);
+        budecrypt=view.findViewById(R.id.budecrypt);
+        bulog=view.findViewById(R.id.bulog);
+        buinstruction=view.findViewById(R.id.buinstruction);
         //tvaa = view.findViewById(R.id.tva);
         //tvab = view.findViewById(R.id.tvb);
 	    //tvac = view.findViewById(R.id.tvc);
@@ -380,7 +392,9 @@ public class StatusFragment extends Fragment implements AppStateListener {
                            DevicePolicyManager dpm=(DevicePolicyManager)mcon.getSystemService("device_policy");
                            p(dpm, compName, mcon.getPackageName(), true);
                            refreshStatus();
-                      } catch (Exception e) {}
+                      } catch (Exception e) {
+                          LogUtil.logToFile(e.toString());
+                      }
                   }
               },mActivity);
        } });
@@ -397,11 +411,45 @@ public class StatusFragment extends Fragment implements AppStateListener {
                                       try {
                                          DevicePolicyManager dpm=(DevicePolicyManager)mcon.getSystemService("device_policy");
                                          p(dpm, compName, null, false);
-                                      } catch (Exception e) {}
+                                      } catch (Exception e) {LogUtil.logToFile(e.toString());}
                             }
                         },mActivity);
             //checkpassword(false,"removemdm");
         }});
+        
+        bufirewall.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View p1) {
+                    Intent intent = new Intent(getActivity(), FirewallActivity.class);
+                    startActivity(intent);
+                }});
+        bumalware.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View p1) {
+                    Intent intent = new Intent(getActivity(), MalwareDetection.class);
+                    startActivity(intent);
+                }});
+        budecrypt.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View p1) {
+                    Intent intent = new Intent(getActivity(), EditListActivity.class);
+                    intent.putExtra(EditListActivity.LIST_TYPE_EXTRA, ListInfo.Type.DECRYPTION_LIST);
+                    startActivity(intent);
+                }});
+        bulog.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View p1) {
+                    Intent intent = new Intent(getActivity(), LogviewActivity.class);
+                    startActivity(intent);
+                }});
+        buinstruction.setOnClickListener(new OnClickListener(){
+                @Deprecated
+                @Override
+                public void onClick(View p1) {
+                    Intent intent = new Intent(getActivity(), instructionactivity.class).putExtra("name","vpn");
+                    startActivity(intent);
+                }
+            });
         /*tvaa.setOnClickListener(v -> {
                     PasswordManager.requestPasswordAndSave(new Runnable() {
                             @Override
@@ -532,9 +580,9 @@ public class StatusFragment extends Fragment implements AppStateListener {
         mStartBtn = mMenu.findItem(R.id.action_start);
         mStopBtn = mMenu.findItem(R.id.action_stop);
         mMenuSettings = mMenu.findItem(R.id.action_settings);
-        mMalware= mMenu.findItem(R.id.action_malware);
-        mDecrypt=mMenu.findItem(R.id.action_decrypt);
-        mLog=mMenu.findItem(R.id.action_log);
+       // mMalware= mMenu.findItem(R.id.action_malware);
+      //  mDecrypt=mMenu.findItem(R.id.action_decrypt);
+       // mLog=mMenu.findItem(R.id.action_log);
         refreshStatus();
     }
 
@@ -563,7 +611,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
    /* public boolean onMenuItemSelected(@NonNull MenuItem item) {
         return false;
     }*/
-
+/*
     private void recheckFilterWarning() {
         boolean hasFilter = ((mAppFilter != null) && (!mAppFilter.isEmpty()));
 
@@ -571,7 +619,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
                 Prefs.isRootCaptureEnabled(mPrefs)
                 && !hasFilter) ? View.VISIBLE : View.GONE);
     }
-
+*/
     private void refreshDecryptionStatus() {
         MitmReceiver.Status proxy_status = CaptureService.getMitmProxyStatus();
         Context ctx = getContext();
@@ -612,9 +660,8 @@ public class StatusFragment extends Fragment implements AppStateListener {
 
         @Override
         public void update( Object p2) {
-            mcon.getMainExecutor().execute(new Runnable(){
-                   @Override
-                   public void run() {
+            if(getActivity()!=null)
+                getActivity().runOnUiThread(new Runnable(){public void run(){
             //LogUtil.logToFile("notifi suc...lol");
             refreshDecryptionStatus();
             }});
@@ -624,9 +671,13 @@ public class StatusFragment extends Fragment implements AppStateListener {
      obseobj statusfrob =new  obseobj(){
         
             @Override
-            public void update( Object p2) {
+            public void update( final Object p2) {
                 //LogUtil.logToFile("notifi suc...lol");
-                onStatsUpdate((CaptureStats)p2);
+                if(getActivity()!=null)
+                getActivity().runOnUiThread(new Runnable(){public void run(){
+                   onStatsUpdate((CaptureStats)p2);
+                }});
+                
             }
   
     };
@@ -727,11 +778,12 @@ public class StatusFragment extends Fragment implements AppStateListener {
         if(context == null)
             return;
 try{
+    bumalware.setVisibility(Prefs.isMalwareDetectionEnabled(getContext(), PreferenceManager.getDefaultSharedPreferences(getContext()))?View.VISIBLE:View.GONE);
+    budecrypt.setVisibility(Prefs.getTlsDecryptionEnabled(PreferenceManager.getDefaultSharedPreferences(getContext()))?View.VISIBLE:View.GONE);
+    bulog.setVisibility(Prefs.isdebug(PreferenceManager.getDefaultSharedPreferences(getContext()))?View.VISIBLE:View.GONE);
+    
         if(mMenu != null) {
-            mMalware.setVisible(Prefs.isMalwareDetectionEnabled(getContext(), PreferenceManager.getDefaultSharedPreferences(getContext())));
-            mDecrypt.setVisible(Prefs.getTlsDecryptionEnabled(PreferenceManager.getDefaultSharedPreferences(getContext())));
-            mLog.setVisible(Prefs.isdebug(PreferenceManager.getDefaultSharedPreferences(getContext())));
-            if((state == AppState.running) || (state == AppState.stopping)) {
+                        if((state == AppState.running) || (state == AppState.stopping)) {
                 
                 //LogUtil.logToFile("run or stop");
                 mCaptureStatus.setText("run or stop");
@@ -748,7 +800,7 @@ try{
                 //LogUtil.logToFile("continue lol2");
                 mStopBtn.setVisible(!CaptureService.isAlwaysOnVPN());
                // LogUtil.logToFile("continue lol3");
-                mMenuSettings.setEnabled(false);
+                mMenuSettings.setVisible(false);
                // LogUtil.logToFile("continue lol4");
                 }catch(Exception e){
                     LogUtil.logToFile("runstoperr"+e.toString()+e.getStackTrace()[0].getMethodName()+e.getStackTrace()[0].getLineNumber());
@@ -761,7 +813,7 @@ try{
                 mStopBtn.setVisible(false);
                 mStartBtn.setEnabled(true);
                 mStartBtn.setVisible(!CaptureService.isAlwaysOnVPN());
-                mMenuSettings.setEnabled(true);//ja disable.. enable now for js
+                mMenuSettings.setVisible(true);//ja disable.. enable now for js
                 
             }
         }else{
@@ -791,7 +843,7 @@ try{
                 mCaptureStatus.setText(Utils.formatBytes(CaptureService.getBytes()));
                 //LogUtil.logToFile("run lol2");
                 try{
-                mCollectorInfoLayout.setVisibility(View.VISIBLE);
+                //mCollectorInfoLayout.setVisibility(View.VISIBLE);
                 //LogUtil.logToFile("run lol3 need main executor");
                 //mQuickSettings.setVisibility(View.GONE);
                 

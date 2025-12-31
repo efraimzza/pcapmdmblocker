@@ -61,6 +61,7 @@ public class LogviewActivity extends BaseActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         setTitle(R.string.app_log);
         setContentView(R.layout.fragment_activity);
       //  addMenuProvider(this);

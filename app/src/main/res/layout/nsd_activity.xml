@@ -18,7 +18,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
                 style="@style/MDMActionButton"
-                android:background="@drawable/green_button_background"
+                android:background="@drawable/rounded_button_background"
                 
 				android:text="התחל גילוי ADB לחיבור עם קוד התאמה (כולל גילוי חיבור רגיל להרצת הפקודות אחרי הצימוד)"/>
 
@@ -27,7 +27,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
                 style="@style/MDMActionButton"
-                android:background="@drawable/green_button_background"
+                android:background="@drawable/rounded_button_background"
                 
 				android:text="התחל גילוי adb לחיבור רגיל כשצימוד הצליח ונתקע אחרי זה"/>
             <Button
@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/MDMActionButton"
-                android:background="@drawable/green_button_background"
+                android:background="@drawable/rounded_button_background"
 				android:text="עצור גילוי"/>
 			<Switch
 				android:layout_width="match_parent"
@@ -132,7 +132,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
                 style="@style/MDMActionButton"
-                android:background="@drawable/green_button_background"
+                android:background="@drawable/rounded_button_background"
                 
 				android:text="רענון לוג"
 				android:id="@+id/mrlog"/>

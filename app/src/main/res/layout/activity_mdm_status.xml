@@ -77,7 +77,7 @@
                     android:id="@+id/act_stat_bucpcmd"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="@string/bucpcmd"/>
                 <View
                     android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                     android:id="@+id/act_stat_bucert"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="התקנת מודל תעודת אבטחה לנטפרי!"/>
                 <View
                     android:layout_width="match_parent"
@@ -101,8 +101,8 @@
                     android:id="@+id/act_stat_buinstruction"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
-                    android:text="@string/buinstruction"/>
+                    android:background="@drawable/rounded_button_background"
+                    android:text="@string/buinstructionmdm"/>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -113,37 +113,37 @@
                     android:id="@+id/act_stat_budeviceinfo"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="@string/budeviceinfo"/>
                 <Button
                     android:id="@+id/act_stat_budev"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="@string/budev"/>
                 <Button
                     android:id="@+id/act_stat_buaccount"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="@string/buaccount"/>
                 <Button
                     android:id="@+id/act_stat_bucppwd"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="@string/bucppwd"/>
                 <Button
                     android:id="@+id/act_stat_buadbmult"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="@string/buadbmult"/>
                 <Button
                     android:id="@+id/act_stat_buadbwifi"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="@string/buadbwifi"/>
                 <View
                     android:layout_width="match_parent"
@@ -155,7 +155,7 @@
                     android:id="@+id/act_stat_buqrmdm"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="@string/buqrmdm"/>
                 <View
                     android:layout_width="match_parent"
@@ -181,7 +181,7 @@
                     android:id="@+id/act_stat_busavebarcode"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="שמור ברקוד"/>
                 <View
                     android:layout_width="match_parent"
@@ -193,7 +193,7 @@
                     android:id="@+id/act_stat_bustartroot"
                     android:layout_width="wrap_content"
                     style="@style/MDMActionButton"
-                    android:background="@drawable/green_button_background"
+                    android:background="@drawable/rounded_button_background"
                     android:text="הפעלה עם רוט"/>
 
                 <TextView

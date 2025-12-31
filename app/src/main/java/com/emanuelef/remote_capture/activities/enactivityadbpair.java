@@ -22,6 +22,7 @@ import android.graphics.Color;
 import android.widget.LinearLayout;
 
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
 
 public class enactivityadbpair extends Activity {
 
@@ -43,6 +44,7 @@ public class enactivityadbpair extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         try{
         setContentView(R.layout.activity_adb_pair);
         LinearLayout linl=findViewById(R.id.activity_adb_pairlinl);

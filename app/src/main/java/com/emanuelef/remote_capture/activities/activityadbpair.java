@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import android.graphics.Color;
 
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
 
 public class activityadbpair extends Activity {
 
@@ -42,6 +43,7 @@ public class activityadbpair extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(this);
         try{
             try{
                 if(getActionBar().isShowing())
@@ -57,11 +59,11 @@ public class activityadbpair extends Activity {
         cmddpm="\n"+adb+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
         //Toast.makeText(this,getDir("HOME", MODE_PRIVATE).getAbsolutePath(),1).show();
         getDir("HOME", MODE_PRIVATE).getAbsolutePath();//important to automaticly create
-        outputTextView = (TextView) findViewById(R.id.outputTextView);
+        outputTextView = findViewById(R.id.outputTextView);
         edtxip=findViewById(R.id.edtxip);
         edtxport=findViewById(R.id.edtxport);
         edtxpwd=findViewById(R.id.edtxpwd);
-        commandEditText = (EditText) findViewById(R.id.commandEditText); // אתחול EditText
+        commandEditText = findViewById(R.id.commandEditText); // אתחול EditText
         bupair = findViewById(R.id.bupair);
         bucon = findViewById(R.id.bucon);
         //buconmul = findViewById(R.id.buconmul);
@@ -73,7 +75,7 @@ public class activityadbpair extends Activity {
         budisacc = findViewById(R.id.budisacc);
         buenacc = findViewById(R.id.buenacc);
         buexecall = findViewById(R.id.buexecall);
-        outputScrollView = (ScrollView) findViewById(R.id.outputScrollView); // אתחול ScrollView
+        outputScrollView = findViewById(R.id.outputScrollView); // אתחול ScrollView
         
         // הגדרת הליסטנר באמצעות Anonymous Inner Class
         commandListener = new CommandOutputListener() {
