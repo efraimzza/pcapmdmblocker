@@ -407,7 +407,7 @@ public class activityadbpair extends Activity {
                     // נקה את הפלט הקודם
                     outputTextView.setText("מבצע פקודה...\n");
                     // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
-                    buexecall.setEnabled(false);
+                    //buexecall.setEnabled(false);
                     //commandEditText.setText("/system/bin/sh -"+menv+"adb shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n");
                     final String commandToExecute = commandEditText.getText().toString();
                     if (commandToExecute.isEmpty()) {

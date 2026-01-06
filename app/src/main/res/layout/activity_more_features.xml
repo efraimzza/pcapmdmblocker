@@ -20,6 +20,9 @@
         android:id="@+id/btn_add_multimedia_settings_shortcut"
         android:text="קיצור דרך: הגדרות אנדרואיד למולטימדיה"/>
     <Button style="@style/MDMActionButton"
+        android:id="@+id/btn_add_lock_apps_shortcut"
+        android:text="וידג'ט: הסתרת אפליקציות משתמש"/>
+    <Button style="@style/MDMActionButton"
         android:id="@+id/btn_prappmanag"
         android:text="הסתרת אפליקציות משתמש"/>
     <Button style="@style/MDMActionButton"

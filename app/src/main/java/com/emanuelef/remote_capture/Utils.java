@@ -182,6 +182,10 @@ import android.text.Html;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.util.TypedValue;
+import java.util.Set;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+import java.util.HashSet;
 
 public class Utils {
     static final String TAG = "Utils";
@@ -1128,21 +1132,14 @@ public class Utils {
         return (new File(path + ".tmp")).renameTo(new File(path));
     }
   
-
+/*
 
     private static final ExecutorService executor = Executors.newCachedThreadPool();
     private static final ConcurrentHashMap<String, HttpsURLConnection> connections = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, Boolean> canceledDownloads = new ConcurrentHashMap<>();
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
     
-    /**
-     * פותח משימת הורדה חדשה במאגר החוטים.
-     * @param context הקונטקסט של האפליקציה.
-     * @param fileurl כתובת ה-URL של הקובץ להורדה.
-     * @param filename הנתיב המלא לקובץ היעד.
-     * @param runonsuc Runnable שירוץ במקרה של הצלחה.
-     * @param runonfail Runnable שירוץ במקרה של כשל.
-     */
+   
     public static void startDownload(final Context context, final String fileurl, final String filename, final Runnable runonsuc, final Runnable runonfail) {
         if (connections.containsKey(fileurl)) {
             LogUtil.logToFile("Download already in progress for: " + fileurl);
@@ -1164,10 +1161,7 @@ public class Utils {
         });
     }
 
-    /**
-     * מבטל הורדה ספציפית על פי כתובת ה-URL שלה.
-     * @param fileurl כתובת ה-URL של ההורדה לביטול.
-     */
+    
     public static void cancelDownload(String fileurl) {
         if (canceledDownloads.containsKey(fileurl)) {
             canceledDownloads.put(fileurl, true);
@@ -1273,6 +1267,440 @@ public class Utils {
         }
         return downloadSuccess;
     }
+    */
+    
+    /*
+
+        // מגביל ל-4 הורדות במקביל כדי למנוע עומס על המעבד והסוללה //
+        private static final ExecutorService executor = Executors.newFixedThreadPool(4);
+
+        // מנהל את החיבורים הפעילים לצורך ביטול //
+        private static final ConcurrentHashMap<String, HttpsURLConnection> connections = new ConcurrentHashMap<String, HttpsURLConnection>();
+
+        // מעקב אחרי הורדות שבוטלו //
+        private static final ConcurrentHashMap<String, Boolean> canceledDownloads = new ConcurrentHashMap<String, Boolean>();
+
+        // מניעת מצב ששני URL שונים מנסים לכתוב לאותו נתיב קובץ במקביל //
+        private static final Set<String> activePaths = Collections.synchronizedSet(new HashSet<String>());
+
+        private static final Handler mainHandler = new Handler(Looper.getMainLooper());
+        private static final Object lock = new Object();
+
+        public static void startDownload(final Context context, final String fileurl, final String filename, final Runnable runonsuc, final Runnable runonfail) {
+            // מניעת כפילות: בדיקה אטומית אם ה-URL או הנתיב כבר בשימוש //
+            synchronized (lock) {
+                if (connections.containsKey(fileurl) || activePaths.contains(filename)) {
+                    return; 
+                }
+                // סימון הנתיב כתפוס //
+                connections.put(fileurl, (HttpsURLConnection) null); 
+                activePaths.add(filename);
+            }
+
+            canceledDownloads.put(fileurl, false);
+
+            executor.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        // שימוש ב-ApplicationContext למניעת נזילת זיכרון מה-Activity //
+                        final boolean success = manualDownload(context.getApplicationContext(), fileurl, filename);
+
+                        // ניקוי רישומים בסיום //
+                        synchronized (lock) {
+                            connections.remove(fileurl);
+                            activePaths.remove(filename);
+                            canceledDownloads.remove(fileurl);
+                        }
+
+                        mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (success && runonsuc != null) {
+                                        runonsuc.run();
+                                    } else if (!success && runonfail != null) {
+                                        runonfail.run();
+                                    }
+                                }
+                            });
+                    }
+                });
+        }
+
+        public static void cancelDownload(String fileurl) {
+            canceledDownloads.put(fileurl, true);
+            HttpsURLConnection connection = connections.get(fileurl);
+            if (connection != null) {
+                try {
+                    connection.disconnect(); 
+                } catch (Exception ignored) {}
+            }
+        }
+
+        private static boolean manualDownload(Context context, String fileurl, String filename) {
+            InputStream input = null;
+            OutputStream output = null;
+            HttpsURLConnection connection = null;
+            File finalFile = new File(filename);
+            File tempFile = new File(filename + ".tmp");
+
+            try {
+                // יצירת תיקיות האם אם הן לא קיימות //
+                File parent = finalFile.getParentFile();
+                if (parent != null && !parent.exists()) {
+                    parent.mkdirs();
+                }
+
+                // הגדרת עקיפת SSL לבקשתך - מאפשר תעודות עצמיות (Self-Signed) //
+                TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+                        @Override public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                        @Override public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                    }
+                };
+
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+                URL url = new URL(fileurl);
+                connection = (HttpsURLConnection) url.openConnection();
+                connection.setSSLSocketFactory(sslContext.getSocketFactory());
+
+                // עקיפת אימות שם השרת (חשוב כשעובדים עם IP ישיר או שרת פנימי) //
+                connection.setHostnameVerifier(new HostnameVerifier() {
+                        @Override
+                        public boolean verify(String hostname, SSLSession session) {
+                            return true;
+                        }
+                    });
+
+                // הגדרת זמני המתנה אופטימליים להורדה במובייל //
+                connection.setConnectTimeout(5000); // 20 שניות לחיבור //
+                //connection.setReadTimeout(45000);    // 45 שניות לקבלת נתונים //
+                connection.setRequestProperty("Connection", "Close");
+
+                connections.put(fileurl, connection);
+                connection.connect();
+                LogUtil.logToFile("rc="+connection.getResponseCode());
+                
+                if (connection.getResponseCode() != HttpsURLConnection.HTTP_OK) {
+                    return false;
+                }
+
+                input = connection.getInputStream();
+                output = new FileOutputStream(tempFile);
+
+                byte[] data = new byte[8192]; // Buffer בגודל 8KB ליעילות מקסימלית //
+                int count;
+                while ((count = input.read(data)) != -1) {
+                    // בדיקה בתוך הלולאה אם המשתמש ביטל את ההורדה //
+                    if (Boolean.TRUE.equals(canceledDownloads.get(fileurl))) {
+                        LogUtil.logToFile("Canceled");
+                        return false;
+                    }
+                    output.write(data, 0, count);
+                }
+
+                output.flush();
+                output.close();
+                output = null; 
+
+                // החלפת הקובץ הזמני בקובץ הסופי (פעולה אטומית ובטוחה) //
+                if (finalFile.exists()) {
+                    finalFile.delete();
+                }
+                return tempFile.renameTo(finalFile);
+
+            } catch (Exception e) {
+                LogUtil.logToFile(e.toString());
+                // במקרה של שגיאה או ביטול - מחיקת שאריות הקובץ הזמני //
+                if (tempFile.exists()) {
+                    tempFile.delete();
+                }
+                return false;
+            } finally {
+                // סגירת משאבים יסודית ב-finally //
+                try {
+                    if (input != null) input.close();
+                    if (output != null) output.close();
+                    if (connection != null) connection.disconnect();
+                } catch (Exception ignored) {LogUtil.logToFile(ignored.toString());}
+            }
+        }
+        */
+        /*
+    // שימוש ב-Set מסונכרן למעקב אחרי הורדות פעילות
+    private static final java.util.Set<String> activeUrls = java.util.Collections.synchronizedSet(new java.util.HashSet<String>());
+    private static final java.util.Set<String> activePaths = java.util.Collections.synchronizedSet(new java.util.HashSet<String>());
+
+// מפת החיבורים (לא נכניס null לעולם)
+    private static final ConcurrentHashMap<String, HttpsURLConnection> connections = new ConcurrentHashMap<String, HttpsURLConnection>();
+    private static final ConcurrentHashMap<String, Boolean> canceledDownloads = new ConcurrentHashMap<String, Boolean>();
+
+    private static final ExecutorService executor = Executors.newFixedThreadPool(4);
+    private static final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private static final Object lock = new Object();
+
+    public static void startDownload(final Context context, final String fileurl, final String filename, final Runnable runonsuc, final Runnable runonfail) {
+        // בדיקת תקינות פרמטרים למניעת NPE בתחילת הדרך //
+        if (context == null || fileurl == null || filename == null) {
+            return;
+        }
+
+        synchronized (lock) {
+            // בדיקה אם ה-URL או הנתיב כבר בשימוש //
+            if (activeUrls.contains(fileurl) || activePaths.contains(filename)) {
+                return; 
+            }
+            activeUrls.add(fileurl);
+            activePaths.add(filename);
+        }
+
+        canceledDownloads.put(fileurl, false);
+
+        executor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    // שליחת ApplicationContext למניעת נזילות זיכרון //
+                    final boolean success = manualDownload(context.getApplicationContext(), fileurl, filename);
+
+                    synchronized (lock) {
+                        activeUrls.remove(fileurl);
+                        activePaths.remove(filename);
+                        connections.remove(fileurl);
+                        canceledDownloads.remove(fileurl);
+                    }
+
+                    // חזרה לחוט הראשי לעדכון ה-UI //
+                    mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (success) {
+                                    if (runonsuc != null) runonsuc.run();
+                                } else {
+                                    if (runonfail != null) runonfail.run();
+                                }
+                            }
+                        });
+                }
+            });
+    }
+
+    public static void cancelDownload(String fileurl) {
+        if (fileurl == null) return;
+
+        canceledDownloads.put(fileurl, true);
+        HttpsURLConnection connection = connections.get(fileurl);
+        if (connection != null) {
+            try {
+                connection.disconnect(); 
+            } catch (Exception ignored) {}
+        }
+    }
+
+    private static boolean manualDownload(Context context, String fileurl, String filename) {
+        InputStream input = null;
+        OutputStream output = null;
+        HttpsURLConnection connection = null;
+        File finalFile = new File(filename);
+        File tempFile = new File(filename + ".tmp");
+
+        try {
+            // וידוא שתיקיית היעד קיימת //
+            File parent = finalFile.getParentFile();
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs();
+            }
+
+            // הגדרת SSL עוקף אישורים לבקשתך //
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new java.security.cert.X509Certificate[0]; }
+                    @Override public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+                    @Override public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+                }
+            };
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            URL url = new URL(fileurl);
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(sslContext.getSocketFactory());
+
+            connection.setHostnameVerifier(new HostnameVerifier() {
+                    @Override
+                    public boolean verify(String hostname, SSLSession session) {
+                        return true;
+                    }
+                });
+
+            connection.setConnectTimeout(20000);
+            connection.setReadTimeout(45000);
+
+            // רישום החיבור רק כשהוא נוצר באמת (מונע NPE) //
+            connections.put(fileurl, connection);
+            connection.connect();
+
+            if (connection.getResponseCode() != HttpsURLConnection.HTTP_OK) {
+                return false;
+            }
+
+            input = connection.getInputStream();
+            output = new FileOutputStream(tempFile);
+
+            byte[] data = new byte[8192];
+            int count;
+            while ((count = input.read(data)) != -1) {
+                // בדיקת ביטול - הגנה מפני Null בערך של ה-Map //
+                Boolean isCanceled = canceledDownloads.get(fileurl);
+                if (isCanceled != null && isCanceled) {
+                    break;
+                }
+                output.write(data, 0, count);
+            }
+
+            output.flush();
+            output.close();
+            output = null; 
+
+            // החלפת הקובץ הזמני בסופי //
+            if (finalFile.exists()) {
+                finalFile.delete();
+            }
+            return tempFile.renameTo(finalFile);
+
+        } catch (Exception e) {
+            if (tempFile.exists()) {
+                tempFile.delete();
+            }
+            return false;
+        } finally {
+            // סגירת משאבים בטוחה //
+            try {
+                if (input != null) input.close();
+                if (output != null) output.close();
+                if (connection != null) connection.disconnect();
+            } catch (Exception ignored) {}
+        }
+    }*/
+    // שימוש ב-Thread Pool גמיש יותר לביצועים מהירים //
+    private static final ExecutorService executor = Executors.newFixedThreadPool(4);
+    private static final ConcurrentHashMap<String, HttpsURLConnection> connections = new ConcurrentHashMap<String, HttpsURLConnection>();
+    private static final ConcurrentHashMap<String, Boolean> canceledDownloads = new ConcurrentHashMap<String, Boolean>();
+    private static final java.util.Set<String> activePaths = java.util.Collections.synchronizedSet(new java.util.HashSet<String>());
+    private static final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private static final Object lock = new Object();
+
+    public static void startDownload(final Context context, final String fileurl, final String filename, final Runnable runonsuc, final Runnable runonfail) {
+        if (context == null || fileurl == null || filename == null) return;
+
+        synchronized (lock) {
+            if (activePaths.contains(filename)) return; 
+            activePaths.add(filename);
+        }
+
+        canceledDownloads.put(fileurl, false);
+
+        executor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    final boolean success = manualDownload(context.getApplicationContext(), fileurl, filename);
+
+                    synchronized (lock) {
+                        activePaths.remove(filename);
+                        connections.remove(fileurl);
+                        canceledDownloads.remove(fileurl);
+                    }
+
+                    mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (success && runonsuc != null) runonsuc.run();
+                                else if (!success && runonfail != null) runonfail.run();
+                            }
+                        });
+                }
+            });
+    }
+
+    private static boolean manualDownload(Context context, String fileurl, String filename) {
+        InputStream input = null;
+        java.io.BufferedOutputStream output = null; // שימוש ב-Buffer לכתיבה מהירה //
+        HttpsURLConnection connection = null;
+        File tempFile = new File(filename + ".tmp");
+
+        try {
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new java.security.cert.X509Certificate[0]; }
+                    @Override public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                    @Override public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                }
+            };
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            URL url = new URL(fileurl);
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(sslContext.getSocketFactory());
+            connection.setHostnameVerifier(new HostnameVerifier() {
+                    @Override public boolean verify(String hostname, SSLSession session) { return true; }
+                });
+
+            // הגדרות אופטימיזציה למהירות //
+            connection.setConnectTimeout(15000);
+            connection.setReadTimeout(30000);
+            connection.setRequestProperty("Accept-Encoding", "identity"); // מניעת תקורה של דחיסה //
+            connection.setDoInput(true);
+
+            connections.put(fileurl, connection);
+            connection.connect();
+
+            if (connection.getResponseCode() != HttpsURLConnection.HTTP_OK) return false;
+
+            input = connection.getInputStream();
+            // עטיפת ה-FileOutputStream ב-BufferedOutputStream לביצועי דיסק טובים יותר //
+            output = new java.io.BufferedOutputStream(new FileOutputStream(tempFile), 64 * 1024);
+
+            byte[] data = new byte[65536]; // Buffer מוגדל ל-64KB למהירות רשת //
+            int count;
+            while ((count = input.read(data)) != -1) {
+                Boolean isCanceled = canceledDownloads.get(fileurl);
+                if (isCanceled != null && isCanceled) break;
+
+                output.write(data, 0, count);
+            }
+
+            output.flush();
+            output.close();
+            output = null;
+            input.close();
+            input = null;
+
+            Boolean finalCanceled = canceledDownloads.get(fileurl);
+            if (finalCanceled != null && finalCanceled) {
+                if (tempFile.exists()) tempFile.delete();
+                return false;
+            }
+
+            File finalFile = new File(filename);
+            if (finalFile.exists()) finalFile.delete();
+            return tempFile.renameTo(finalFile);
+
+        } catch (Exception e) {
+            if (tempFile.exists()) tempFile.delete();
+            return false;
+        } finally {
+            try {
+                if (input != null) input.close();
+                if (output != null) output.close();
+                if (connection != null) connection.disconnect();
+            } catch (Exception ignored) {}
+        }
+    }
+        
     
     public static String shorten(String s, int maxlen) {
         if(s.length() > maxlen)

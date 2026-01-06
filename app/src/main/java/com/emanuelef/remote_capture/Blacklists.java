@@ -59,6 +59,10 @@ import com.emanuelef.remote_capture.activities.LogUtil;
 import android.util.ArraySet;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import android.os.Handler;
+import android.os.Looper;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /* Represents the malware blacklists.
  * The blacklists are hard-coded via the Blacklists.addList calls. Blacklists update is performed
@@ -340,7 +344,7 @@ public class Blacklists {
         return (((now - mLastUpdateMonotonic) >= BLACKLISTS_UPDATE_MILLIS)
                 || (firstUpdate && (getNumUpdatedBlacklists() < getNumBlacklists())));
     }
-
+/*
     // NOTE: invoked in a separate thread (CaptureService.mBlacklistsUpdateThread)
     public void update() {
         mUpdateInProgress = true;
@@ -359,39 +363,10 @@ public class Blacklists {
 
             Log.i(TAG, "\tupdating " + bl.fname + "...");
             //old
-            /*
-            if(Utils.downloadFile(bl.url, getListPath(bl)))
-                bl.setUpdated(System.currentTimeMillis());
-            else
-                bl.setOutdated();
-            */
+            
             //end old
             if(bl.url.equals("manual")){
-                /*if(bl.fname.equals("manualdom.txt")){
-                 //copying dom.txt for the first check
-                 try{
-                 FileInputStream in = new FileInputStream("/storage/emulated/0/Download/dom.txt");
-                 FileOutputStream out= new FileOutputStream(getListPath(bl));
-                 byte[] bytesIn = new byte[4096];
-                 int read;
-                 while((read = in.read(bytesIn)) != -1)
-                 out.write(bytesIn, 0, read);
-                 }catch(Exception e){
-                 LogUtil.logToFile(bl.fname+bl.url+ e.toString());
-                 }
-                 }else if(bl.fname.equals("manualip.txt")){
-                 //copying ip.txt for the first check
-                 try{
-                 FileInputStream in = new FileInputStream("/storage/emulated/0/Download/ip.txt");
-                 FileOutputStream out= new FileOutputStream(getListPath(bl));
-                 byte[] bytesIn = new byte[4096];
-                 int read;
-                 while((read = in.read(bytesIn)) != -1)
-                 out.write(bytesIn, 0, read);
-                 }catch(Exception e){
-                 LogUtil.logToFile(bl.fname+bl.url+ e.toString());
-                 }
-                 }*/
+                
                 //self select your file
                 bl.setUpdated(System.currentTimeMillis());
                 notifyListeners();
@@ -462,8 +437,105 @@ public class Blacklists {
         mLastUpdate = System.currentTimeMillis();
         mLastUpdateMonotonic = SystemClock.elapsedRealtime();
         notifyListeners();
+    }*/
+    // אובייקט לסינכרון כדי למנוע הרצה כפולה של העדכון //
+    private final Object lock = new Object();
+
+// שליח שמעביר פקודות לחוט הראשי (Main Thread) //
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+
+// משתנה שעוקב אם העדכון רץ כרגע //
+    
+    public void update() {
+        // שימוש ב-lock כדי לבדוק ולשנות את הסטטוס בצורה בטוחה //
+        synchronized (lock) {
+            if (mUpdateInProgress) {
+                Log.i(TAG, "Update already in progress, skipping...");
+                return;
+            }
+            mUpdateInProgress = true;
+        }
+
+        mStopRequest = false;
+        final List<BlacklistDescriptor> listsToUpdate = new ArrayList<BlacklistDescriptor>(mLists);
+        final AtomicInteger pendingTasks = new AtomicInteger(0);
+
+        for (BlacklistDescriptor bl : listsToUpdate) {
+            bl.setUpdating();
+        }
+        notifyListeners();
+
+        for (final BlacklistDescriptor bl : listsToUpdate) {
+            if (mStopRequest) break;
+
+            if (bl.url.equals("manual")) {
+                bl.setUpdated(System.currentTimeMillis());
+                continue;
+            }
+
+            String murl = "";
+            if (bl.url.equals("manualink")) {
+                murl = mPrefs.getString(bl.fname.equals("manualdomlink.txt") ? "manualdomlink" : "manualiplink", "");
+            } else {
+                murl = bl.url;
+            }
+
+            if (murl != null && !murl.equals("")) {
+                pendingTasks.incrementAndGet();
+
+                Utils.startDownload(mContext, murl, getListPath(bl), 
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            bl.setUpdated(System.currentTimeMillis());
+                            // שליחת הבדיקה ל-checkIfFinished //
+                            checkIfFinished(pendingTasks);
+                        }
+                    }, 
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            bl.setOutdated();
+                            checkIfFinished(pendingTasks);
+                        }
+                    }
+                );
+            }
+        }
+
+        if (pendingTasks.get() == 0) {
+            finalizeUpdate();
+        }
     }
 
+    private void checkIfFinished(final AtomicInteger pendingTasks) {
+        // אם המונה הגיע ל-0, חוזרים לחוט הראשי לסיום //
+        if (pendingTasks.decrementAndGet() <= 0) {
+            mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        finalizeUpdate();
+                    }
+                });
+        } else {
+            // עדכון UI חלקי (גם בחוט הראשי) //
+            mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyListeners();
+                    }
+                });
+        }
+    }
+
+    private void finalizeUpdate() {
+        synchronized (lock) {
+            mUpdateInProgress = false;
+        }
+        mLastUpdate = System.currentTimeMillis();
+        mLastUpdateMonotonic = SystemClock.elapsedRealtime();
+        notifyListeners();
+    }
     public static class NativeBlacklistStatus {
         public final String fname;
         public final int num_rules;

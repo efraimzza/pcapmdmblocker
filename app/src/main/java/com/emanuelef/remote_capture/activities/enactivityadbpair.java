@@ -31,7 +31,7 @@ public class enactivityadbpair extends Activity {
     private TextView outputTextView;
     private EditText edtxip,edtxport,edtxpwd;
     private EditText commandEditText;
-    private Button bupair,budisacccon,buenacccon,budisaccmult,buenaccmult,budisacc,buenacc;
+    private Button bupair,budisacccon,buenacccon,budisaccmult,buenaccmult,budisacc,buenacc,buexecall;
     private ScrollView outputScrollView; 
     public interface CommandOutputListener {
         void onOutputReceived(String line);
@@ -50,7 +50,7 @@ public class enactivityadbpair extends Activity {
         LinearLayout linl=findViewById(R.id.activity_adb_pairlinl);
         linl.removeView(findViewById(R.id.bucon));
         linl.removeView(findViewById(R.id.buconmult));
-        linl.removeView(findViewById(R.id.buexecall));
+       // linl.removeView(findViewById(R.id.buexecall));
         
         pkgname=enactivityadbpair.this.getPackageName();
         hompat=getDir("HOME", MODE_PRIVATE).getAbsolutePath();
@@ -72,7 +72,8 @@ public class enactivityadbpair extends Activity {
         buenaccmult = findViewById(R.id.buenaccmult);
         budisacc = findViewById(R.id.budisacc);
         buenacc = findViewById(R.id.buenacc);
-        
+            buexecall = findViewById(R.id.buexecall);
+            
         outputScrollView = (ScrollView) findViewById(R.id.outputScrollView); // אתחול ScrollView
         
         // הגדרת הליסטנר באמצעות Anonymous Inner Class
@@ -214,94 +215,92 @@ public class enactivityadbpair extends Activity {
                         }).start();
                 }
             });
-        budisaccmult.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //
-                    outputTextView.setText("מבצע פקודה...\n");
-                    // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
-                    budisaccmult.setEnabled(false);
-                    String dis="pm disable-user --user -0 com.google.android.gms\npm disable-user --user -0 com.google.android.gm\npm disable-user --user -0 me.bluemail.mail\npm disable-user --user -0 com.azure.authenticator\nexit\n";
-                    String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell\n"+dis+"exit\n";
-                    //"TERM=screen\nexport TMPDIR\nexport PATH\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so connect localhost:5555\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\nadb -t 1\nlibadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
-                    commandEditText.setText(multcmd);
-                    final String commandToExecute = commandEditText.getText().toString();
-                    //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
-                    
-                    new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                executeRootCommandInternal(commandToExecute, commandListener);
-                            }
-                        }).start();
-                }
-            });
-        buenaccmult.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //
-                    outputTextView.setText("מבצע פקודה...\n");
-                    // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
-                    buenaccmult.setEnabled(false);
-                    String ena="pm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
-                    String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell\n"+ena+"exit\n";
-                    //"TERM=screen\nexport TMPDIR\nexport PATH\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so connect localhost:5555\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\nadb -t 1\nlibadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
-                    commandEditText.setText(multcmd);
-                    final String commandToExecute = commandEditText.getText().toString();
-                    
-                    //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
-                    
-                    new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                executeRootCommandInternal(commandToExecute, commandListener);
-                            }
-                        }).start();
-                }
-            });
-        budisacc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // נקה את הפלט הקודם
-                    outputTextView.setText("מבצע פקודה...\n");
-                    // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
-                    budisacc.setEnabled(false);
-                    String dis="su\npm disable com.google.android.gms\npm disable com.google.android.gm\npm disable me.bluemail.mail\npm disable com.azure.authenticator\nexit\n";
-                    commandEditText.setText("/system/bin/sh -\n"+dis);
-                    final String commandToExecute = commandEditText.getText().toString();
+            budisaccmult.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //
+                        disaccmult();
+                    }
+                });
+            buenaccmult.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //
+                        enaccmult();
+                    }
+                });
+            budisacc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // נקה את הפלט הקודם
+                        outputTextView.setText("מבצע פקודה...\n");
+                        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+                        budisacc.setEnabled(false);
+                        String dis="su\npm disable com.google.android.gms\npm disable com.google.android.gm\npm disable me.bluemail.mail\npm disable com.azure.authenticator\nexit\n";
+                        dis="su\ncmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\nexit\nexit\n";
+                        commandEditText.setText("/system/bin/sh -\n"+dis);
+                        final String commandToExecute = commandEditText.getText().toString();
 
-                    //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
-                    
-                    new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                executeRootCommandInternal(commandToExecute, commandListener);
-                            }
-                        }).start();
-                }
-            });
-        buenacc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // נקה את הפלט הקודם
-                    outputTextView.setText("מבצע פקודה...\n");
-                    // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
-                    buenacc.setEnabled(false);
-                    String ena="su\npm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
-                    commandEditText.setText("/system/bin/sh -\n"+ena);
-                    final String commandToExecute = commandEditText.getText().toString();
+                        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
 
-                    //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
-                    
-                    new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                executeRootCommandInternal(commandToExecute, commandListener);
-                            }
-                        }).start();
-                }
-            });
+                        new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    executeRootCommandInternal(commandToExecute, commandListener);
+                                }
+                            }).start();
+                    }
+                });
+            buenacc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // נקה את הפלט הקודם
+                        outputTextView.setText("מבצע פקודה...\n");
+                        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+                        buenacc.setEnabled(false);
+                        String ena="su\npm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
+                        ena="su\npm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\nexit\nexit\n";
+                        commandEditText.setText("/system/bin/sh -\n"+ena);
+                        final String commandToExecute = commandEditText.getText().toString();
+                        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
 
+                        new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    executeRootCommandInternal(commandToExecute, commandListener);
+                                }
+                            }).start();
+                    }
+                });
+            buexecall.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PasswordManager.requestPasswordAndSave(new Runnable(){ @Override public void run() {
+                           
+                        // נקה את הפלט הקודם
+                        outputTextView.setText("מבצע פקודה...\n");
+                        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+                        //buexecall.setEnabled(false);
+                        //commandEditText.setText("/system/bin/sh -"+menv+"adb shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n");
+                        final String commandToExecute = commandEditText.getText().toString();
+                        if (commandToExecute.isEmpty()) {
+                            outputTextView.append("שגיאה: נא הכנס פקודה לביצוע.\n");
+                            buexecall.setEnabled(true); // הפוך את הכפתור ללחיץ בחזרה
+                            return;
+                        }
+
+                        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
+                        // הפעלת הפקודה על Thread נפרד
+                        new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    executeRootCommandInternal(commandToExecute, commandListener);
+                                }
+                            }).start();
+
+                                }   }, enactivityadbpair.this);
+                    }
+                });
         // פקודה לדוגמה שמוצגת ב-EditText בהתחלה
         initalcommand();
         edtxip.setText(wifiip);
@@ -340,6 +339,45 @@ public class enactivityadbpair extends Activity {
         } catch (Exception e) {
             LogUtil.logToFile(""+e);
         }
+    }
+    void disaccmult(){
+        outputTextView.setText("מבצע פקודה...\n");
+        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+        budisaccmult.setEnabled(false);
+        String dis="pm disable-user --user -0 com.google.android.gms\npm disable-user --user -0 com.google.android.gm\npm disable-user --user -0 me.bluemail.mail\npm disable-user --user -0 com.azure.authenticator\nexit\n";
+        dis="\"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
+        String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell "+dis+"exit\n";
+        //"TERM=screen\nexport TMPDIR\nexport PATH\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so connect localhost:5555\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\nadb -t 1\nlibadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        commandEditText.setText(multcmd);
+        final String commandToExecute = commandEditText.getText().toString();
+        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
+
+        new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    executeRootCommandInternal(commandToExecute, commandListener);
+                }
+            }).start();
+    }
+    void enaccmult(){
+        outputTextView.setText("מבצע פקודה...\n");
+        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+        buenaccmult.setEnabled(false);
+        String ena="pm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
+        ena="\"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
+        String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell "+ena+"exit\n";
+        //"TERM=screen\nexport TMPDIR\nexport PATH\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so connect localhost:5555\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\nadb -t 1\nlibadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        commandEditText.setText(multcmd);
+        final String commandToExecute = commandEditText.getText().toString();
+
+        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
+
+        new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    executeRootCommandInternal(commandToExecute, commandListener);
+                }
+            }).start();
     }
     public static String wifiip="";
     //int pport=0;

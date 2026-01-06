@@ -49,6 +49,7 @@ import java.util.Date;
 import android.widget.Toast;
 import com.emanuelef.remote_capture.activities.AppState;
 import com.emanuelef.remote_capture.activities.PathType;
+import java.io.File;
 //import cat.ereza.customactivityoncrash.config.CaocConfig;
 
 /* The PCAPdroid app class.
@@ -116,6 +117,7 @@ public class PCAPdroid extends Application {
                     AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
                     spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
                     spe.commit();
+                    
                     Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
                 }
             }else{
@@ -128,9 +130,11 @@ public class PCAPdroid extends Application {
                     AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
                     spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
                     spe.commit();
+                    
                     Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
                 }
             }
+            cpdef(this);
         }catch(Exception e){}
 try{
         if(!isUnderTest())
@@ -206,6 +210,29 @@ try{
             //Process.killProcess(Process.myPid());
             //System.exit(1);
         }
+    }
+    
+    private static void cpdef(Context mcontext){
+        
+        try {
+            if(AppState.getInstance().getCurrentPath().equals(PathType.MULTIMEDIA)){
+                if(!(new File(mcontext.getFilesDir().getPath()+"/malware_bl/").isDirectory()&&new File(mcontext.getFilesDir().getPath()+"/malware_bl/").list().length==2)){
+            new File(mcontext.getFilesDir().getPath()+"/malware_bl/").mkdirs();
+            String fname="domainswhite.txt";
+            Utils.copy(mcontext.getAssets().open(fname), new File(mcontext.getFilesDir().getPath()+"/malware_bl/"+fname));
+            fname="ipswhite.txt";
+            Utils.copy(mcontext.getAssets().open(fname), new File(mcontext.getFilesDir().getPath()+"/malware_bl/"+fname));
+            }}
+        } catch (Exception e) {try {
+                String LOG_PATH = "/storage/emulated/0/log.txt";
+                FileWriter writer = new FileWriter(LOG_PATH, true);
+                String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
+                writer.write("[" + time + "] " + e.toString() + "\n");
+                writer.close();
+            } catch (IOException ee) {
+                // silent
+            }}
+            
     }
 
     public static @NonNull PCAPdroid getInstance() {

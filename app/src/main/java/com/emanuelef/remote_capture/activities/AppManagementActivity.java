@@ -44,6 +44,11 @@ import android.os.Handler;
 
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.Utils;
+import android.preference.PreferenceManager;
+import java.util.Set;
+import android.content.SharedPreferences;
+import java.util.HashSet;
+import java.util.Arrays;
 
 @Deprecated
 public class AppManagementActivity extends Activity {
@@ -693,16 +698,25 @@ public class AppManagementActivity extends Activity {
         return false;
     }
 
-    
+    final private static String mownsetapps="ownsetapps";
 
     private void applyAppVisibilityChanges() {
+        List<String> ss=new ArrayList<>();
         for (AppItem appItem : mOriginalAppList) { // עבר על הרשימה המקורית
             // אם מצב ה-hidden השתנה עבור האפליקציה הזו
             boolean currentHiddenState = mDpm.isApplicationHidden(mAdminComponentName, appItem.getPackageName());
             if (currentHiddenState != appItem.isHidden()) {
                 mDpm.setApplicationHidden(mAdminComponentName, appItem.getPackageName(), appItem.isHidden());
             }
+            if(appItem.isHidden()&&!appItem.isSystemApp()) //no need to save sysytem apps because isnt loading in prappmng anyway...
+                ss.add(appItem.getPackageName());
         }
+        String[] sa={};
+        sa=ss.toArray(sa);
+        Set<String> s= new HashSet<>(Arrays.asList(sa));
+        
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AppManagementActivity.this).edit();
+        editor.putStringSet(mownsetapps, s).commit();
         Toast.makeText(getApplicationContext(), "שינויים באפליקציות נשמרו!", Toast.LENGTH_SHORT).show();
         // רענן את הרשימה לאחר שמירה כדי לשקף שינויים (לדוגמה, בסינון 'מוסתרות')
         // טען מחדש את הרשימה המקורית מהמערכת

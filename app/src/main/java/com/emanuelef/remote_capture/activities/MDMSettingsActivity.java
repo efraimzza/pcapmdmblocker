@@ -216,6 +216,10 @@ public class MDMSettingsActivity extends Activity {
                             tvcurroute.setText("המסלול הפעיל - "+AppState.getInstance().getCurrentPath().getDescription());
                             
                             Toast.makeText(getApplicationContext(), "המסלול שנבחר: " + selectedPath.getDescription(), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(MDMSettingsActivity.this, MDMStatusActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            Runtime.getRuntime().exit(0);
                         }
                     });
                 builder.create().show();  

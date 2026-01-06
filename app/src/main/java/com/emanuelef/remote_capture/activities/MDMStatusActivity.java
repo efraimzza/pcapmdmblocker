@@ -629,8 +629,9 @@ public class MDMStatusActivity extends Activity {
 
                             );
             String[] listidentmult={"Fanvace M36",
-                "s9863a1h10"+
-                "uis7865_6h10_go"};
+                "s9863a1h10",
+                "uis7865_6h10_go",
+                ""};
             boolean found= false;
             String curdevice=Build.DEVICE;
             for(String device:listidentmult){
@@ -742,7 +743,6 @@ public class MDMStatusActivity extends Activity {
         buenall.setBackgroundResource(R.drawable.rounded_button_background);
         buenall.setText("הסרת הסתרת כל האפליקציות");
         buenall.setOnClickListener(new OnClickListener(){
-
                 @Override
                 public void onClick(View p1) {
                     activity.getMainExecutor().execute(new Runnable(){
@@ -755,7 +755,18 @@ public class MDMStatusActivity extends Activity {
                     
                 }
             });
+        Button butran=new Button(activity);
+        butran.setBackgroundResource(R.drawable.rounded_button_background);
+        butran.setText("העברת בעלות לאפליקציה אחרת");
+        butran.setOnClickListener(new OnClickListener(){
+                @Override
+                public void onClick(View p1) {
+                    Intent intent = new Intent(activity, transferOwner.class);
+                    activity.startActivity(intent);
+                }
+            });
         linl.addView(buenall);
+        linl.addView(butran);
         linl.addView(tvdes);
         new AlertDialog.Builder(activity)
             .setTitle("הסר ניהול מכשיר")

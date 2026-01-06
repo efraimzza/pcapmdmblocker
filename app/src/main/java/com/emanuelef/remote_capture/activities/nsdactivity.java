@@ -450,7 +450,7 @@ public class nsdactivity extends Activity implements AdbNsdResolver.AdbServiceFo
     
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_MAX;
 
             // יצירת אובייקט NotificationChannel
             NotificationChannel channel = new NotificationChannel(

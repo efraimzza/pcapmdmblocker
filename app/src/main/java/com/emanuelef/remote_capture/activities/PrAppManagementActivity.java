@@ -45,6 +45,8 @@ import android.content.SharedPreferences;
 import java.util.Set;
 import android.preference.PreferenceManager;
 import android.appwidget.AppWidgetManager;
+import java.util.Arrays;
+import java.util.HashSet;
 
 @Deprecated
 public class PrAppManagementActivity extends Activity {
@@ -169,7 +171,7 @@ public class PrAppManagementActivity extends Activity {
                 });
         }
     }
-
+    final private static String mownsetapps="ownsetapps";
     // הוסף AsyncTask חדש לטעינת אפליקציות
     @Deprecated
     private static class LoadAppsTask extends AsyncTask<Void, Void, List<AppItem>> {
@@ -193,7 +195,9 @@ public class PrAppManagementActivity extends Activity {
             PackageManager pm = mcontext.getPackageManager();
             List<ApplicationInfo> installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA | PackageManager.MATCH_UNINSTALLED_PACKAGES);
             List<AppItem> appList = new ArrayList<AppItem>();
-
+            Set<String> s= new HashSet<>(Arrays.asList());
+            SharedPreferences mpref= PreferenceManager.getDefaultSharedPreferences(mcontext);
+            s=mpref.getStringSet(mownsetapps, s);
             for (ApplicationInfo appInfo : installedApps) {
                 boolean isHiddenByMDM =false;
                 try{
@@ -207,7 +211,7 @@ public class PrAppManagementActivity extends Activity {
                     LogUtil.logToFile(""+e);
                     e.printStackTrace();
                 }
-                if((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0){
+                if((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0&&!s.contains(appInfo.packageName)){
                 appList.add(new AppItem(
                                 appInfo.loadLabel(pm).toString(),
                                 appInfo.packageName,
@@ -401,7 +405,7 @@ public class PrAppManagementActivity extends Activity {
         }
         String[] sa={};
         sa=ss.toArray(sa);
-        Set<String> s= Set.of(sa);
+        Set<String> s= new HashSet<>(Arrays.asList(sa));
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(PrAppManagementActivity.this).edit();
         editor.putStringSet(msetapps, s).commit();
         Toast.makeText(getApplicationContext(), "שינויים באפליקציות נשמרו!", Toast.LENGTH_SHORT).show();
@@ -410,15 +414,21 @@ public class PrAppManagementActivity extends Activity {
     }
     
     public static void enadisapps(Context mcontext,boolean enadis,boolean fromWidget){
-        Set<String> s= Set.of();
+        try{
+        
         SharedPreferences mpref= PreferenceManager.getDefaultSharedPreferences(mcontext);
+            Set<String> owns= new HashSet<>(Arrays.asList());
+        owns=mpref.getStringSet(mownsetapps, owns);
+        
+            Set<String> s= new HashSet<>(Arrays.asList());
         s=mpref.getStringSet(msetapps, s);
         if(fromWidget){
             mDpm = (DevicePolicyManager) mcontext.getSystemService(Context.DEVICE_POLICY_SERVICE);
             mAdminComponentName = new ComponentName(mcontext, admin.class);
         }
         for(String pn:s){
-            mDpm.setApplicationHidden(mAdminComponentName, pn, enadis);
+            if(!owns.contains(pn))
+                mDpm.setApplicationHidden(mAdminComponentName, pn, enadis);
         }
         syncAllWidgets(mcontext,enadis);
         String mstat=enadis?"אפליקציות הושבתו!":"אפליקציות הופעלו!";
@@ -427,6 +437,7 @@ public class PrAppManagementActivity extends Activity {
         new LoadAppsTask(mcontext).execute();
         applyFiltersAndSort();
         }
+        }catch(Exception e){LogUtil.logToFile(e.toString());}
         
     }
     private static void syncAllWidgets(Context mcontext,boolean newValue) {

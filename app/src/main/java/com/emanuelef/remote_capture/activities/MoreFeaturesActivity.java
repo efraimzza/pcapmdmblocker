@@ -12,6 +12,8 @@ import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.Utils;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 
 public class MoreFeaturesActivity extends Activity {
     @Override
@@ -50,6 +52,28 @@ public class MoreFeaturesActivity extends Activity {
                     }
                 });
                 }
+        Button btnAddLockAppsShortcut = findViewById(R.id.btn_add_lock_apps_shortcut);
+        if (btnAddLockAppsShortcut != null) {
+            btnAddLockAppsShortcut.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /*try {
+                         Intent intent = new Intent(Settings.ACTION_SOUND_SETTINGS);
+                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                         startActivity(intent);
+                         Toast.makeText(MoreFeaturesActivity.this, "נפתח מסך הגדרות קול.", Toast.LENGTH_SHORT).show();
+                         } catch (Exception e) {
+                         Toast.makeText(MoreFeaturesActivity.this, "לא ניתן לפתוח את הגדרות המולטימדיה.", Toast.LENGTH_SHORT).show();
+                         }*/
+                         
+                        try{
+                            AppWidgetManager mgr = AppWidgetManager.getInstance(MoreFeaturesActivity.this);
+                            
+                            mgr.requestPinAppWidget(new ComponentName(MoreFeaturesActivity.this, MyToggleWidget.class),null,null);
+                        } catch (Exception e){}
+                    }
+                });
+        }
         Button btnprappmanag = findViewById(R.id.btn_prappmanag);
         if (btnprappmanag != null) {
             btnprappmanag.setOnClickListener(new View.OnClickListener() {
