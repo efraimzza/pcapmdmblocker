@@ -116,6 +116,10 @@ import java.net.HttpURLConnection;
 import java.io.InputStream;
 import android.os.AsyncTask;
 import java.net.URL;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 
 public class CaptureService extends VpnService implements Runnable {
@@ -268,6 +272,7 @@ public class CaptureService extends VpnService implements Runnable {
     static boolean cunetfree=false;
     static String lastup="";
     private class CheckNetfreeTask extends AsyncTask<Void, Void, Boolean> {
+        // the crt checker -
         @Override
         protected Boolean doInBackground(Void... voids) {
             boolean netfree = false; // ברירת מחדל
@@ -275,11 +280,7 @@ public class CaptureService extends VpnService implements Runnable {
             try {
                 //LogUtil.logToFile("s");
                 URL url = new URL("http://netfree.link/netfree-ca.crt");
-                //LogUtil.logToFile("s1");
-                //url = new URL("http://localhost:8088//privat/docoments/Android.docset/Contents/Resources/Documents/developer.android.com/reference/packages.html");
-                //url = new URL("http://localhost:8088//privat/docoments/Android.docset/Contents/Resources/Documents/developer.android.com/images/home/android-11-preview-hero.svg");
-                //LogUtil.logToFile("res="+url.getContent()+url.getUserInfo()+url.getRef());
-                //LogUtil.logToFile("s2");
+                
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 //connection.setRequestMethod("GET");
                 //connection.connect();
@@ -330,7 +331,46 @@ public class CaptureService extends VpnService implements Runnable {
             }
             return netfree;
         }
+        // the api checker -
+        /*
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            boolean netfree = false; // ברירת מחדל
+            HttpURLConnection connection=null;
+            try {
+                URL url = new URL("https://api.internal.netfree.link/user/0");;
 
+                connection = (HttpURLConnection) url.openConnection();
+              
+                connection.setRequestMethod("GET");
+
+                
+                BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream())
+                );
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                   // netfree = true;
+                    netfree= NetfreeUser.parseFromJson(response.toString()).isNetFree;
+                }
+                
+            } catch (IOException | Exception e) {
+                // במקרה של IOException, בדוק אם יש חיבור לאינטרנט
+                //LogUtil.logToFile(e.toString()+isInternetAvailablenew());
+                netfree = isInternetAvailablenew() ? false : netfree;
+            }finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            }
+            return netfree;
+        }*/
         @Override
         protected void onPostExecute(Boolean netfree) {
             LogUtil.logToFile("netfree="+netfree);
@@ -348,6 +388,63 @@ public class CaptureService extends VpnService implements Runnable {
                 previousNetfree = netfree; // עדכן את הערך הקודם
             }
         }
+    }
+    static class NetfreeUser {
+
+        private final boolean isNetFree;
+        private final String userKey;
+        private final String enc;
+        private final int userId;
+        private final String serverName;
+        private final String serverInfo;
+        private final int plan;
+        private final int sectorId;
+        private final String userIp;
+
+        // קונסטרקטור מלא
+        public NetfreeUser(boolean isNetFree, String userKey, String enc, int userId, 
+                           String serverName, String serverInfo, int plan, int sectorId, String userIp) {
+            this.isNetFree = isNetFree;
+            this.userKey = userKey;
+            this.enc = enc;
+            this.userId = userId;
+            this.serverName = serverName;
+            this.serverInfo = serverInfo;
+            this.plan = plan;
+            this.sectorId = sectorId;
+            this.userIp = userIp;
+        }
+
+        /**
+         * פונקציה הממירה מחרוזת JSON לאובייקט NetfreeUser.
+         * שיטה זו משתמשת ב-JSONObject הסטנדרטי של Android.
+         */
+        public static NetfreeUser parseFromJson(String jsonString) throws JSONException {
+            JSONObject json = new JSONObject(jsonString);
+
+            return new NetfreeUser(
+                json.optBoolean("isNetFree", false),
+                json.optString("userKey", ""),
+                json.optString("enc", ""),
+                json.optInt("userId", 0),
+                json.optString("servername", ""),
+                json.optString("serverInfo", ""),
+                json.optInt("plan", 0),
+                json.optInt("sectorId", 0),
+                json.optString("userIp", "")
+            );
+        }
+
+        // Getters
+        public boolean isNetFree() { return isNetFree; }
+        public String getUserKey() { return userKey; }
+        public String getEnc() { return enc; }
+        public int getUserId() { return userId; }
+        public String getServerName() { return serverName; }
+        public String getServerInfo() { return serverInfo; }
+        public int getPlan() { return plan; }
+        public int getSectorId() { return sectorId; }
+        public String getUserIp() { return userIp; }
     }
 /*
     private boolean isInternetAvailable() {

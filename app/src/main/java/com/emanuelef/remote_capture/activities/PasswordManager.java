@@ -122,7 +122,7 @@ public class PasswordManager {
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("אימות סיסמה");
         
-        final View passwordLayout = activity. getLayoutInflater().inflate(R.drawable.dialog_password_input, null);
+        final View passwordLayout = activity. getLayoutInflater().inflate(R.layout.dialog_password_input, null);
         final Switch swtype=passwordLayout.findViewById(R.id.swtype);
         
         final android.widget.EditText etPassword = passwordLayout.findViewById(R.id.et_admin_password);
@@ -204,7 +204,7 @@ public class PasswordManager {
         // ... (הקוד הקיים לשינוי סיסמה, אולי תרצה לשפר אותו עם דיאלוג מותאם אישית)
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("שינוי סיסמת מנהל");
-        final View passwordLayout = activity. getLayoutInflater().inflate(R.drawable.dialog_password_input, null); // השתמש באותו layout
+        final View passwordLayout = activity. getLayoutInflater().inflate(R.layout.dialog_password_input, null); // השתמש באותו layout
         final Switch swtype=passwordLayout.findViewById(R.id.swtype);
         final android.widget.EditText etNewPassword = passwordLayout.findViewById(R.id.et_admin_password);
         final android.widget.EditText etNewPasswordb = passwordLayout.findViewById(R.id.et_admin_passwordb);

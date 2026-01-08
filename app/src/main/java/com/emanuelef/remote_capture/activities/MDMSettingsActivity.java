@@ -126,7 +126,7 @@ public class MDMSettingsActivity extends Activity {
         
         // אתחול כפתורים
         setupButton(R.id.btn_manage_restrictions, "ניהול הגבלות מכשיר", RestrictionManagementActivity.class);
-        setupButton(R.id.btn_manage_apps, "ניהול אפליקציות", AppManagementActivity.class);
+        setupButton(R.id.btn_manage_apps, "ניהול אפליקציות", null);
         setupButton(R.id.btn_manage_vpn, "ניהול ניטור רשת (vpn)", MainActivity.class);
         setupButton(R.id.btn_change_password, "שנה סיסמה", null);
         setupButton(R.id.btn_remove_frp, "הסר frp", null); 
@@ -136,7 +136,8 @@ public class MDMSettingsActivity extends Activity {
             setupButton(R.id.btn_select_route, "בחירת מסלול לניטור רשת (vpn)", null); // תצטרך אקטיביטי לזה
         setupButton(R.id.btn_def_rest_multi, "השבתות מומלצות למולטימדיה", null);
         setupButton(R.id.btn_def_rest_cube, "השבתות מומלצות לקוביית אנדרואיד", null);
-            setupButton(R.id.btn_update_whitelist, "עדכון דומיינים לרשימות לבנות", null); // תצטרך לוגיקה לזה
+            setupButton(R.id.btn_def_rest_netfree, "השבתת הרשת לנטפרי", null);
+            setupButton(R.id.btn_update_whitelist, "עדכון דומיינים לרשימות לבנות", null);
         setupButton(R.id.btn_more_features, "פיצ'רים נוספים", MoreFeaturesActivity.class);
         setupButton(R.id.btn_pwopen, "אימות סיסמה לכל ההגדרות", null);
             setuplongclick();
@@ -161,6 +162,7 @@ public class MDMSettingsActivity extends Activity {
                             v.getId() ==  R.id.btn_select_route ||
                             v.getId() == R.id.btn_def_rest_multi ||
                             v.getId() == R.id.btn_def_rest_cube ||
+                            v.getId() == R.id.btn_def_rest_netfree ||
                             v.getId() ==  R.id.btn_pwopen) { 
                             PasswordManager.requestPasswordAndSave(new Runnable() {
                                     @Override
@@ -303,6 +305,55 @@ public class MDMSettingsActivity extends Activity {
                }
             } else if (buttonId == R.id.btn_pwopen) {
                pwopen();
+            }else if (buttonId == R.id.btn_manage_apps) {
+                
+                String[] pathNames = {"התקנת והשבתת אפליקציות","השהיית אפליקציות"};
+                
+                
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("בחר סוג ניהול");
+                builder.setItems(pathNames, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(which==0){
+                                Intent intent = new Intent(MDMSettingsActivity.this, AppManagementActivity.class);
+                                startActivity(intent);
+                            }else if(which==1){
+                                Intent intent = new Intent(MDMSettingsActivity.this,AppSuspendActivity.class );
+                                startActivity(intent);
+                            }
+                            
+                        }
+                    });
+                builder.create().show();
+            } else if (buttonId == R.id.btn_def_rest_netfree) {
+                boolean mdmstate=mDpm.isDeviceOwnerApp(MDMSettingsActivity.this.getPackageName());
+                if(mdmstate){
+                    try{
+                        //all vpn settings
+                        
+                        mPrefs.edit().putBoolean(Prefs.PREF_NETFREE,true).putBoolean(Prefs.PREF_MALWARE_DETECTION,false).commit();
+                        mDpm.setAlwaysOnVpnPackage(mAdminComponentName,  getPackageName(), true);
+                        mDpm.addUserRestriction(mAdminComponentName, UserManager.DISALLOW_DEBUGGING_FEATURES);
+                        mDpm.addUserRestriction(mAdminComponentName, UserManager.DISALLOW_FACTORY_RESET);
+                        mDpm.addUserRestriction(mAdminComponentName, UserManager.DISALLOW_ADD_MANAGED_PROFILE);
+                        mDpm.addUserRestriction(mAdminComponentName, UserManager.DISALLOW_USER_SWITCH);
+                        mDpm.addUserRestriction(mAdminComponentName, UserManager.DISALLOW_ADD_USER);
+                        
+                        mDpm.addUserRestriction(mAdminComponentName, UserManager.DISALLOW_REMOVE_USER);
+                    
+                        mDpm.addUserRestriction(mAdminComponentName, UserManager.DISALLOW_SAFE_BOOT);
+                        mDpm.addUserRestriction(mAdminComponentName, UserManager.DISALLOW_CONFIG_VPN);
+                        
+                        Toast.makeText(getApplicationContext(), "הופעל השבתת רשת שאינו נטפרי!", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e){
+                        Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                    }
+
+                }else{
+                    Toast.makeText(getApplicationContext(), "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

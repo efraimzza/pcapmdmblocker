@@ -50,6 +50,7 @@ import android.widget.Toast;
 import com.emanuelef.remote_capture.activities.AppState;
 import com.emanuelef.remote_capture.activities.PathType;
 import java.io.File;
+import com.emanuelef.remote_capture.activities.accser;
 //import cat.ereza.customactivityoncrash.config.CaocConfig;
 
 /* The PCAPdroid app class.
@@ -133,6 +134,9 @@ public class PCAPdroid extends Application {
                     
                     Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
                 }
+            }
+            if(AppState.getInstance().getCurrentPath().equals(PathType.WHATSAPP)){
+                accser.refreshacc.refreshacc(getApplicationContext());
             }
             cpdef(this);
         }catch(Exception e){}

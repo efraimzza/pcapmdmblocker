@@ -142,7 +142,8 @@
         <item name="android:switchStyle">@style/swis</item-->
     </style>
 
-    <style name="BaseThemeLight" parent="@android:style/ThemeOverlay.Material.Dark.ActionBar">
+    <style name="BaseThemeLight" parent="@android:style/Theme.Material">
+        
         <item name="expander">@drawable/expander_white</item>
         <item name="iconQueue">@drawable/ic_hourglass_empty_white_24dp</item>
         <item name="iconMetered">@drawable/ic_attach_money_white_24dp</item>
@@ -365,6 +366,7 @@
         <item name="android:textViewStyle">@style/WidgetAppViewRounded</item-->
         <item name="android:thumb">@drawable/custom_switch_thumb</item>
         <item name="android:track">@drawable/custom_switch_track</item>
+        <item name="android:padding">5dp</item>
     </style>
     <style name="rbs" parent="@android:style/Widget.Material.Light.CompoundButton.RadioButton">
         <item name="android:colorBackground">?colorText</item>

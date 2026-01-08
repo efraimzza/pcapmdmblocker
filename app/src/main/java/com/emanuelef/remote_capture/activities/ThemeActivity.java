@@ -48,7 +48,7 @@ public class ThemeActivity extends BaseActivity {
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             final PreferenceScreen screen = getPreferenceScreen();
             Preference pref_screen_theme = screen.findPreference("theme");
-            String theme = prefs.getString("theme", "dpurplet");
+            String theme = prefs.getString("theme", "modern");
             String[] themeNames = getResources().getStringArray(R.array.themeNames);
             String[] themeValues = getResources().getStringArray(R.array.themeValues);
             for (int i = 0; i < themeNames.length; i++)
@@ -56,7 +56,7 @@ public class ThemeActivity extends BaseActivity {
                     pref_screen_theme.setTitle(getString(R.string.setting_theme, themeNames[i]));
                     break;
                 }
-            String dtheme = prefs.getString("dark_theme", "auto");
+            String dtheme = prefs.getString("dark_theme", "dark");
             String[] dthemeNames = getResources().getStringArray(R.array.dthemeNames);
             String[] dthemeValues = getResources().getStringArray(R.array.dthemeValues);
             for (int i = 0; i < dthemeNames.length; i++)

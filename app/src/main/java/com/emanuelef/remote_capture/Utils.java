@@ -2582,11 +2582,11 @@ public class Utils {
         try{prefs.getBoolean("dark_theme",false);
             if(prefs.getBoolean("dark_theme",false)||!prefs.getBoolean("dark_theme",false)){
             prefs.edit().remove("dark_theme").commit();
-            prefs.edit().putString("dark_theme","auto").commit();
+                prefs.edit().putString("dark_theme","dark").commit();
             }
         }catch(Exception e){}
         boolean dark=false;
-        String pdark = prefs.getString("dark_theme", "auto");
+        String pdark = prefs.getString("dark_theme", "dark");
         if(pdark.equals("auto")){
             Configuration newConfig= context.getResources().getConfiguration();
             dark=(newConfig.uiMode&Configuration.UI_MODE_NIGHT_YES)==Configuration.UI_MODE_NIGHT_YES;
@@ -2595,7 +2595,7 @@ public class Utils {
         }else if(pdark.equals("dark")){
             dark=true;
         }
-        String theme = prefs.getString("theme", "dpurplet");
+        String theme = prefs.getString("theme", "modern");
         if (theme.equals("dpurplet"))
             context.setTheme(dark ? R.style.AppThemePurpleTDark : R.style.AppThemePurpleT);
         else if (theme.equals("dpurpler"))
