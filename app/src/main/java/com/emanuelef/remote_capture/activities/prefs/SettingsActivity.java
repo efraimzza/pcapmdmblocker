@@ -231,6 +231,7 @@ FragmentViewCreatedListener {
 
         private SwitchPreference netfreea;
         private SwitchPreference netfreeb;
+        private SwitchPreference rimon;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -325,8 +326,10 @@ FragmentViewCreatedListener {
         private void setupNetfreePrefs() {
             netfreea = requirePreference(Prefs.PREF_NETFREE);
             netfreeb = requirePreference(Prefs.PREF_NETFREEb);
-            netfreea.setEnabled(!netfreeb.isChecked());
-            netfreeb.setEnabled(!netfreea.isChecked());
+            rimon = requirePreference(Prefs.PREF_RIMON);
+            netfreea.setEnabled(!netfreeb.isChecked()&&!rimon.isChecked());
+            netfreeb.setEnabled(!netfreea.isChecked()&&!rimon.isChecked());
+            rimon.setEnabled(!netfreea.isChecked()&&!netfreeb.isChecked());
             netfreea.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
                     @Override
                     public boolean onPreferenceChange(Preference p, Object newValue) {             
@@ -334,8 +337,11 @@ FragmentViewCreatedListener {
                         Context ctx = getContext();
                         //netfreea.setEnabled(!(boolean)newValue);
                         netfreeb.setEnabled(!(boolean)newValue);
-                        if(enabled)
+                        rimon.setEnabled(!(boolean)newValue);
+                        if(enabled){
                             netfreeb.setChecked(false);
+                            rimon.setChecked(false);
+                        }
                         return true;
                     }
              });
@@ -346,8 +352,26 @@ FragmentViewCreatedListener {
                         Context ctx = getContext();
                         //netfreea.setEnabled(!(boolean)newValue);
                         netfreea.setEnabled(!(boolean)newValue);
-                        if(enabled)
+                        rimon.setEnabled(!(boolean)newValue);
+                        if(enabled){
                             netfreea.setChecked(false);
+                            rimon.setChecked(false);
+                        }
+                        return true;
+                    }
+                });
+            rimon.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+                    @Override
+                    public boolean onPreferenceChange(Preference p, Object newValue) {             
+                        boolean enabled = (boolean) newValue;
+                        Context ctx = getContext();
+                        //netfreea.setEnabled(!(boolean)newValue);
+                        netfreea.setEnabled(!(boolean)newValue);
+                        netfreeb.setEnabled(!(boolean)newValue);
+                        if(enabled){
+                            netfreea.setChecked(false);
+                            netfreeb.setChecked(false);
+                        }
                         return true;
                     }
                 });

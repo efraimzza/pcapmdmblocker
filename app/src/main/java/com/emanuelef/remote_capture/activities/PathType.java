@@ -2,7 +2,6 @@ package com.emanuelef.remote_capture.activities;
 
 public enum PathType {
     MULTIMEDIA("מולטימדיה"),
-    MULTIMEDIA_ACCESSIBILITY("מולטימדיה ונגישות"),
     EVERYTHING("הכל"),
     MAPS("מפות"),
     WAZE("וויז"),

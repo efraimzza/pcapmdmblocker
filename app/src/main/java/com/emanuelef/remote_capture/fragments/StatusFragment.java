@@ -169,6 +169,8 @@ public class StatusFragment extends Fragment implements AppStateListener {
 	//public static sModetype smtype;
 	AlertDialog alertDialogmode;
     TextView bufirewall,bumalware,budecrypt,bulog,buinstruction;
+    Button bublock_googlevoice;
+    ImageView imghideblkgv;
   /*  public StatusFragment(Context context){
         super(context);
         inStatusFragment(context);
@@ -257,6 +259,8 @@ public class StatusFragment extends Fragment implements AppStateListener {
         bumalware=view.findViewById(R.id.bumalware);
         budecrypt=view.findViewById(R.id.budecrypt);
         bulog=view.findViewById(R.id.bulog);
+        imghideblkgv=view.findViewById(R.id.img_hide_block_googlevoice);
+        bublock_googlevoice=view.findViewById(R.id.btn_block_googlevoice);
         buinstruction=view.findViewById(R.id.buinstruction);
         //tvaa = view.findViewById(R.id.tva);
         //tvab = view.findViewById(R.id.tvb);
@@ -441,6 +445,30 @@ public class StatusFragment extends Fragment implements AppStateListener {
                 public void onClick(View p1) {
                     Intent intent = new Intent(getActivity(), LogviewActivity.class);
                     startActivity(intent);
+                }});
+        bublock_googlevoice.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View p1) {
+                    PasswordManager.requestPasswordAndSave(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    PCAPdroid.getInstance().getBlocklist().addHost("speechs3proto2-pa.googleapis.com");
+                                } catch (Exception e) {LogUtil.logToFile(e.toString());}
+                            }
+                        },mActivity);
+                }});
+        imghideblkgv.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View p1) {
+                    PasswordManager.requestPasswordAndSave(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    //hide & save hiding state to prefs
+                                } catch (Exception e) {LogUtil.logToFile(e.toString());}
+                            }
+                        },mActivity);
                 }});
         buinstruction.setOnClickListener(new OnClickListener(){
                 @Deprecated

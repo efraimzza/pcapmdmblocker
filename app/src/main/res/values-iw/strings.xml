@@ -47,6 +47,8 @@
     <string name="netfree">נטפרי</string>
     <string name="netfreeb">נטפרי (בדיקה מסוג אחר)</string>
     <string name="netfree_sumarray">חוסם את כל האינטרנט שאינו נטפרי</string>
+    <string name="rimon">רימון או אתרוג</string>
+    <string name="rimon_sumarray">חוסם את כל האינטרנט שאינו רימון או אתרוג (נסיוני)</string>
     <string name="setting_options">אפשרויות</string>
     <string name="setting_theme">ערכת נושא: %1$s</string>
     <string name="setting_dtheme">מצב בהירות: %1$s</string>

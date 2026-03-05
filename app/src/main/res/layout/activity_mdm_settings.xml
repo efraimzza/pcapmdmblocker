@@ -48,10 +48,6 @@
             <Button style="@style/MDMActionButton"
                 android:id="@+id/btn_manage_vpn"
                 android:text="ניהול ניטור רשת (vpn)"/>
-
-            
-
-            
             
             <Button style="@style/MDMActionButton"
                 android:id="@+id/btn_select_route"
@@ -69,6 +65,10 @@
             <Button style="@style/MDMActionButton"
                 android:id="@+id/btn_update_whitelist"
                 android:text="עדכון דומיינים לרשימות לבנות"/>
+            
+            <Button style="@style/MDMActionButton"
+                android:id="@+id/btn_accessibility"
+                android:text="נגישות"/>
             
             <View
                 android:layout_width="match_parent"
@@ -139,7 +139,9 @@
             <Button style="@style/MDMActionButton"
                 android:id="@+id/btn_more_features"
                 android:text="פיצ'רים נוספים"/>
-                
+            <Button style="@style/MDMActionButton"
+                android:id="@+id/btn_export_import"
+                android:text="גיבוי הגדרות"/>
             
 
             

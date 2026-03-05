@@ -315,6 +315,12 @@
                         android:text="עבור להפעלה!"
                         android:layout_marginTop="8dp" />
                 </LinearLayout-->
+                    <Switch
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="החלפת הסמל לירוק"
+                        android:checked="true"
+                        android:id="@+id/swicongreen"/>
                 <Button
                     android:id="@+id/btn_next_start"
                     android:layout_width="wrap_content"

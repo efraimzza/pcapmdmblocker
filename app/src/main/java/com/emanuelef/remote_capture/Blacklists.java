@@ -148,25 +148,6 @@ public class Blacklists {
                         "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhiteall.txt");
 
                 break;
-            case MULTIMEDIA_ACCESSIBILITY:
-                /*addList("Maltrail", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"maltrail-malware-domains.txt",
-                 "https://raw.githubusercontent.com/stamparm/aux/master/maltrail-malware-domains.txt");
-                 */
-                //domains
-                addList("domains white", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"domainswhite.txt",
-                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/domainswhite.txt");
-                // IPs
-                /*addList("Emerging Threats", BlacklistDescriptor.Type.IP_BLACKLIST, "emerging-Block-IPs.txt",
-                 "https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt");
-                 */
-                addList("ips white", BlacklistDescriptor.Type.IP_BLACKLIST, "ipswhite.txt",
-                        "https://raw.githubusercontent.com/efraimzz/Mywhitelistdomains/refs/heads/main/ipswhite.txt");
-
-                /*
-                 addList("DigitalSide Threat-Intel", BlacklistDescriptor.Type.IP_BLACKLIST,  "digitalsideit_ips.txt",
-                 "https://raw.githubusercontent.com/davidonzo/Threat-Intel/master/lists/latestips.txt");
-                 */
-                break;
             case MAPS:
                 //domains
                 addList("domains maps", BlacklistDescriptor.Type.DOMAIN_BLACKLIST,"maps.txt",

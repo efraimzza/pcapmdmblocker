@@ -90,56 +90,58 @@ public class MDMSettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         Utils.setTheme(this);
         try{
-        setContentView(R.layout.activity_mdm_settings);
-        if(getIntent().getStringExtra("err")!=null){
-            findViewById(R.id.tvupold).setVisibility(TextView.VISIBLE);
-        }
-        try{
+            setContentView(R.layout.activity_mdm_settings);
+            if(getIntent().getStringExtra("err")!=null){
+                findViewById(R.id.tvupold).setVisibility(TextView.VISIBLE);
+            }
             try{
-            if(getActionBar().isShowing())
-                getActionBar().hide();
-            }catch(Exception e){}
-        downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        handler = new Handler(Looper.getMainLooper());
-        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        if (Build.VERSION.SDK_INT >= 33/*Build.VERSION_CODES.TIRAMISU*/) {
-            registerReceiver(monDownloadComplete, filter,2/* Context.RECEIVER_EXPORTED*/);
-        } else {
-            registerReceiver(monDownloadComplete, filter);
-        }
-        }  catch(Exception e){
-            MDMSettingsActivity.this.requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 55);
-            LogUtil.logToFile(""+e);
-            Toast.makeText(getApplicationContext(), e+"",1).show();
-        }
-        mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        mAdminComponentName = new ComponentName(this,admin.class);
+                try{
+                    if(getActionBar().isShowing())
+                        getActionBar().hide();
+                }catch(Exception e){}
+                downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                handler = new Handler(Looper.getMainLooper());
+                IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+                if (Build.VERSION.SDK_INT >= 33/*Build.VERSION_CODES.TIRAMISU*/) {
+                    registerReceiver(monDownloadComplete, filter,2/* Context.RECEIVER_EXPORTED*/);
+                } else {
+                    registerReceiver(monDownloadComplete, filter);
+                }
+            }  catch(Exception e){
+                MDMSettingsActivity.this.requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 55);
+                LogUtil.logToFile(""+e);
+                Toast.makeText(getApplicationContext(), e+"",1).show();
+            }
+            mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+            mAdminComponentName = new ComponentName(this,admin.class);
 
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(MDMSettingsActivity.this);
-        
-        sp=this.getSharedPreferences(this.getPackageName(),this.MODE_PRIVATE);
-        spe=sp.edit();
+            mPrefs = PreferenceManager.getDefaultSharedPreferences(MDMSettingsActivity.this);
+
+            sp=this.getSharedPreferences(this.getPackageName(),this.MODE_PRIVATE);
+            spe=sp.edit();
 
 
-        TextView tvcurroute=findViewById(R.id.tv_cur_route);
-        tvcurroute.setText("המסלול הפעיל - "+AppState.getInstance().getCurrentPath().getDescription());
-        
-        // אתחול כפתורים
-        setupButton(R.id.btn_manage_restrictions, "ניהול הגבלות מכשיר", RestrictionManagementActivity.class);
-        setupButton(R.id.btn_manage_apps, "ניהול אפליקציות", null);
-        setupButton(R.id.btn_manage_vpn, "ניהול ניטור רשת (vpn)", MainActivity.class);
-        setupButton(R.id.btn_change_password, "שנה סיסמה", null);
-        setupButton(R.id.btn_remove_frp, "הסר frp", null); 
-        setupButton(R.id.btn_activate_frp, "הפעל frp", null); 
-        setupButton(R.id.btn_update_mdm_app, "עדכון אפליקציית MDM", null);
-        setupButton(R.id.btn_lock_mdm, "נעילת הגדרות והסרה", null);
+            TextView tvcurroute=findViewById(R.id.tv_cur_route);
+            tvcurroute.setText("המסלול הפעיל - "+AppState.getInstance().getCurrentPath().getDescription());
+
+
+            setupButton(R.id.btn_manage_restrictions, "ניהול הגבלות מכשיר", RestrictionManagementActivity.class);
+            setupButton(R.id.btn_manage_apps, "ניהול אפליקציות", null);
+            setupButton(R.id.btn_manage_vpn, "ניהול ניטור רשת (vpn)", MainActivity.class);
+            setupButton(R.id.btn_change_password, "שנה סיסמה", null);
+            setupButton(R.id.btn_remove_frp, "הסר frp", null); 
+            setupButton(R.id.btn_activate_frp, "הפעל frp", null); 
+            setupButton(R.id.btn_update_mdm_app, "עדכון אפליקציית MDM", null);
+            setupButton(R.id.btn_lock_mdm, "נעילת הגדרות והסרה", null);
             setupButton(R.id.btn_select_route, "בחירת מסלול לניטור רשת (vpn)", null); // תצטרך אקטיביטי לזה
-        setupButton(R.id.btn_def_rest_multi, "השבתות מומלצות למולטימדיה", null);
-        setupButton(R.id.btn_def_rest_cube, "השבתות מומלצות לקוביית אנדרואיד", null);
+            setupButton(R.id.btn_def_rest_multi, "השבתות מומלצות למולטימדיה", null);
+            setupButton(R.id.btn_def_rest_cube, "השבתות מומלצות לקוביית אנדרואיד", null);
             setupButton(R.id.btn_def_rest_netfree, "השבתת הרשת לנטפרי", null);
             setupButton(R.id.btn_update_whitelist, "עדכון דומיינים לרשימות לבנות", null);
-        setupButton(R.id.btn_more_features, "פיצ'רים נוספים", MoreFeaturesActivity.class);
-        setupButton(R.id.btn_pwopen, "אימות סיסמה לכל ההגדרות", null);
+            setupButton(R.id.btn_accessibility, "נגישות", AccessActivity.class);
+            setupButton(R.id.btn_more_features, "פיצ'רים נוספים", MoreFeaturesActivity.class);
+            setupButton(R.id.btn_pwopen, "אימות סיסמה לכל ההגדרות", null);
+            setupButton(R.id.btn_export_import, "גיבוי הגדרות", mbackupActivity.class);
             setuplongclick();
         }  catch(Exception e){
             Toast.makeText(getApplicationContext(), e+"",1).show();

@@ -19,7 +19,12 @@
                 android:entryValues="@array/dthemeValues"
                 android:key="dark_theme"
                  />
-
+            <SwitchPreference
+                android:key="icongreen"
+                android:title="החלפת הסמל לירוק"
+                android:summary="החלפת הסמל במסך הבית לירוק כשה mdm פעיל"
+                android:iconSpaceReserved="false"
+                android:defaultValue="true" />
         </PreferenceCategory>
  
 </PreferenceScreen>

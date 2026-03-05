@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+        >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="נגישות"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:paddingBottom="16dp"
+    />
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="הפעלת נגישות"
+        android:checked="true"
+        android:id="@+id/swenaccess"/>
+    
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="חסימת סטטוסים"
+        android:checked="true"
+        android:id="@+id/swdistatus"/>
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="חסימת ערוצים"
+        android:checked="true"
+        android:id="@+id/swdischannel"/>
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="חסימת הודעות שהועברו מערוצים"
+        android:checked="false"
+        android:id="@+id/swdisforwardchannel"/>
+    
+    <Button style="@style/MDMActionButton"
+        android:id="@+id/btn_save_access"
+        android:text="שמור שינויים"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -139,6 +139,9 @@ public class activityadbpair extends Activity {
                                 }else if(line.toLowerCase().contains("already several users")){
                                     outputTextView.append("שגיאה - למכשיר יש משתמשים מרובים\n");
                                     err="users";
+                                }else if(line.toLowerCase().contains("error: device 'localhost:5555' not found")){
+                                    outputTextView.append("שגיאה - מכשיר לא נמצא נסה שוב או לא נתמך\n");
+                                    err="devnotfound";
                                 }else if(line.toLowerCase().contains("java.lang.IllegalStateException")){
                                     outputTextView.append("שגיאה - שגיאה לא מוכרת בינתיים\n");
                                     err="Illegal";
@@ -183,6 +186,9 @@ public class activityadbpair extends Activity {
                                 }else if(err.equals("users")){
                                     outputTextView.append("שגיאה - למכשיר יש משתמשים מרובים\n");
                                     
+                                }else if(err.equals("devnotfound")){
+                                    outputTextView.append("שגיאה - מכשיר לא נמצא נסה שוב או לא נתמך\n");
+
                                 }else if(err.equals("Illegal")){
                                     outputTextView.append("שגיאה - שגיאה לא מוכרת בינתיים\n");
                                    

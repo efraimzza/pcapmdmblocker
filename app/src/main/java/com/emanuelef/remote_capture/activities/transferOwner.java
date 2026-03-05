@@ -43,12 +43,14 @@ public class transferOwner extends Activity {
                     final ArrayList<DeviceAdminInfo> dai=new ArrayList<>();
                     for(ResolveInfo ri: pm.queryBroadcastReceivers(new   Intent(DeviceAdminReceiver.ACTION_DEVICE_ADMIN_ENABLED), PackageManager.GET_META_DATA)){
                         try {
-                            dai.add( new DeviceAdminInfo(transferOwner.this, ri));
+                            DeviceAdminInfo inf=new DeviceAdminInfo(transferOwner.this, ri);
+                            if(inf.supportsTransferOwnership())
+                            dai.add( inf);
                         } catch (IOException e) {LogUtil.logToFile(e.toString());} catch (XmlPullParserException e) {LogUtil.logToFile(e.toString());}
                     }
                     ArrayList<String> dais=new ArrayList<>();
                     for(DeviceAdminInfo inf : dai){
-                        if(inf.supportsTransferOwnership())
+                        
                         dais.add("name="+inf.loadLabel(pm)+"\npkgname="+inf.getPackageName());
                     }
                     final Button bucomptext=findViewById(R.id.actranbucomptext);

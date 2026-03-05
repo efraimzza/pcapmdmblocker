@@ -92,13 +92,20 @@ public class picker extends Activity {
             bupickerselect=findViewById(R.id.bupickerselect);
             if(from.equals("storeseldir")){
                 bupickerselect.setVisibility(Button.VISIBLE);
+            }else if(from.equals("mbackupseldir")){
+                bupickerselect.setVisibility(Button.VISIBLE);
             }
             bupickerselect.setOnClickListener(new OnClickListener(){
                     @Override
                     public void onClick(View p1) {
                         if(new File(mpath).canRead()&&!mpath.equals("/storage")){
                             //answar the dir path to save the json
+                            if(from.equals("storeseldir")){
                                 storeActivity.pickeddirpath=mpath;
+                            }else if(from.equals("mbackupseldir")){
+                                mbackupActivity.pickeddirpath=mpath;
+                            }
+                                
                                 finish();
                             
                         }
@@ -137,7 +144,12 @@ public class picker extends Activity {
                                     storeActivity.pickedfilepath=clickedItem.path;
                                     finish();
                                 }
-                             }
+                            }else if(from.equals("mbackuppickzip")){
+                                if(clickedItem.path.toLowerCase().endsWith(".zipmdm")){
+                                    mbackupActivity.pickedfilepath=clickedItem.path;
+                                    finish();
+                                }
+                            }
                             //Toast.makeText(getApplicationContext(), "Path: " + clickedItem.path, Toast.LENGTH_LONG).show();
                         }
 

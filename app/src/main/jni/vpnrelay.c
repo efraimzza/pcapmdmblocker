@@ -2642,7 +2642,8 @@ int run_vpn(pcapdroid_t *pd) {
                 //end old
                 //new
                 //log_to_file("is block?%d is netfree?%d is domain eq netfree.link?%d",data->to_block,!isNetfree,!(data->info!=NULL&&(strcmp(data->info, "netfree.link")==0)));
-                if(data->to_block|| (!isNetfree&&!(data->info!=NULL&&((strcmp(data->info, "netfree.link")==0)||(strcmp(data->info, "api.internal.netfree.link")==0))))) {
+                //log_to_file("block?%d, is horad?%d",(data->to_block|| (!isNetfree&&!(data->info!=NULL&&((strcmp(data->info, "netfree.link")==0)||(strcmp(data->info, "api.internal.netfree.link")==0)||(strcmp(data->info, "horadah.click")==0))))),!(data->info!=NULL&&(strcmp(data->info, "horadah.click")==0)));
+                if(data->to_block|| (!isNetfree&&!(data->info!=NULL&&((strcmp(data->info, "netfree.link")==0)||(strcmp(data->info, "api.internal.netfree.link")==0)||(strcmp(data->info, "horadah.click")==0))))) {
                 //end new
                         // blocking a DNS query can cause multiple requests to be spammed. Better to
                         // spoof a reply with an invalid IP.
@@ -2660,7 +2661,7 @@ int run_vpn(pcapdroid_t *pd) {
                 //end old
                 //new
                                 //log_to_file("is block?%d is netfree?%d is domain eq netfree.link?%d",data->to_block,!isNetfree,!(data->info!=NULL&&(strcmp(data->info, "netfree.link")==0)));
-                if(data->to_block|| (!isNetfree&&!(data->info!=NULL&&((strcmp(data->info, "netfree.link")==0)||(strcmp(data->info, "api.internal.netfree.link")==0))))) {
+                if(data->to_block|| (!isNetfree&&!(data->info!=NULL&&((strcmp(data->info, "netfree.link")==0)||(strcmp(data->info, "api.internal.netfree.link")==0)||(strcmp(data->info, "horadah.click")==0))))) {
                 //end new
                     data->blocked_pkts++;
                     data->update_type |= CONN_UPDATE_STATS;

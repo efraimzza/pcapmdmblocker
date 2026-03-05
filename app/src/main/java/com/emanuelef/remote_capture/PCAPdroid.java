@@ -139,7 +139,7 @@ public class PCAPdroid extends Application {
                     Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
                 }
             }
-            if(AppState.getInstance().getCurrentPath().equals(PathType.WHATSAPP)){
+            if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("accessEnabled",false)){
                 accser.refreshacc.refreshacc(getApplicationContext());
             }
             cpdef(this);

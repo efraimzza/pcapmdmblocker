@@ -88,6 +88,11 @@ import android.graphics.drawable.LayerDrawable;
 import android.animation.PropertyValuesHolder;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.preference.PreferenceManager;
+import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Set;
+import android.widget.Switch;
+import android.widget.CompoundButton;
 
 @Deprecated
 public class MDMStatusActivity extends Activity {
@@ -111,6 +116,8 @@ public class MDMStatusActivity extends Activity {
     Button bud;
     private static ProgressDialog progressDialog;
     private static Activity mactivity;
+    SharedPreferences sprst;
+    static boolean coninuedisable=false;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -349,8 +356,193 @@ public class MDMStatusActivity extends Activity {
                     startwithroot(MDMStatusActivity.this);
                 }
             });
+        if(new File(getDataDir().getPath()+"/shared_prefs/restriction.xml").exists()){
+            loadrestrictions();
+            deleteSharedPreferences("restriction");
+            coninuedisable=true;
+            try{
+                this.getMainExecutor().execute(new Runnable(){
+                        @Deprecated
+                        @Override
+                        public void run() {
+                            new EnableAppsTask().execute();
+                        }
+                    });
+                
+            } catch (Exception e) {}
+        }
         refresh();
         
+    }
+    
+    void loadrestrictions(){
+        try{
+            mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+            if(mDpm.isDeviceOwnerApp(getPackageName())){
+                mAdminComponentName = new ComponentName(this, admin.class);
+                sprst = this.getSharedPreferences("restriction", this.MODE_PRIVATE);
+                if (Build.VERSION.SDK_INT >= 24) {
+                    mDpm.setAlwaysOnVpnPackage(mAdminComponentName,((sprst.getBoolean("DISALLOW_ALWAYS_ON_VPN", false))?getPackageName():null),true);
+                }
+                if (Build.VERSION.SDK_INT >= 20) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_CONFIG_VPN,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_VPN);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_VPN);
+                }
+                if (Build.VERSION.SDK_INT >= 25) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_CONFIG_DATE_TIME,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_DATE_TIME);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_DATE_TIME);
+                }
+                if (Build.VERSION.SDK_INT >= 20) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_CONFIG_TETHERING,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_TETHERING);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_TETHERING);
+                }
+                if (Build.VERSION.SDK_INT >= 17) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_CONFIG_WIFI,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_WIFI);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_WIFI);
+                }
+                if (Build.VERSION.SDK_INT >= 20) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_DEBUGGING_FEATURES,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_DEBUGGING_FEATURES);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_DEBUGGING_FEATURES);
+                }
+                if (Build.VERSION.SDK_INT >= 17) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_INSTALL_APPS,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_INSTALL_APPS);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_INSTALL_APPS);
+                }
+                if (Build.VERSION.SDK_INT >= 17) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES);
+                }
+                if (Build.VERSION.SDK_INT >= 17) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_UNINSTALL_APPS);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_UNINSTALL_APPS);
+                }
+                if (Build.VERSION.SDK_INT >= 20) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_APPS_CONTROL,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_APPS_CONTROL);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_APPS_CONTROL);
+                }
+                if (Build.VERSION.SDK_INT >= 20) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_FACTORY_RESET,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_FACTORY_RESET);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_FACTORY_RESET);
+                }
+                if (Build.VERSION.SDK_INT >= 25) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_ADD_MANAGED_PROFILE,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_ADD_MANAGED_PROFILE);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_ADD_MANAGED_PROFILE);
+                }
+                if (Build.VERSION.SDK_INT >= 27) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_USER_SWITCH,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_USER_SWITCH);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_USER_SWITCH);
+                }
+                if (Build.VERSION.SDK_INT >= 20) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_ADD_USER,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_ADD_USER);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_ADD_USER);
+                }
+                if (Build.VERSION.SDK_INT >= 22) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_SAFE_BOOT,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_SAFE_BOOT);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_SAFE_BOOT);
+                }
+                if (Build.VERSION.SDK_INT >= 17) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_REMOVE_USER,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_REMOVE_USER);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_REMOVE_USER);
+                }
+                if (Build.VERSION.SDK_INT >= 25) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_BLUETOOTH,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_BLUETOOTH);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_BLUETOOTH);
+                }
+                if (Build.VERSION.SDK_INT >= 17) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_CONFIG_BLUETOOTH,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_BLUETOOTH);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_BLUETOOTH);
+                }
+                if (Build.VERSION.SDK_INT >= 25) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_BLUETOOTH_SHARING,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_BLUETOOTH_SHARING);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_BLUETOOTH_SHARING);
+                }
+                if (Build.VERSION.SDK_INT >= 28) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_CONFIG_PRIVATE_DNS,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_PRIVATE_DNS);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_PRIVATE_DNS);
+                }
+                if (Build.VERSION.SDK_INT >= 20) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_SMS,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_SMS);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_SMS);
+                }
+                if (Build.VERSION.SDK_INT >= 20) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_OUTGOING_CALLS,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_OUTGOING_CALLS);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_OUTGOING_CALLS);
+                }
+                if (Build.VERSION.SDK_INT >= 20) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_CONFIG_MOBILE_NETWORKS,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_MOBILE_NETWORKS);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_CONFIG_MOBILE_NETWORKS);
+                }
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_DATA_ROAMING,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_DATA_ROAMING);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_DATA_ROAMING);
+                }
+                if (Build.VERSION.SDK_INT >= 17) {
+                    if(sprst.getBoolean(UserManager.DISALLOW_USB_FILE_TRANSFER,false))
+                        mDpm.addUserRestriction(mAdminComponentName,UserManager.DISALLOW_USB_FILE_TRANSFER);
+                    else
+                        mDpm.clearUserRestriction(mAdminComponentName,UserManager.DISALLOW_USB_FILE_TRANSFER);
+                }
+                if (Build.VERSION.SDK_INT >= 14) {
+                    if(sprst.getBoolean("DISALLOW_CAMERA",false))
+                        mDpm.setCameraDisabled(mAdminComponentName,true);
+                    else
+                        mDpm.setCameraDisabled(mAdminComponentName,false);
+                }
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if(sprst.getBoolean("DISALLOW_STATUSBAR",false))
+                        mDpm.setStatusBarDisabled(mAdminComponentName,true);
+                    else
+                        mDpm.setStatusBarDisabled(mAdminComponentName,false);
+                }
+            }
+
+        }catch(Exception e){LogUtil.logToFile(e.toString());}
     }
     public static void copymodule(final Context mcontext){
         try {
@@ -432,6 +624,8 @@ public class MDMStatusActivity extends Activity {
         // // 4. לוגיקת בדיקה ותיקון
         if (isMdmActuallyActive) {
             // // אם ה-MDM פעיל אבל האייקון הירוק לא מוגדר כ-Enabled
+            SharedPreferences mpref= PreferenceManager.getDefaultSharedPreferences(mactivity);
+            if(mpref.getBoolean("icongreen",true))
             if (greenState != PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
                 /*
                  // // תיקון: הפעלת ירוק וכיבוי אדום
@@ -637,6 +831,7 @@ public class MDMStatusActivity extends Activity {
                 "uis7865_6h10_go",
                 "ums512_1h10",
                 "UIS8581A",
+                "uis7862a_1h10",
                 ""};
             boolean found= false;
             String curdevice=Build.DEVICE;
@@ -658,6 +853,15 @@ public class MDMStatusActivity extends Activity {
                 linlactivatemult.setVisibility(View.GONE);
                 bunextorskip.setText("עבור לבחירת סוג ההפעלה");
             }
+            final SharedPreferences mpref= PreferenceManager.getDefaultSharedPreferences(mactivity);
+            Switch swicongreen=findViewById(R.id.swicongreen);
+            swicongreen.setChecked(mpref.getBoolean("icongreen",true));
+            swicongreen.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener(){
+                    @Override
+                    public void onCheckedChanged(CompoundButton p1, boolean p2) {
+                        mpref.edit().putBoolean("icongreen",p2).commit();
+                    }
+                });
             
             linlidenta.setVisibility(View.VISIBLE);
             linlidentb.setVisibility(View.VISIBLE);
@@ -838,6 +1042,20 @@ public class MDMStatusActivity extends Activity {
         @Override
         protected void onPostExecute(List<AppItem> result) {
             super.onPostExecute(result);
+            if(coninuedisable){
+                coninuedisable=false;
+                try{
+                    SharedPreferences mpref= PreferenceManager.getDefaultSharedPreferences(mactivity);
+                    Set<String> owns= new HashSet<>(Arrays.asList());
+                    owns=mpref.getStringSet("ownsetapps", owns);
+                    for(String pn:owns){
+                        try{
+                            mDpm.setApplicationHidden(mAdminComponentName, pn, true);
+                        } catch (Exception e) {}
+                    }
+                } catch (Exception e) {}
+                Toast.makeText(mactivity.getApplicationContext(), "היבוא הסתיים!",1).show();
+            }
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }

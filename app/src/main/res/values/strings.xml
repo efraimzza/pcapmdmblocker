@@ -97,6 +97,9 @@
     <string name="netfree">netfree</string>
     <string name="netfreeb">netfree (another check)</string>
     <string name="netfree_sumarray">block all except netfree</string>
+    <string name="rimon">rimon or etrog</string>
+    <string name="rimon_sumarray">block all except rimon or etrog</string>
+    
     <string name="accessibility_permission">הרשאות נגישות</string>
     
     <string-array name="themeNames">

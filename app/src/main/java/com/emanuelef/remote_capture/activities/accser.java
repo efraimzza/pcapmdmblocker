@@ -17,12 +17,17 @@ import android.os.Handler;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.provider.Settings;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 public class accser extends AccessibilityService {
 
     public static accser sinsta;
     static boolean access=true;
     boolean mcureve=false;
+    public static boolean blockStatus=true,blockNewsletter=true,blockNewsletterForwarded=false;
+    static SharedPreferences sp=null;
+    
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if(event!=null){
@@ -36,11 +41,19 @@ public class accser extends AccessibilityService {
             if(access){
                 //LogUtil.logToFile("acc pkg - "+ pkg+" cls - "+cls);
                 if(cls!=null){
-                    if(cls.equals("com.dofun.carsetting.activity.apkinstall.InstallActivity")||cls.contains("NewsletterDirectoryCategoriesActivity")||cls.contains("StatusPlaybackActivity")){
-                        //quitApplication.quitApplication(this);
-                        performSystemBack();
-                        LogUtil.logToFile("killappd class install"+cls);
-                    }
+                    if(blockNewsletter)
+                        if(cls.contains("NewsletterDirectoryCategoriesActivity")){
+                            //quitApplication.quitApplication(this);
+                            performSystemBack();
+                            LogUtil.logToFile("killappd class newsletter"+cls);
+                        }
+                    if(blockStatus)
+                        if(cls.contains("StatusPlaybackActivity")){
+                            //quitApplication.quitApplication(this);
+                            performSystemBack();
+                            LogUtil.logToFile("killappd class status"+cls);
+                        }
+                    
                 }
             }
         }catch(Exception e){}
@@ -50,7 +63,7 @@ public class accser extends AccessibilityService {
                     mcureve=false;
                     //LogUtil.logToFile("eve"+event.getPackageName());
                     if(event.getPackageName()!=null)
-                        if(event.getPackageName().equals("com.whatsapp")){
+                        if(event.getPackageName().toString().contains("com.whatsapp")){
                             AccessibilityEvent ae=event;
                                 ani(ae.getSource(),ae);
                                 for (int i=0;i < ae.getRecordCount();i++) {
@@ -128,6 +141,10 @@ public class accser extends AccessibilityService {
         super.onServiceConnected();
         try{
             sinsta=this;
+            sp=PreferenceManager.getDefaultSharedPreferences(this);
+            blockStatus=sp.getBoolean("distatus",true);
+            blockNewsletter=sp.getBoolean("dischannel",true);
+            blockNewsletterForwarded=sp.getBoolean("disforwardchannel",false);
             //LogUtil.logToFile("connected");
             refreshacc.refreshacc(getApplicationContext());
         }catch(Exception e){LogUtil.logToFile(e.toString());}
@@ -181,7 +198,9 @@ public class accser extends AccessibilityService {
                             //if(c.toString().contains(":id/")&&!c.toString().contains("android:id/")){
                                 //LogUtil.logToFile(c+" type="+typestr( event.getEventType()));
                                 //  if(c.toString().contains("rb_system")&&event.getEventType()==1){
-                                if(c.contains("newsletter_")){
+                        //old
+                        /*
+                        if(c.contains("newsletter_")&&!c.contains("newsletter_name_forwarded_message")){
 
                                     //quitApplication.quitApplication(this);
                                     performSystemBack();
@@ -189,6 +208,26 @@ public class accser extends AccessibilityService {
                                     mcureve=true;
                                    // break;
                                 }
+                        */
+                        //or
+                        if (blockNewsletter && c.contains("newsletter_") && (!c.contains("newsletter_name_forwarded_message") || blockNewsletterForwarded)) {
+                            performSystemBack();
+                            LogUtil.logToFile("killappd click rb system " + c);
+                            mcureve=true;
+                        }
+                        //or
+                        /*
+                        if (blockNewsletter && c.contains("newsletter_")) {
+                            boolean isForwarded = c.contains("newsletter_name_forwarded_message");
+
+                            if (isForwarded && !blockNewsletterForwarded) {
+                                LogUtil.logToFile("Newsletter allowed: forwarded and filter is off");
+                            } else {
+                                performSystemBack();
+                                LogUtil.logToFile("Newsletter blocked: " + c);
+                            }
+                        }
+                        */
                            // }
                             //detect(c,"צ'אטים");
                             /*if (c.equals("צ'אטים")) {
@@ -283,6 +322,9 @@ public class accser extends AccessibilityService {
         static Handler mhandler=null;
         static Runnable mrunnable=null;
         public static void refreshacc(final Context mcontext){
+            if(sp==null){
+                sp=PreferenceManager.getDefaultSharedPreferences(mcontext);
+            }
             final ContentResolver contentResolver =mcontext.getContentResolver();
             final String pkg=mcontext.getPackageName();
             if(mhandler!=null&&mrunnable!=null)
@@ -316,11 +358,24 @@ public class accser extends AccessibilityService {
                          startActivity(intent);
                          */
                     }
+                    //old
+                    /*
                     if(AppState.getInstance().getCurrentPath().equals(PathType.WHATSAPP)){
                         mhandler.postDelayed(this,5000);
+                    }*/
+                    //new
+                    if(sp.getBoolean("accessEnabled",false)){
+                        mhandler.postDelayed(this,5000);
                     }
+                    
                 }};
+            //old
+            /*
             if(AppState.getInstance().getCurrentPath().equals(PathType.WHATSAPP)){
+                mhandler.post(mrunnable);
+            }*/
+            //new
+            if(sp.getBoolean("accessEnabled",false)){
                 mhandler.post(mrunnable);
             }
         }

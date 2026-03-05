@@ -439,6 +439,71 @@ public class CaptureService extends VpnService implements Runnable {
                     }catch(Exception e){LogUtil.logToFile(e.toString());}
                 }
             }
+            }else if(mPrefs.getBoolean(Prefs.PREF_RIMON,false)){
+                HttpURLConnection connection =null;
+                try {
+                    // the crt checker -
+                    //LogUtil.logToFile("s");
+                    URL url = new URL("https://horadah.click/%D7%90%D7%AA%D7%A8%D7%95%D7%92-%D7%95%D7%A8%D7%99%D7%9E%D7%95%D7%9F/%D7%90%D7%AA%D7%A8%D7%95%D7%92.php");
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setReadTimeout(15000);
+                    //connection.setRequestMethod("GET");
+                    //connection.connect();
+                    //connection.setInstanceFollowRedirects(true);
+                    //LogUtil.logToFile("s3");
+                    //LogUtil.logToFile("c="+connection.getResponseCode()+connection.getResponseMessage()+connection.getDoInput()+(connection.getErrorStream()!=null));
+                    //  LogUtil.logToFile("i="+connection.getInputStream());
+
+                    // LogUtil.logToFile("res="+connection.getResponseCode()+connection.getDoInput()+(connection.getInputStream()!=null));
+                    /*FileOutputStream fileOutputStream = new FileOutputStream(new File("/storage/emulated/0/s.txt"));
+                     InputStream inputStream=connection.getErrorStream();
+                     if(inputStream!=null){
+                     byte[] buffer = new byte[4096];
+                     long bytesRead;
+                     while ((bytesRead = inputStream.read(buffer)) != -1) {
+                     fileOutputStream.write(buffer, 0,(int) bytesRead);
+                     }
+                     }*/
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        if(connection.getHeaderField("Rimon")!=null){
+                            if(connection.getHeaderField("Rimon").equals("RWC_BLOCK")){
+                                netfree = true;
+                                LogUtil.logToFile("detected etrog");
+                            }
+                        }
+                    }
+                    /*if (responseCode == HttpURLConnection.HTTP_OK) {
+                     FileOutputStream fileOutputStream = new FileOutputStream(new File("/storage/emulated/0/s.txt"));
+                     InputStream inputStream=connection.getInputStream();
+                     if(inputStream!=null){
+                     byte[] buffer = new byte[4096];
+                     long bytesRead;
+                     while ((bytesRead = inputStream.read(buffer)) != -1) {
+                     fileOutputStream.write(buffer, 0,(int) bytesRead);
+                     }
+                     }
+                     }else{
+                     FileOutputStream fileOutputStream = new FileOutputStream(new File("/storage/emulated/0/s.txt"));
+                     InputStream inputStream=connection.getErrorStream();
+                     if(inputStream!=null){
+                     byte[] buffer = new byte[4096];
+                     long bytesRead;
+                     while ((bytesRead = inputStream.read(buffer)) != -1) {
+                     fileOutputStream.write(buffer, 0,(int) bytesRead);
+                     }
+                     }
+                     }*/
+                } catch (IOException | Exception e) {
+                    // במקרה של IOException, בדוק אם יש חיבור לאינטרנט
+                    //LogUtil.logToFile(e.toString()+isInternetAvailablenew());
+                    netfree = isInternetAvailablenew() ? false : netfree;
+                }finally {
+                    if (connection != null) {
+                        try{
+                            connection.disconnect();
+                        }catch(Exception e){LogUtil.logToFile(e.toString());}
+                    }
+                }
             }
             return netfree;
         }

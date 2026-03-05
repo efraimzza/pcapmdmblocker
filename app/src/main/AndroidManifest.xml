@@ -296,6 +296,8 @@
         <activity android:name="com.emanuelef.remote_capture.activities.instructionactivity" />
         <activity android:name="com.emanuelef.remote_capture.activities.ThemeActivity" />
         <activity android:name="com.emanuelef.remote_capture.activities.transferOwner" />
+        <activity android:name="com.emanuelef.remote_capture.activities.mbackupActivity" />
+        <activity android:name="com.emanuelef.remote_capture.activities.AccessActivity" />
         <receiver
             android:name="com.emanuelef.remote_capture.activities.InstallReceiver"
             android:exported="true">

@@ -193,6 +193,12 @@
             android:iconSpaceReserved="false"
             android:summary="@string/netfree_sumarray"
             android:defaultValue="false" />
+        <SwitchPreference
+            android:key="rimon"
+            android:title="@string/rimon"
+            android:iconSpaceReserved="false"
+            android:summary="@string/rimon_sumarray"
+            android:defaultValue="false" />
         <!--Preference
             android:key="malware_detection_docs"
             android:title="@string/malware_detection_learn_more"

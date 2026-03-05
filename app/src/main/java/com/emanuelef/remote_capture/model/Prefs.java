@@ -117,6 +117,7 @@ public class Prefs {
     public static final String PREF_PAYLOAD = "payload";
     public static final String PREF_NETFREE = "netfree";
     public static final String PREF_NETFREEb = "netfreeb";
+    public static final String PREF_RIMON = "rimon";
 
     public enum DumpMode {
         NONE,
@@ -251,7 +252,7 @@ public class Prefs {
     public static String getDnsServerV6(SharedPreferences p)    { return(p.getString(PREF_DNS_SERVER_V6, "2606:4700:4700::1111")); }
     public static boolean isIgnoredMitmVersion(SharedPreferences p, String v) { return p.getString(PREF_IGNORED_MITM_VERSION, "").equals(v); }
     public static boolean isdebug(SharedPreferences p)     { return(p.getBoolean(PREF_DEBUG, false)); }
-    public static boolean isNetfree(SharedPreferences p)     { return(!p.getBoolean(PREF_NETFREE, false)&&!p.getBoolean(PREF_NETFREEb, false)); }
+    public static boolean isNetfree(SharedPreferences p)     { return(!p.getBoolean(PREF_NETFREE, false)&&!p.getBoolean(PREF_NETFREEb, false)&&!p.getBoolean(PREF_RIMON, false)); }
     public static boolean ispayload(SharedPreferences p)     { return(p.getBoolean(PREF_PAYLOAD, false)); }
     
     // Gets a StringSet from the prefs
