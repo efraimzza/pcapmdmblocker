@@ -334,19 +334,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         autoScroll = true;
         showFabDown(false);
 
-        view.findViewById(R.id.linearlayout).setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-
-                @Override
-                public WindowInsets onApplyWindowInsets(View v, WindowInsets windowInsets) {
-                   
-            Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars() |
-                    WindowInsets.Type.displayCutout());
-
-            v.setPadding(insets.left, insets.top, insets.right, 0);
-
-            // only consume the top inset
-            return windowInsets.inset(insets.left, insets.top, insets.right, 0);
-        }});
+        
 /*
         mFabDown.setOnClickListener(v -> scrollToBottom());
         ViewCompat.setOnApplyWindowInsetsListener(mFabDown, (v, windowInsets) -> {
