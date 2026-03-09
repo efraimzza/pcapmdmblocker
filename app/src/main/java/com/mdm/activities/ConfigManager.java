@@ -57,7 +57,7 @@ public class ConfigManager {
 
         // ניתן להוסיף לוגיקה לשמירה וטעינה
     
-        private static final String PREFS_NAME = "StorePrefs";
+        
         private static final String CONFIG_KEY = "StoreConfigJson";
 
         private final Context context;
@@ -111,7 +111,7 @@ public class ConfigManager {
 
         public StoreConfiguration loadConfig() {
             // [יישום קודם] טעינה מ-SharedPreferences ייעודי
-            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             String jsonString = prefs.getString(CONFIG_KEY, null);
 
             StoreConfiguration config;

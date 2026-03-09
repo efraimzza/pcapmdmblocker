@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.Color;
 import com.emanuelef.remote_capture.Utils;
+import android.preference.PreferenceManager;
 
 public class AuthActivity extends Activity {
     @Override
@@ -59,7 +60,7 @@ public class AuthActivity extends Activity {
 
     private void updateStateAndFinish(boolean isLocked) {
         // // עדכון ה-Preference ושליחת רענון לווידג'טים
-        getSharedPreferences("WidgetPrefs", MODE_PRIVATE).edit().putBoolean("is_locked", isLocked).commit();
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("is_locked", isLocked).commit();
         PrAppManagementActivity.enadisapps(this,isLocked,true);
         Intent intent = new Intent(this, MyToggleWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);

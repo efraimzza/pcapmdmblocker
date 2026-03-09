@@ -137,7 +137,7 @@ public class MDMStatusActivity extends Activity {
         }catch(Exception e){}
         mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminComponentName = new ComponentName(this,admin.class);
-        sp=this.getSharedPreferences(this.getPackageName(),this.MODE_PRIVATE);
+        sp=PreferenceManager.getDefaultSharedPreferences(this);
         spe=sp.edit();
         try{
         if(sp.getString(modesp,"").equals("")){

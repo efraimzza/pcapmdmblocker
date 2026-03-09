@@ -22,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.text.InputType;
+import android.preference.PreferenceManager;
 
 public class PasswordManager {
     public static final String locksp="lock";
@@ -169,7 +170,7 @@ public class PasswordManager {
                     public void onClick(DialogInterface dialog, int which) {
                         String enteredPassword = etPassword.getText().toString();
                         if (PasswordManager.checkPassword(activity, enteredPassword)) {
-                        SharedPreferences sp=activity.getSharedPreferences(activity.getPackageName(), Context.MODE_PRIVATE);
+                            SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(activity);
                         
                             if(!sp.getBoolean(locksp,false)){
                                 SharedPreferences.Editor spe;

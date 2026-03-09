@@ -18,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.Utils;
+import android.preference.PreferenceManager;
 
 public class RestrictionManagementActivity extends Activity {
 
@@ -38,7 +39,7 @@ public class RestrictionManagementActivity extends Activity {
             if(getActionBar().isShowing())
                 getActionBar().hide();
         }catch(Exception e){}
-        sp = this.getSharedPreferences(this.getPackageName(), this.MODE_PRIVATE);
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
         spe = sp.edit();
         
         mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);

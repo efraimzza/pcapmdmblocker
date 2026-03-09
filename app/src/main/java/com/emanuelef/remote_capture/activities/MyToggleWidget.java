@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.TypedValue;
 import com.emanuelef.remote_capture.R;
+import android.preference.PreferenceManager;
 
 // 1. הגדרת המשתנים הקבועים לזיהוי הפעולה והעדפת המערכת
 // 2. בדיקת המצב הנוכחי (On/Off) מתוך ה-SharedPreferences
@@ -32,7 +33,7 @@ public class MyToggleWidget extends AppWidgetProvider {
      }*/
 
     private void updateUI(Context context, AppWidgetManager mgr, int id) {
-        SharedPreferences prefs = context.getSharedPreferences("WidgetPrefs", Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isLocked = prefs.getBoolean("is_locked", true); // // ברירת מחדל נעול
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
@@ -202,7 +203,7 @@ public class MyToggleWidget extends AppWidgetProvider {
         super.onReceive(context, intent);
         if (ACTION_LOCK_NOW.equals(intent.getAction())) {
             // // עדכון המצב לנעול ושמירה
-            context.getSharedPreferences("WidgetPrefs", Context.MODE_PRIVATE).edit().putBoolean("is_locked", true).commit();
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("is_locked", true).commit();
             PrAppManagementActivity.enadisapps(context,true,true);
             // // רענון כל המופעים של הוידג'ט
             AppWidgetManager mgr = AppWidgetManager.getInstance(context);
@@ -212,7 +213,7 @@ public class MyToggleWidget extends AppWidgetProvider {
     }
     // // פונקציה לעדכון ה-UI עם חישוב יחסים משופר
     private void updateUI(Context context, AppWidgetManager mgr, int id, Bundle options) {
-        SharedPreferences prefs = context.getSharedPreferences("WidgetPrefs", Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isLocked = prefs.getBoolean("is_locked", true);
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);

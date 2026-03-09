@@ -195,7 +195,7 @@ public class ItemsManager {
         }
     
    */
-        private static final String PREFS_NAME = "StorePrefs";
+       
         private static final String ITEMS_KEY = "StoreItemsJson";
 
         // נעילת סנכרון למניעת בעיות Multi-Threading
@@ -212,7 +212,7 @@ public class ItemsManager {
     String defitems="[\n {\n \"cl\": [\n \"com.whatsapp\"\n ]\n },\n {\n \"itemSourceType\": \"MANUAL\",\n \"packageName\": \"fm.jewishmusic.application\",\n \"title\": \"זינג\",\n \"customLink\": \"\",\n \"isDrive\": false\n },\n {\n \"itemSourceType\": \"MANUAL\",\n \"packageName\": \"in.krosbits.musicolet\",\n \"title\": \"Musicolet\",\n \"customLink\": \"\",\n \"isDrive\": false\n },\n {\n \"itemSourceType\": \"CUSTOM_LINK\",\n \"packageName\": \"com.waze\",\n \"title\": \"waze\",\n \"customLink\": \"1HDFIR0ki-STB0t22WJlr0lERvgliQkBo\",\n \"isDrive\": true\n },\n {\n \"itemSourceType\": \"CUSTOM_LINK\",\n \"packageName\": \"com.google.android.inputmethod.latin\",\n \"title\": \"Gboard\",\n \"customLink\": \"1OwaLDf2Piln72bMD7T2HmZySlq-ZaMVb\",\n \"isDrive\": true\n },\n {\n \"itemSourceType\": \"CUSTOM_LINK\",\n \"packageName\": \"com.alphainventor.filemanager\",\n \"title\": \"File Manager +\",\n \"customLink\": \"1pbl-LWLfi9cAFUB3_nDEg8A0qY3v8A9o\",\n \"isDrive\": true\n }\n]";
         private void loadItems() {
             synchronized (listLock) {
-                SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
                 String jsonString = prefs.getString(ITEMS_KEY, defitems);
 
                 if (jsonString != null) {
@@ -235,7 +235,7 @@ public class ItemsManager {
                     if(def){
                         jsonString=defitems;
                     }
-                    SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString(ITEMS_KEY, jsonString);
                     editor.apply();

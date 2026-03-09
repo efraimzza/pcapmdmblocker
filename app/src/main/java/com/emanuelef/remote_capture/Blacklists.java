@@ -91,8 +91,7 @@ public class Blacklists {
     private int mNumDomainRules;
     private int mNumIPRules;
     public static final String modesp="mode";
-    SharedPreferences sp;
-    SharedPreferences.Editor spe;
+    
 //    public static StatusFragment.sModetype smtype;
 
     public Blacklists(Context ctx) {

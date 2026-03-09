@@ -117,7 +117,7 @@ public class MDMSettingsActivity extends Activity {
 
             mPrefs = PreferenceManager.getDefaultSharedPreferences(MDMSettingsActivity.this);
 
-            sp=this.getSharedPreferences(this.getPackageName(),this.MODE_PRIVATE);
+            sp=PreferenceManager.getDefaultSharedPreferences(this);
             spe=sp.edit();
 
 

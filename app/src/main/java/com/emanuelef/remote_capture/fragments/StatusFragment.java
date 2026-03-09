@@ -169,6 +169,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
 	//public static sModetype smtype;
 	AlertDialog alertDialogmode;
     TextView bufirewall,bumalware,budecrypt,bulog,buinstruction;
+    LinearLayout linlBlkgv;
     Button bublock_googlevoice;
     ImageView imghideblkgv;
   /*  public StatusFragment(Context context){
@@ -259,6 +260,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
         bumalware=view.findViewById(R.id.bumalware);
         budecrypt=view.findViewById(R.id.budecrypt);
         bulog=view.findViewById(R.id.bulog);
+        linlBlkgv=view.findViewById(R.id.act_block_googlevoice);
         imghideblkgv=view.findViewById(R.id.img_hide_block_googlevoice);
         bublock_googlevoice=view.findViewById(R.id.btn_block_googlevoice);
         buinstruction=view.findViewById(R.id.buinstruction);
@@ -454,6 +456,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
                             public void run() {
                                 try {
                                     PCAPdroid.getInstance().getBlocklist().addHost("speechs3proto2-pa.googleapis.com");
+                                    linlBlkgv.setVisibility(View.GONE);
                                 } catch (Exception e) {LogUtil.logToFile(e.toString());}
                             }
                         },mActivity);
@@ -466,6 +469,8 @@ public class StatusFragment extends Fragment implements AppStateListener {
                             public void run() {
                                 try {
                                     //hide & save hiding state to prefs
+                                    mPrefs.edit().putBoolean("hideBlkgv",true).commit();
+                                    linlBlkgv.setVisibility(View.GONE);
                                 } catch (Exception e) {LogUtil.logToFile(e.toString());}
                             }
                         },mActivity);
@@ -594,7 +599,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
         ml.addApp("com.android.chrome");
         ml.save();
         */
-        sp = mcon.getSharedPreferences(mcon.getPackageName(), mcon.MODE_PRIVATE);
+        sp = PreferenceManager.getDefaultSharedPreferences(mcon);
     	
     }
     boolean succ=false;
@@ -806,9 +811,10 @@ public class StatusFragment extends Fragment implements AppStateListener {
         if(context == null)
             return;
 try{
-    bumalware.setVisibility(Prefs.isMalwareDetectionEnabled(getContext(), PreferenceManager.getDefaultSharedPreferences(getContext()))?View.VISIBLE:View.GONE);
-    budecrypt.setVisibility(Prefs.getTlsDecryptionEnabled(PreferenceManager.getDefaultSharedPreferences(getContext()))?View.VISIBLE:View.GONE);
-    bulog.setVisibility(Prefs.isdebug(PreferenceManager.getDefaultSharedPreferences(getContext()))?View.VISIBLE:View.GONE);
+    bumalware.setVisibility(Prefs.isMalwareDetectionEnabled(getContext(), mPrefs)?View.VISIBLE:View.GONE);
+    budecrypt.setVisibility(Prefs.getTlsDecryptionEnabled(mPrefs)?View.VISIBLE:View.GONE);
+    bulog.setVisibility(Prefs.isdebug(mPrefs)?View.VISIBLE:View.GONE);
+    linlBlkgv.setVisibility(PCAPdroid.getInstance().getBlocklist().matchesHost("speechs3proto2-pa.googleapis.com")||mPrefs.getBoolean("hideBlkgv",false)?View.GONE:View.VISIBLE);
     
         if(mMenu != null) {
                         if((state == AppState.running) || (state == AppState.stopping)) {

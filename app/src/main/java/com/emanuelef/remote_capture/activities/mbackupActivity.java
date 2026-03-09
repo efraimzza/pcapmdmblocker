@@ -614,7 +614,7 @@ public class mbackupActivity extends Activity {
                                       mDpm.getCameraDisabled(mAdminComponentName));
                 }
                 if (Build.VERSION.SDK_INT >= 23) {
-                    sp = this.getSharedPreferences(this.getPackageName(), this.MODE_PRIVATE);
+                    sp = PreferenceManager.getDefaultSharedPreferences(this);
                     sprste.putBoolean("DISALLOW_STATUSBAR",
                                       sp.getBoolean("dis_statusbar",false));
                 }

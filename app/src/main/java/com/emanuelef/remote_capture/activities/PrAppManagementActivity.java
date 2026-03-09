@@ -442,7 +442,7 @@ public class PrAppManagementActivity extends Activity {
     }
     private static void syncAllWidgets(Context mcontext,boolean newValue) {
         // // 1. שמירת המצב החדש ב-SharedPreferences (כדי שהווידג'טים יקראו אותו)
-        mcontext.getSharedPreferences("WidgetPrefs", MODE_PRIVATE)
+        PreferenceManager.getDefaultSharedPreferences(mcontext)
             .edit()
             .putBoolean("is_locked", newValue)
             .commit();
