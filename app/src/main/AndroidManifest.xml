@@ -298,6 +298,7 @@
         <activity android:name="com.emanuelef.remote_capture.activities.transferOwner" />
         <activity android:name="com.emanuelef.remote_capture.activities.mbackupActivity" />
         <activity android:name="com.emanuelef.remote_capture.activities.AccessActivity" />
+        <activity android:name="com.emanuelef.remote_capture.activities.FrpActivity" />
         <receiver
             android:name="com.emanuelef.remote_capture.activities.InstallReceiver"
             android:exported="true">

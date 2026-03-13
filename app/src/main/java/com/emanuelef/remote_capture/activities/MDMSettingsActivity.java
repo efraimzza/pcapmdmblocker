@@ -131,6 +131,7 @@ public class MDMSettingsActivity extends Activity {
             setupButton(R.id.btn_change_password, "שנה סיסמה", null);
             setupButton(R.id.btn_remove_frp, "הסר frp", null); 
             setupButton(R.id.btn_activate_frp, "הפעל frp", null); 
+            setupButton(R.id.btn_manage_frp, "ניהול frp ידני", FrpActivity.class);
             setupButton(R.id.btn_update_mdm_app, "עדכון אפליקציית MDM", null);
             setupButton(R.id.btn_lock_mdm, "נעילת הגדרות והסרה", null);
             setupButton(R.id.btn_select_route, "בחירת מסלול לניטור רשת (vpn)", null); // תצטרך אקטיביטי לזה
@@ -311,7 +312,6 @@ public class MDMSettingsActivity extends Activity {
             } else if (buttonId == R.id.btn_pwopen) {
                pwopen();
             }else if (buttonId == R.id.btn_manage_apps) {
-                
                 String[] pathNames = {"התקנת והשבתת אפליקציות","השהיית אפליקציות"};
                 
                 
@@ -423,6 +423,48 @@ public class MDMSettingsActivity extends Activity {
             Toast.makeText(getApplicationContext(), "frp..", Toast.LENGTH_SHORT).show();
 		} catch (Exception e) {
 		    Toast.makeText(getApplicationContext(), "e-frp2"+e , Toast.LENGTH_SHORT).show();
+		}
+    }
+    private void logCurrentFrp(){
+        try {
+            if (Build.VERSION.SDK_INT > 29) {
+                try {
+                    FactoryResetProtectionPolicy frp=
+                    mDpm.getFactoryResetProtectionPolicy(mAdminComponentName);
+                    String acc="";
+                    if(frp!=null&&frp.getFactoryResetProtectionAccounts()!=null){
+                    for(String a:frp.getFactoryResetProtectionAccounts()){
+                        acc+=a+",";
+                    }
+                    }
+                    if(frp!=null){
+                    LogUtil.logToFile("ena="+frp.isFactoryResetProtectionEnabled());
+                    LogUtil.logToFile("acc="+acc);
+                    }
+                } catch (Exception e) {
+                    LogUtil.logToFile(e.toString());
+                    //Toast.makeText(getApplicationContext(), "e-frp"+e , Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            //bundle=null;
+            String str = "com.google.android.gms";
+            Bundle bundle =
+            mDpm.getApplicationRestrictions(mAdminComponentName, str);
+            String acc="";
+            if(bundle!=null){
+                if(bundle.getStringArray("factoryResetProtectionAdmin")!=null){
+                    for(String a:bundle.getStringArray("factoryResetProtectionAdmin")){
+                        acc+=a+",";
+                    }
+                    LogUtil.logToFile("accold="+acc);
+                }
+            }
+            
+            //Toast.makeText(getApplicationContext(), "details frp..", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            LogUtil.logToFile(e.toString());
+            //Toast.makeText(getApplicationContext(), "e-frp2"+e , Toast.LENGTH_SHORT).show();
 		}
     }
     private void setuplongclick(){

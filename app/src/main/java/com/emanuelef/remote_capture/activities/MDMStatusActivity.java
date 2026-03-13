@@ -832,6 +832,7 @@ public class MDMStatusActivity extends Activity {
                 "ums512_1h10",
                 "UIS8581A",
                 "uis7862a_1h10",
+                "uis8581a2h10",
                 ""};
             boolean found= false;
             String curdevice=Build.DEVICE;
