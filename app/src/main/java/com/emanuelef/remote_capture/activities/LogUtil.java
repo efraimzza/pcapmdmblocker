@@ -10,7 +10,13 @@ import com.emanuelef.remote_capture.PCAPdroid;
 
 public class LogUtil {
     private static final String LOG_PATH = "/storage/emulated/0/log.txt";
-
+    public static void logToFile(Throwable msg) {logToFile(msg.toString()
+    +msg.getStackTrace()[0].getFileName()
+    +msg.getStackTrace()[0].getClassName()
+    +msg.getStackTrace()[0].getMethodName()
+    +msg.getStackTrace()[0].getLineNumber()
+    );
+    }
     public static void logToFile(String msg) {
         if(Prefs.isdebug(PreferenceManager.getDefaultSharedPreferences(PCAPdroid.getInstance().getApplicationContext())))
         try {

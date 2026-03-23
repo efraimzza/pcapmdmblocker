@@ -251,20 +251,24 @@ public class CaptureService extends VpnService implements Runnable {
                 }
             },60000);//60 seconds
         handler = new Handler();
-        
+        LogUtil.logToFile("bfc");
         if(!Prefs.isNetfree(mPrefs)){
             startPeriodicCheck();
+            LogUtil.logToFile("fc");
         }
+        LogUtil.logToFile("afc");
     }
     private static Handler handler;
     private static Runnable runnable;
     private boolean previousNetfree = false;
     private void startPeriodicCheck() {
+        LogUtil.logToFile("plc");
         runnable = new Runnable() {
             @Override
             public void run() {
                 new CheckNetfreeTask().execute();
-                handler.postDelayed(this, 30000); // 30 שניות
+                handler.postDelayed(this, 30000);
+                LogUtil.logToFile("lc");
             }
         };
         handler.postDelayed(runnable,15000);
@@ -336,8 +340,9 @@ public class CaptureService extends VpnService implements Runnable {
         
         @Override
         protected Boolean doInBackground(Void... voids) {
-            
+            LogUtil.logToFile("live-sync");
             boolean netfree = false;
+            try{
             if(mPrefs.getBoolean(Prefs.PREF_NETFREEb,false)){
                 HttpURLConnection connection =null;
                 try {
@@ -368,14 +373,17 @@ public class CaptureService extends VpnService implements Runnable {
                     int responseCode = connection.getResponseCode();
                     if (responseCode == HttpURLConnection.HTTP_OK) {
                         netfree = true; // התוכן קיים
-                        //LogUtil.logToFile("netfree=ok");
+                        LogUtil.logToFile("netfree=ok");
                     }
                     if(connection.getResponseCode()==connection.HTTP_MOVED_TEMP){
+                        LogUtil.logToFile("ambl");
                         if(connection.getHeaderField("Location").equals("https://netfree.link/go/install-cert-x2")){
                             netfree = true;
-                            //LogUtil.logToFile("netfreeloc=netfree");
+                            LogUtil.logToFile("netfreeloc=netfree");
                         }
+                        LogUtil.logToFile("amal");
                     }
+                    LogUtil.logToFile("aa");
                     /*if (responseCode == HttpURLConnection.HTTP_OK) {
                      FileOutputStream fileOutputStream = new FileOutputStream(new File("/storage/emulated/0/s.txt"));
                      InputStream inputStream=connection.getInputStream();
@@ -397,17 +405,22 @@ public class CaptureService extends VpnService implements Runnable {
                      }
                      }
                      }*/
-                } catch (IOException | Exception e) {
+                } catch (Throwable e) {
                     // במקרה של IOException, בדוק אם יש חיבור לאינטרנט
-                    //LogUtil.logToFile(e.toString()+isInternetAvailablenew());
+                    LogUtil.logToFile("ai");
+                    LogUtil.logToFile(e.toString()+isInternetAvailablenew());
                     try{
                     netfree = isInternetAvailablenew() ? false : netfree;
-                    }catch(Exception ee){netfree=false;}
+                        LogUtil.logToFile("bi");
+                    }catch(Throwable ee){
+                        netfree=false;
+                        LogUtil.logToFile("ti"+ee.toString());
+                    }
                 }finally {
                     if (connection != null) {
                         try{
                             connection.disconnect();
-                        }catch(Exception e){LogUtil.logToFile(e.toString());}
+                        }catch(Throwable e){LogUtil.logToFile(e.toString());}
                     }
                 }
             }else if(mPrefs.getBoolean(Prefs.PREF_NETFREE,false)){
@@ -434,17 +447,22 @@ public class CaptureService extends VpnService implements Runnable {
                     netfree= NetfreeUser.parseFromJson(response.toString()).isNetFree;
                 }
                 
-            } catch (IOException | Exception e) {
+            } catch (Throwable e) {
                 // במקרה של IOException, בדוק אם יש חיבור לאינטרנט
-                //LogUtil.logToFile(e.toString()+isInternetAvailablenew());
+                LogUtil.logToFile("ai");
+                LogUtil.logToFile(e.toString()+isInternetAvailablenew());
                 try{
                     netfree = isInternetAvailablenew() ? false : netfree;
-                }catch(Exception ee){netfree=false;}
+                    LogUtil.logToFile("bi");
+                }catch(Throwable ee){
+                    netfree=false;
+                    LogUtil.logToFile("ti"+ee.toString());
+                }
             }finally {
                 if (connection != null) {
                     try{
                     connection.disconnect();
-                    }catch(Exception e){LogUtil.logToFile(e.toString());}
+                    }catch(Throwable e){LogUtil.logToFile(e.toString());}
                 }
             }
             }else if(mPrefs.getBoolean(Prefs.PREF_RIMON,false)){
@@ -515,6 +533,9 @@ public class CaptureService extends VpnService implements Runnable {
                         }catch(Exception e){LogUtil.logToFile(e.toString());}
                     }
                 }
+            }
+            }catch(Throwable t){
+                LogUtil.logToFile("tnc"+t.toString());
             }
             return netfree;
         }
