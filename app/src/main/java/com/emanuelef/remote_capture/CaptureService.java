@@ -345,6 +345,9 @@ public class CaptureService extends VpnService implements Runnable {
                     //LogUtil.logToFile("s");
                     URL url = new URL("http://netfree.link/netfree-ca.crt");
                     connection = (HttpURLConnection) url.openConnection();
+                    
+                    connection.setConnectTimeout(15000);
+                    connection.setReadTimeout(15000);
                     //connection.setRequestMethod("GET");
                     //connection.connect();
                     //connection.setInstanceFollowRedirects(true);
@@ -414,6 +417,7 @@ public class CaptureService extends VpnService implements Runnable {
                 URL url = new URL("https://api.internal.netfree.link/user/0");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
+                connection.setConnectTimeout(15000);
                 connection.setReadTimeout(15000);
                 BufferedReader reader = new BufferedReader(
                     new InputStreamReader(connection.getInputStream())
@@ -450,6 +454,7 @@ public class CaptureService extends VpnService implements Runnable {
                     //LogUtil.logToFile("s");
                     URL url = new URL("https://horadah.click/%D7%90%D7%AA%D7%A8%D7%95%D7%92-%D7%95%D7%A8%D7%99%D7%9E%D7%95%D7%9F/%D7%90%D7%AA%D7%A8%D7%95%D7%92.php");
                     connection = (HttpURLConnection) url.openConnection();
+                    connection.setConnectTimeout(15000);
                     connection.setReadTimeout(15000);
                     //connection.setRequestMethod("GET");
                     //connection.connect();
