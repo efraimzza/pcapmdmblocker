@@ -171,10 +171,10 @@ public class activityadbpair extends Activity {
                                 //outputTextView.append("Final Output:\n" + finalOutput + "\n");
                                 //outputTextView.append("Final Error:\n" + finalError + "\n");
                                 if(dis.equals("dis")){
-                                    outputTextView.append("השבתת "+i+" אפליקציות הצליח");
+                                    outputTextView.append("השבתת "+i+" אפליקציות הצליח\n");
                                 }
                                 if(act.equals("act")){
-                                    outputTextView.append("\nהפעלה הצליחה");
+                                    outputTextView.append("הפעלה הצליחה\n");
                                 }
                                 
                                 if(err.equals("account")){
@@ -196,10 +196,10 @@ public class activityadbpair extends Activity {
                                     outputTextView.append("שגיאה - עדיין אין אישור להרצת adb מהמכשיר\n");
                                 }
                                 if(ena.equals("ena")){
-                                    outputTextView.append("\nהפעלת "+i2+" אפליקציות הצליח");
+                                    outputTextView.append("הפעלת "+i2+" אפליקציות הצליח\n");
                                 }
                                 if(sec.equals("granted")){
-                                    outputTextView.append("\nאישור נגישות הצליח ");
+                                    outputTextView.append("אישור נגישות הצליח\n");
                                 }
                                 if (outputTextView != null && outputScrollView != null) { // ודא ששניהם לא null
                                     //outputTextView.append("Output: " + line + "\n");

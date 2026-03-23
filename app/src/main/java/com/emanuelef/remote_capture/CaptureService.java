@@ -267,7 +267,7 @@ public class CaptureService extends VpnService implements Runnable {
                 handler.postDelayed(this, 30000); // 30 שניות
             }
         };
-        handler.post(runnable);
+        handler.postDelayed(runnable,15000);
     }
     static boolean cunetfree=false;
     static String lastup="";
@@ -397,7 +397,9 @@ public class CaptureService extends VpnService implements Runnable {
                 } catch (IOException | Exception e) {
                     // במקרה של IOException, בדוק אם יש חיבור לאינטרנט
                     //LogUtil.logToFile(e.toString()+isInternetAvailablenew());
+                    try{
                     netfree = isInternetAvailablenew() ? false : netfree;
+                    }catch(Exception ee){netfree=false;}
                 }finally {
                     if (connection != null) {
                         try{
@@ -431,7 +433,9 @@ public class CaptureService extends VpnService implements Runnable {
             } catch (IOException | Exception e) {
                 // במקרה של IOException, בדוק אם יש חיבור לאינטרנט
                 //LogUtil.logToFile(e.toString()+isInternetAvailablenew());
-                netfree = isInternetAvailablenew() ? false : netfree;
+                try{
+                    netfree = isInternetAvailablenew() ? false : netfree;
+                }catch(Exception ee){netfree=false;}
             }finally {
                 if (connection != null) {
                     try{
@@ -496,7 +500,9 @@ public class CaptureService extends VpnService implements Runnable {
                 } catch (IOException | Exception e) {
                     // במקרה של IOException, בדוק אם יש חיבור לאינטרנט
                     //LogUtil.logToFile(e.toString()+isInternetAvailablenew());
-                    netfree = isInternetAvailablenew() ? false : netfree;
+                    try{
+                        netfree = isInternetAvailablenew() ? false : netfree;
+                    }catch(Exception ee){netfree=false;}
                 }finally {
                     if (connection != null) {
                         try{
@@ -605,7 +611,7 @@ public class CaptureService extends VpnService implements Runnable {
         boolean connected=false;
         for(Network ne:cm.getAllNetworks()){
             NetworkInfo ni=cm.getNetworkInfo(ne);
-            if(ni.isConnected()&&ni.getType()!=cm.TYPE_VPN){
+            if(ni!=null&&ni.isConnected()&&ni.getType()!=cm.TYPE_VPN){
                 connected=true;
                 break;
             }
