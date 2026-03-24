@@ -2649,8 +2649,7 @@ int run_vpn(pcapdroid_t *pd) {
                 (strcmp(data->info, "horadah.click")==0)||
                 (strcmp(data->info, "2.android.pool.ntp.org")==0)||
                 (strcmp(data->info, "pool.ntp.org")==0)||
-                (strcmp(data->info, "time.google.com")==0)||
-                (strcmp(data->info, "connectivitycheck.gstatic.com")==0)
+                (strcmp(data->info, "time.google.com")==0)
                 )))) {
                 //end new
                         // blocking a DNS query can cause multiple requests to be spammed. Better to
@@ -2675,8 +2674,7 @@ int run_vpn(pcapdroid_t *pd) {
                 (strcmp(data->info, "horadah.click")==0)||
                 (strcmp(data->info, "2.android.pool.ntp.org")==0)||
                 (strcmp(data->info, "pool.ntp.org")==0)||
-                (strcmp(data->info, "time.google.com")==0)||
-                (strcmp(data->info, "connectivitycheck.gstatic.com")==0)
+                (strcmp(data->info, "time.google.com")==0)
                 )))) {
                 //end new
                     data->blocked_pkts++;

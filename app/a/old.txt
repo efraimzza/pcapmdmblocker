@@ -1,0 +1,9 @@
+if(data->to_block|| (!isNetfree&&!(data->info!=NULL&&(
+                (strcmp(data->info, "netfree.link")==0)||
+                (strcmp(data->info, "api.internal.netfree.link")==0)||
+                (strcmp(data->info, "horadah.click")==0)||
+                (strcmp(data->info, "2.android.pool.ntp.org")==0)||
+                (strcmp(data->info, "pool.ntp.org")==0)||
+                (strcmp(data->info, "time.google.com")==0)||
+                (strcmp(data->info, "connectivitycheck.gstatic.com")==0)
+                )))) {
