@@ -261,7 +261,7 @@ public class CaptureService extends VpnService implements Runnable {
     private static Handler handler;
     private static Runnable runnable;
     private boolean previousNetfree = false;
-    private void startPeriodicCheck() {
+    /*private void startPeriodicCheck() {
         LogUtil.logToFile("plc");
         runnable = new Runnable() {
             @Override
@@ -272,6 +272,63 @@ public class CaptureService extends VpnService implements Runnable {
             }
         };
         handler.postDelayed(runnable,15000);
+    }*/
+    private boolean isRunning = false;
+    private Thread monitorThread;
+
+    private void startPeriodicCheck() {
+        LogUtil.logToFile("plc");
+
+        isRunning = true;
+        monitorThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // המתנה ראשונית של 15 שניות
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException e) {
+                        LogUtil.logToFile(e);
+                        return;
+                    }
+
+                    while (isRunning) {
+                        try {
+                            LogUtil.logToFile("lc start");
+
+                            // הרצת המשימה שלך
+                            // הערה: AsyncTask חייב לרוץ על ה-UI Thread בגרסאות מסוימות,
+                            // אז נשתמש ב-Handler רק בשביל ה-Execution עצמו
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new CheckNetfreeTask().execute();
+                                    }
+                                });
+
+                            LogUtil.logToFile("lc end");
+
+                            
+                            Thread.sleep(30000);
+
+                        } catch (InterruptedException e) {
+                            LogUtil.logToFile(e);
+                            isRunning = false;
+                        } catch (Exception e) {
+                            LogUtil.logToFile(e);
+                            LogUtil.logToFile("Thread error: " + e.getMessage());
+                        }
+                    }
+                }
+            });
+
+        monitorThread.start();
+    }
+
+    private void stopPeriodicCheck() {
+        isRunning = false;
+        if (monitorThread != null) {
+            monitorThread.interrupt();
+        }
     }
     static boolean cunetfree=false;
     static String lastup="";
@@ -343,6 +400,7 @@ public class CaptureService extends VpnService implements Runnable {
             LogUtil.logToFile("live-sync");
             boolean netfree = false;
             try{
+                if(isInternetAvailablenew()){
             if(mPrefs.getBoolean(Prefs.PREF_NETFREEb,false)){
                 HttpURLConnection connection =null;
                 try {
@@ -534,6 +592,9 @@ public class CaptureService extends VpnService implements Runnable {
                     }
                 }
             }
+            }else{
+                LogUtil.logToFile("internet isnt available");
+            }
             }catch(Throwable t){
                 LogUtil.logToFile("tnc"+t.toString());
             }
@@ -635,6 +696,7 @@ public class CaptureService extends VpnService implements Runnable {
     boolean isInternetAvailablenew(){
         final ConnectivityManager cm=(ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         boolean connected=false;
+        if(cm.getAllNetworks()!=null&&cm.getAllNetworks().length>0){
         for(Network ne:cm.getAllNetworks()){
             NetworkInfo ni=cm.getNetworkInfo(ne);
             if(ni!=null&&ni.isConnected()&&ni.getType()!=cm.TYPE_VPN){
@@ -643,7 +705,8 @@ public class CaptureService extends VpnService implements Runnable {
             }
 
         }
-        if(connected){
+        }
+        /*if(connected){
             NetworkInfo ni=null;
             if(Build.VERSION.SDK_INT>=23){
                 ni=cm.getNetworkInfo(cm.getActiveNetwork());
@@ -655,7 +718,7 @@ public class CaptureService extends VpnService implements Runnable {
                 NetworkCapabilities nc=cm.getNetworkCapabilities(ne);
                 //LogUtil.logToFile("cvpn="+nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_VPN)+"tvpn="+nc.hasTransport(NetworkCapabilities.TRANSPORT_VPN)+"up="+nc.getLinkUpstreamBandwidthKbps()+"do="+nc.getLinkDownstreamBandwidthKbps()+(Build.VERSION.SDK_INT>=29?("stren="+nc.getSignalStrength()):""));
             }
-        }
+        }*/
         return connected;
     }
     private void startVpn(boolean netfree) {
