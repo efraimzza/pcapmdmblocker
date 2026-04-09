@@ -20,6 +20,9 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.annotation.NonNull;
 import android.app.Fragment;
+import java.util.concurrent.Executor;
+import android.os.Handler;
+import android.os.Looper;
 
 public class BaseActivity extends Activity {
     private boolean mBackAction = false;
@@ -90,5 +93,11 @@ public class BaseActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
-    
+    public static final Executor etMainExecutor = new Executor() {
+        private final Handler handler = new Handler(Looper.getMainLooper());
+        @Override
+        public void execute(Runnable command) {
+            handler.post(command);
+        }
+    };
 }

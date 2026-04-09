@@ -72,7 +72,7 @@ public class StepFragment  {
        // super.onViewCreated(view, savedInstanceState);
 
       //  mNavController = Navigation.findNavController(view);
-
+/*
         mStepLabel = view.findViewById(R.id.step_label);
         mStepIcon = view.findViewById(R.id.step_status);
         mStepButton = view.findViewById(R.id.step_button);
@@ -82,6 +82,7 @@ public class StepFragment  {
         mOkColor = ctx.getColor( R.color.ok);
         mWarnColor = ctx.getColor( R.color.warning);
         mDangerColor = ctx.getColor( R.color.danger);
+        */
     }
 
     protected void gotoStep(int action_or_dest) {
@@ -94,6 +95,7 @@ public class StepFragment  {
     }
 
     protected void nextStep(int action_or_dest) {
+        /*
         Context ctx = requireContext();
         boolean is_last_step = (action_or_dest <= 0);
         mStepIcon.setImageDrawable(ctx.getDrawable( R.drawable.ic_check_solid));
@@ -103,10 +105,13 @@ public class StepFragment  {
         mStepButton.setEnabled(true);
         mStepButton.setText(!is_last_step ? R.string.app_intro_next_button : R.string.app_intro_done_button);
         //mStepButton.setOnClickListener((view) -> gotoStep(action_or_dest));
+        */
     }
 
     protected void showSkipButton(View.OnClickListener l) {
+        /*
         mSkipButton.setVisibility(View.VISIBLE);
         mSkipButton.setOnClickListener(l);
+        */
     }
 }

@@ -120,6 +120,7 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import org.json.JSONObject;
 import org.json.JSONException;
+import java.util.concurrent.Executor;
 
 
 public class CaptureService extends VpnService implements Runnable {
@@ -2128,7 +2129,7 @@ public class CaptureService extends VpnService implements Runnable {
         // notify the observers
         // NOTE: new subscribers will receive the STOPPED status right after their registration
        // serviceStatus.postValue(cur_status);
-        getMainExecutor().execute(new Runnable(){
+        etMainExecutor.execute(new Runnable(){
 
                 @Override
                 public void run() {
@@ -2160,7 +2161,13 @@ public class CaptureService extends VpnService implements Runnable {
         }
         }});
     }
-
+    public static final Executor etMainExecutor = new Executor() {
+        private final Handler handler = new Handler(Looper.getMainLooper());
+        @Override
+        public void execute(Runnable command) {
+            handler.post(command);
+        }
+    };
     // NOTE: to be invoked only by the native code
     public String getApplicationByUid(int uid) {
         AppDescriptor dsc = mNativeAppsResolver.getAppByUid(uid, 0);

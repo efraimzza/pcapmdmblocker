@@ -110,7 +110,7 @@ public class AboutActivity extends BaseActivity  {
 
             return WindowInsetsCompat.CONSUMED;
         });*/
-
+/*
         mHandler = new Handler(Looper.getMainLooper());
         TextView appVersion = findViewById(R.id.app_version);
         appVersion.setText("PCAPdroid " + Utils.getAppVersion(this));
@@ -126,6 +126,7 @@ public class AboutActivity extends BaseActivity  {
         String localized = sourceLink.getText().toString();
         sourceLink.setText(Html.fromHtml("<a href='" + MainActivity.GITHUB_PROJECT_URL + "'>" + localized + "</a>", Html.FROM_HTML_MODE_LEGACY));
         sourceLink.setMovementMethod(LinkMovementMethod.getInstance());
+        */
     }
 
     @Override
@@ -222,7 +223,7 @@ public class AboutActivity extends BaseActivity  {
 */
         return false;
     }
-
+/*
     private void showLicenseDialog() {
         final Billing billing = Billing.newInstance(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -372,7 +373,7 @@ public class AboutActivity extends BaseActivity  {
                         int timeout_ms = Integer.parseInt(timeout_s) * 1000;
                         final long deadline = SystemClock.elapsedRealtime() + timeout_ms;
                         Log.d(TAG, "QR request_id=" + qr_req_id + ", timeout=" + timeout_ms + " ms");
-
+*/
                         // Step 2: generate QR code
                         /*final Bitmap qrBitmap = genQrCode(instId, qr_req_id);
                         handler.post(new Runnable(){
@@ -380,7 +381,7 @@ public class AboutActivity extends BaseActivity  {
                                 public void run() {
                              onQrRequestReady(dialog, qrBitmap, deadline);}});
 */
-                        // Step 3: wait license
+    /*                    // Step 3: wait license
                         final String license = parseSseLine(reader.readLine());
                         if(license == null) {
                             handler.post(new Runnable(){
@@ -424,7 +425,7 @@ public class AboutActivity extends BaseActivity  {
         if(line.startsWith("data: "))
             line = line.substring(6);
         return line;
-    }
+    }*/
 /*
     private Bitmap genQrCode(String instId, String qrReqId) {
         float maxDp = 180f;
@@ -445,7 +446,7 @@ public class AboutActivity extends BaseActivity  {
         QRGEncoder qrgEncoder = new QRGEncoder(qrData, null, QRGContents.Type.TEXT, smallerDimension);
         return qrgEncoder.getBitmap(0);
     }*/
-
+/*
     private void onQrRequestReady(View dialog, Bitmap qrcode, long deadline) {
         View qrBox = dialog.findViewById(R.id.qr_box);
         ImageView qrImage = dialog.findViewById(R.id.qr_code);
@@ -511,5 +512,5 @@ public class AboutActivity extends BaseActivity  {
             Toast.makeText(getApplicationContext(), error_msg, Toast.LENGTH_LONG).show();
 
         stopQrExecutor();
-    }
+    }*/
 }

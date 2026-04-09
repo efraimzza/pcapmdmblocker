@@ -31,6 +31,9 @@ import com.emanuelef.remote_capture.Utils;
 import android.widget.Button;
 import android.view.View.OnClickListener;
 import com.mdm.activities.storeActivity;
+import java.util.concurrent.Executor;
+import android.os.Handler;
+import android.os.Looper;
 
 public class picker extends Activity { 
 
@@ -248,7 +251,7 @@ public class picker extends Activity {
                         //fileList.add(new FileItem("permission denied",mpath+"/permission denied","",0,0));
                     }
                     
-                    getMainExecutor().execute(new Runnable(){
+                    etMainExecutor.execute(new Runnable(){
 
                             @Override
                             public void run() {
@@ -265,6 +268,13 @@ public class picker extends Activity {
                 }
             }}.start();
     }
+    public static final Executor etMainExecutor = new Executor() {
+        private final Handler handler = new Handler(Looper.getMainLooper());
+        @Override
+        public void execute(Runnable command) {
+            handler.post(command);
+        }
+    };
     @Deprecated
     @Override
     public void onBackPressed() {

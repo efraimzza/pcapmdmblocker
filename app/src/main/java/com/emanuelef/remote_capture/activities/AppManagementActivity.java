@@ -49,6 +49,8 @@ import java.util.Set;
 import android.content.SharedPreferences;
 import java.util.HashSet;
 import java.util.Arrays;
+import java.util.concurrent.Executor;
+import android.os.Looper;
 
 @Deprecated
 public class AppManagementActivity extends Activity {
@@ -62,7 +64,7 @@ public class AppManagementActivity extends Activity {
 
     private String currentSearchText = "";
     private String currentSearchPackage = ""; // לחיפוש לפי שם חבילה
-    private int currentFilterOptionId = R.id.rb_filter_all_dialog; // ID של כפתור הרדיו הנבחר
+    private int currentFilterOptionId = R.id.rb_filter_launcher_dialog; // ID של כפתור הרדיו הנבחר
     private int currentSortOptionId = R.id.rb_sort_name_dialog; // ID של כפתור הרדיו הנבחר
    
     public static ProgressDialog progressDialog; // משתנה לדיאלוג התקדמות
@@ -675,7 +677,7 @@ public class AppManagementActivity extends Activity {
                     //}
                 }
             });
-        getMainExecutor().execute(new Runnable(){
+        etMainExecutor.execute(new Runnable(){
 
                 @Override
                 public void run() {
@@ -685,7 +687,13 @@ public class AppManagementActivity extends Activity {
 
     }
 
-    
+    public static final Executor etMainExecutor = new Executor() {
+        private final Handler handler = new Handler(Looper.getMainLooper());
+        @Override
+        public void execute(Runnable command) {
+            handler.post(command);
+        }
+    };
     private boolean hasLauncherIcon(PackageManager pm, String packageName) {
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);

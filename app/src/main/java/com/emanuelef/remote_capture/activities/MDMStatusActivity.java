@@ -93,6 +93,9 @@ import java.util.Arrays;
 import java.util.Set;
 import android.widget.Switch;
 import android.widget.CompoundButton;
+import java.util.concurrent.Executor;
+import android.os.Handler;
+import android.os.Looper;
 
 @Deprecated
 public class MDMStatusActivity extends Activity {
@@ -361,7 +364,7 @@ public class MDMStatusActivity extends Activity {
             deleteSharedPreferences("restriction");
             coninuedisable=true;
             try{
-                this.getMainExecutor().execute(new Runnable(){
+                etMainExecutor.execute(new Runnable(){
                         @Deprecated
                         @Override
                         public void run() {
@@ -374,7 +377,13 @@ public class MDMStatusActivity extends Activity {
         refresh();
         
     }
-    
+    public static final Executor etMainExecutor = new Executor() {
+        private final Handler handler = new Handler(Looper.getMainLooper());
+        @Override
+        public void execute(Runnable command) {
+            handler.post(command);
+        }
+    };
     void loadrestrictions(){
         try{
             mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -588,7 +597,7 @@ public class MDMStatusActivity extends Activity {
                          BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile), "UTF_8"));//encoding="UTF_8"
                          out.write(a);
                          out.close();*/
-                        mcontext.getMainExecutor().execute(new Runnable(){
+                        etMainExecutor.execute(new Runnable(){
                                 @Override
                                 public void run() {
                                     Toast.makeText(mcontext.getApplicationContext(),"הצליח",1).show();
@@ -956,7 +965,7 @@ public class MDMStatusActivity extends Activity {
         buenall.setOnClickListener(new OnClickListener(){
                 @Override
                 public void onClick(View p1) {
-                    activity.getMainExecutor().execute(new Runnable(){
+                    etMainExecutor.execute(new Runnable(){
                             @Deprecated
                             @Override
                             public void run() {

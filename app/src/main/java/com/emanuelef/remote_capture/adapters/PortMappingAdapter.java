@@ -60,7 +60,7 @@ public class PortMappingAdapter extends ArrayAdapter<PortMap> {
 
         ((TextView)convertView.findViewById(R.id.orig_port)).setText(Integer.toString(mapping.orig_port));
         ((TextView)convertView.findViewById(R.id.proto)).setText(Utils.proto2str(mapping.ipproto));
-        ((TextView)convertView.findViewById(R.id.redirect_to)).setText(redirect_to);
+       // ((TextView)convertView.findViewById(R.id.redirect_to)).setText(redirect_to);
 
         return convertView;
     }

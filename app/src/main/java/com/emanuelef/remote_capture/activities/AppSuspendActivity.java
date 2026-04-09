@@ -64,7 +64,7 @@ public class AppSuspendActivity extends Activity {
 
     private String currentSearchText = "";
     private String currentSearchPackage = ""; // לחיפוש לפי שם חבילה
-    private int currentFilterOptionId = R.id.rb_filter_all_dialog; // ID של כפתור הרדיו הנבחר
+    private int currentFilterOptionId = R.id.rb_filter_launcher_dialog; // ID של כפתור הרדיו הנבחר
     private int currentSortOptionId = R.id.rb_sort_name_dialog; // ID של כפתור הרדיו הנבחר
 
     public static ProgressDialog progressDialog; // משתנה לדיאלוג התקדמות

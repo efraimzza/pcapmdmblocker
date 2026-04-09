@@ -754,7 +754,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void notifyAppState() {
-        getMainExecutor().execute(new Runnable(){
+        etMainExecutor.execute(new Runnable(){
                 @Override
                 public void run() {
         //LogUtil.logToFile("run lol noti");
