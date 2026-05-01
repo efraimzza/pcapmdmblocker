@@ -126,7 +126,8 @@ public class MDMStatusActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.setTheme(this);
-        setContentView(R.layout.activity_mdm_status);
+        
+        
         mactivity=this;
         if(!hasManageExternalStoragePermission(this)){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -142,241 +143,262 @@ public class MDMStatusActivity extends Activity {
         mAdminComponentName = new ComponentName(this,admin.class);
         sp=PreferenceManager.getDefaultSharedPreferences(this);
         spe=sp.edit();
-        try{
-        if(sp.getString(modesp,"").equals("")){
-            if(AppState.getInstance()!=null){
-            AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
-            spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
-            spe.commit();
-                Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
-            }
+        if(sp.getBoolean("lockstatus",false)){
+            PasswordManager.requestPasswordAndSave(new Runnable() {
+                    @Override
+                    public void run() {
+                        start();
+                    }
+                },MDMStatusActivity.this);
         }else{
-            try{
-                AppState.getInstance().setCurrentPath(PathType.valueOf(sp.getString(modesp,"")));
-                //Toast.makeText(this, AppState.getInstance().getCurrentPath().name()+ " is now",1).show();
-            }catch(Exception e){
-                Toast.makeText(getApplicationContext(), e+"",1).show();
-                //importnt if it isnt found like old version
-                AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
-                spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
-                spe.commit();
-                Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
-            }
+            start();
         }
-        }catch(Exception e){}
-        linlidenta=findViewById(R.id.act_stat_identa);
-        linlidentb=findViewById(R.id.act_stat_identb);
-        linlbefact=findViewById(R.id.act_stat_linlbefact);
-        linlactivatemult=findViewById(R.id.act_stat_linlactivate_mult);
-        buactivatemult=findViewById(R.id.btn_activate_mult);
-        linlinfo=findViewById(R.id.act_stat_info);
-        tvappname=findViewById(R.id.act_stat_tvappname);
-        tvstate=findViewById(R.id.act_stat_tvstate);
-        tvtinst=findViewById(R.id.act_stat_tvtinst);
-        tvtlogin=findViewById(R.id.act_stat_tvtlogin);
-        
-        linlactivate=findViewById(R.id.act_stat_linlactivate);
-        linldetails=findViewById(R.id.act_stat_linldetails);
-        bucpcmd=findViewById(R.id.act_stat_bucpcmd);
-        bucert=findViewById(R.id.act_stat_bucert);
-        bucppwd=findViewById(R.id.act_stat_bucppwd);
-        buinstruction=findViewById(R.id.act_stat_buinstruction);
-        budeviceinfo=findViewById(R.id.act_stat_budeviceinfo);
-        budev=findViewById(R.id.act_stat_budev);
-        buaccount=findViewById(R.id.act_stat_buaccount);
-        buadbmult=findViewById(R.id.act_stat_buadbmult);
-        buadbwifi=findViewById(R.id.act_stat_buadbwifi);
-        buqrmdm=findViewById(R.id.act_stat_buqrmdm);
-        tvstartbarcode=findViewById(R.id.act_stat_tvstartbarcode);
-        ivbarcode=findViewById(R.id.act_stat_ivbarcode);
-        busavebarcode=findViewById(R.id.act_stat_busavebarcode);
-        bustartroot=findViewById(R.id.act_stat_bustartroot);
-        tvremoveroot=findViewById(R.id.act_stat_tvremove_root);
-        tvroute=findViewById(R.id.act_stat_tvroute);
-        tvdescription=findViewById(R.id.act_stat_tvdescription);
-        
-        tvappname.setText(getResources().getString(R.string.pcapdroid_app_name)+"\n"+Utils.getAppVersion(this));
-        
-        buactivatemult.setOnClickListener(new OnClickListener(){
-                @Deprecated
-                @Override
-                public void onClick(View p1) {
-                    Intent intent = new Intent(MDMStatusActivity.this, activityadbpair.class).putExtra("butt","disactenaccmult");
-                    startActivity(intent);
-                }
-            });
-        
-        bucpcmd.setOnClickListener(new OnClickListener(){
-                @Deprecated
-                @Override
-                public void onClick(View p1) {
-                    ClipboardManager clbo= (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
-                    clbo.setText("dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin");
-                    Toast.makeText(getApplicationContext(), "הועתק ללוח!",1).show();
-                    
-                }
-            });
-        bucppwd.setOnClickListener(new OnClickListener(){
-                @Deprecated
-                @Override
-                public void onClick(View p1) {
-                    ClipboardManager clbo= (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
-                    clbo.setText("john@tw-desktop");
-                    Toast.makeText(getApplicationContext(), "הועתק ללוח!",1).show();
-                    
-                }
-            });
-        buinstruction.setOnClickListener(new OnClickListener(){
-                @Deprecated
-                @Override
-                public void onClick(View p1) {
-                    Intent intent = new Intent(MDMStatusActivity.this, instructionactivity.class).putExtra("name","mdm");
-                    startActivity(intent);
-                }
-            });
-        budeviceinfo.setOnClickListener(new OnClickListener(){
-                @Deprecated
-                @Override
-                public void onClick(View p1) {
+    }
+    void start(){
+
+            setContentView(R.layout.activity_mdm_status);
+            try{
+                if(sp.getString(modesp,"").equals("")){
+                    if(AppState.getInstance()!=null){
+                        AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
+                        spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
+                        spe.commit();
+                        Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
+                    }
+                }else{
                     try{
-                        Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$MyDeviceInfoActivity");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        AppState.getInstance().setCurrentPath(PathType.valueOf(sp.getString(modesp,"")));
+                        //Toast.makeText(this, AppState.getInstance().getCurrentPath().name()+ " is now",1).show();
+                    }catch(Exception e){
+                        Toast.makeText(getApplicationContext(), e+"",1).show();
+                        //importnt if it isnt found like old version
+                        AppState.getInstance().setCurrentPath(PathType.MULTIMEDIA);
+                        spe.putString(modesp,AppState.getInstance().getCurrentPath().name());
+                        spe.commit();
+                        Toast.makeText(getApplicationContext(),AppState.getInstance().getCurrentPath().name()+" is default",1).show();
+                    }
+                }
+            }catch(Exception e){}
+            linlidenta=findViewById(R.id.act_stat_identa);
+            linlidentb=findViewById(R.id.act_stat_identb);
+            linlbefact=findViewById(R.id.act_stat_linlbefact);
+            linlactivatemult=findViewById(R.id.act_stat_linlactivate_mult);
+            buactivatemult=findViewById(R.id.btn_activate_mult);
+            linlinfo=findViewById(R.id.act_stat_info);
+            tvappname=findViewById(R.id.act_stat_tvappname);
+            tvstate=findViewById(R.id.act_stat_tvstate);
+            tvtinst=findViewById(R.id.act_stat_tvtinst);
+            tvtlogin=findViewById(R.id.act_stat_tvtlogin);
+
+            linlactivate=findViewById(R.id.act_stat_linlactivate);
+            linldetails=findViewById(R.id.act_stat_linldetails);
+            bucpcmd=findViewById(R.id.act_stat_bucpcmd);
+            bucert=findViewById(R.id.act_stat_bucert);
+            bucppwd=findViewById(R.id.act_stat_bucppwd);
+            buinstruction=findViewById(R.id.act_stat_buinstruction);
+            budeviceinfo=findViewById(R.id.act_stat_budeviceinfo);
+            budev=findViewById(R.id.act_stat_budev);
+            buaccount=findViewById(R.id.act_stat_buaccount);
+            buadbmult=findViewById(R.id.act_stat_buadbmult);
+            buadbwifi=findViewById(R.id.act_stat_buadbwifi);
+            buqrmdm=findViewById(R.id.act_stat_buqrmdm);
+            tvstartbarcode=findViewById(R.id.act_stat_tvstartbarcode);
+            ivbarcode=findViewById(R.id.act_stat_ivbarcode);
+            busavebarcode=findViewById(R.id.act_stat_busavebarcode);
+            bustartroot=findViewById(R.id.act_stat_bustartroot);
+            tvremoveroot=findViewById(R.id.act_stat_tvremove_root);
+            tvroute=findViewById(R.id.act_stat_tvroute);
+            tvdescription=findViewById(R.id.act_stat_tvdescription);
+
+            tvappname.setText(getResources().getString(R.string.pcapdroid_app_name)+"\n"+Utils.getAppVersion(getApplicationContext()));
+
+            buactivatemult.setOnClickListener(new OnClickListener(){
+                    @Deprecated
+                    @Override
+                    public void onClick(View p1) {
+                        Intent intent = new Intent(MDMStatusActivity.this, activityadbpair.class).putExtra("butt","disactenaccmult");
                         startActivity(intent);
-                    }catch(Exception e){
-                        
                     }
-                }
-            });
-        budev.setOnClickListener(new OnClickListener(){
-                @Deprecated
-                @Override
-                public void onClick(View p1) {
-                    try{
-                    Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$DevelopmentSettingsDashboardActivity");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    }catch(Exception e){
+                });
+
+            bucpcmd.setOnClickListener(new OnClickListener(){
+                    @Deprecated
+                    @Override
+                    public void onClick(View p1) {
+                        ClipboardManager clbo= (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+                        clbo.setText("dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin");
+                        Toast.makeText(getApplicationContext(), "הועתק ללוח!",1).show();
+
+                    }
+                });
+            bucppwd.setOnClickListener(new OnClickListener(){
+                    @Deprecated
+                    @Override
+                    public void onClick(View p1) {
+                        ClipboardManager clbo= (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+                        clbo.setText("john@tw-desktop");
+                        Toast.makeText(getApplicationContext(), "הועתק ללוח!",1).show();
+
+                    }
+                });
+            buinstruction.setOnClickListener(new OnClickListener(){
+                    @Deprecated
+                    @Override
+                    public void onClick(View p1) {
+                        Intent intent = new Intent(MDMStatusActivity.this, instructionactivity.class).putExtra("name","mdm");
+                        startActivity(intent);
+                    }
+                });
+            budeviceinfo.setOnClickListener(new OnClickListener(){
+                    @Deprecated
+                    @Override
+                    public void onClick(View p1) {
                         try{
-                            Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$DevelopmentSettingsActivity");
+                            Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$MyDeviceInfoActivity");
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
-                        }catch(Exception ee){}
-                    }
-                }
-            });
-        buaccount.setOnClickListener(new OnClickListener(){
-                @Deprecated
-                @Override
-                public void onClick(View p1) {
-                    try{
-                    Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$AccountDashboardActivity");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    }catch(Exception e){
-                        /*try{
-                            Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$DevelopmentSettingsActivity");
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        }catch(Exception ee){}*/
-                    }
-                }
-            });
-        buadbmult.setOnClickListener(new OnClickListener(){
+                        }catch(Exception e){
 
-                @Override
-                public void onClick(View p1) {
-                    Intent intent = new Intent(MDMStatusActivity.this, activityadbpair.class);
-                    startActivity(intent);
-                }
-            });
-        buadbwifi.setOnClickListener(new OnClickListener(){
-
-                @Override
-                public void onClick(View p1) {
-                    Intent intent = new Intent(MDMStatusActivity.this, nsdactivity.class);
-                    startActivity(intent);
-                }
-            });
-        buqrmdm.setOnClickListener(new OnClickListener(){
-
-                @Override
-                public void onClick(View p1) {
-                    Intent intent = new Intent(MDMStatusActivity.this, MdmProvisioningActivity.class);
-                    startActivity(intent);
-                }
-            });
-        bucert.setOnClickListener(new OnClickListener(){
-                @Override
-                public void onClick(View p1) {
-                    copymodule(MDMStatusActivity.this);
-                }
-            });
-        try {
-            is= getAssets().open("barcode.png");
-            
-            if (null != is) {bmp = BitmapFactory.decodeStream(is);}
-            
-        } catch (IOException e) {}
-        finally{
-            try {
-                if(is!=null){
-                is.close();
-                }
-            } catch (Exception e) {}
-        }
-        if(bmp!=null){
-            ivbarcode.setImageBitmap(bmp);
-        }
-        busavebarcode.setOnClickListener(new OnClickListener(){
-
-                @Override
-                public void onClick(View p1) {
-                    
-                    int read=0;
-                    byte[] buf=new byte[1024];
-                    try {
-                        FileOutputStream fos= new FileOutputStream(new File("/storage/emulated/0/barcode.png"));
-                        is= getAssets().open("barcode.png");
-                    while ((read = is.read(buf))>0) {
-                        fos.write(buf,0,read);
-                    }
-                        Toast.makeText(getApplicationContext(), "נשמר באיחסון פנימי!",1).show();
-                    }catch(Exception e){
-                        
-                    }finally{
-                        try {
-                            if(is!=null){
-                                is.close();
-                            }
-                        } catch (Exception e) {}
-                    }
-                }
-            });
-        bustartroot.setOnClickListener(new OnClickListener(){
-
-                @Override
-                public void onClick(View p1) {
-                    startwithroot(MDMStatusActivity.this);
-                }
-            });
-        if(new File(getDataDir().getPath()+"/shared_prefs/restriction.xml").exists()){
-            loadrestrictions();
-            deleteSharedPreferences("restriction");
-            coninuedisable=true;
-            try{
-                etMainExecutor.execute(new Runnable(){
-                        @Deprecated
-                        @Override
-                        public void run() {
-                            new EnableAppsTask().execute();
                         }
-                    });
-                
-            } catch (Exception e) {}
-        }
-        refresh();
+                    }
+                });
+            budev.setOnClickListener(new OnClickListener(){
+                    @Deprecated
+                    @Override
+                    public void onClick(View p1) {
+                        try{
+                            Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$DevelopmentSettingsDashboardActivity");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }catch(Exception e){
+                            try{
+                                Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$DevelopmentSettingsActivity");
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }catch(Exception ee){}
+                        }
+                    }
+                });
+            buaccount.setOnClickListener(new OnClickListener(){
+                    @Deprecated
+                    @Override
+                    public void onClick(View p1) {
+                        try{
+                            Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$AccountDashboardActivity");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }catch(Exception e){
+                            /*try{
+                             Intent intent = new Intent().setClassName("com.android.settings","com.android.settings.Settings$DevelopmentSettingsActivity");
+                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                             startActivity(intent);
+                             }catch(Exception ee){}*/
+                        }
+                    }
+                });
+            buadbmult.setOnClickListener(new OnClickListener(){
+
+                    @Override
+                    public void onClick(View p1) {
+                        Intent intent = new Intent(MDMStatusActivity.this, activityadbpair.class);
+                        startActivity(intent);
+                    }
+                });
+            buadbwifi.setOnClickListener(new OnClickListener(){
+
+                    @Override
+                    public void onClick(View p1) {
+                        Intent intent = new Intent(MDMStatusActivity.this, nsdactivity.class);
+                        startActivity(intent);
+                    }
+                });
+            buqrmdm.setOnClickListener(new OnClickListener(){
+
+                    @Override
+                    public void onClick(View p1) {
+                        Intent intent = new Intent(MDMStatusActivity.this, MdmProvisioningActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            bucert.setOnClickListener(new OnClickListener(){
+                    @Override
+                    public void onClick(View p1) {
+                        copymodule(MDMStatusActivity.this);
+                    }
+                });
+            try {
+                is= getAssets().open("barcode.png");
+
+                if (null != is) {bmp = BitmapFactory.decodeStream(is);}
+
+            } catch (IOException e) {}
+            finally{
+                try {
+                    if(is!=null){
+                        is.close();
+                    }
+                } catch (Exception e) {}
+            }
+            if(bmp!=null){
+                ivbarcode.setImageBitmap(bmp);
+            }
+            busavebarcode.setOnClickListener(new OnClickListener(){
+
+                    @Override
+                    public void onClick(View p1) {
+
+                        int read=0;
+                        byte[] buf=new byte[1024];
+                        try {
+                            FileOutputStream fos= new FileOutputStream(new File("/storage/emulated/0/barcode.png"));
+                            is= getAssets().open("barcode.png");
+                            while ((read = is.read(buf))>0) {
+                                fos.write(buf,0,read);
+                            }
+                            Toast.makeText(getApplicationContext(), "נשמר באיחסון פנימי!",1).show();
+                        }catch(Exception e){
+
+                        }finally{
+                            try {
+                                if(is!=null){
+                                    is.close();
+                                }
+                            } catch (Exception e) {}
+                        }
+                    }
+                });
+            bustartroot.setOnClickListener(new OnClickListener(){
+
+                    @Override
+                    public void onClick(View p1) {
+                        startwithroot(MDMStatusActivity.this);
+                    }
+                });
+            if(new File(getDataDir().getPath()+"/shared_prefs/restriction.xml").exists()){
+                loadrestrictions();
+                deleteSharedPreferences("restriction");
+                coninuedisable=true;
+                try{
+                    etMainExecutor.execute(new Runnable(){
+                            @Deprecated
+                            @Override
+                            public void run() {
+                                new EnableAppsTask().execute();
+                            }
+                        });
+
+                } catch (Exception e) {}
+            }
+            refresh();
         
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+    
     public static final Executor etMainExecutor = new Executor() {
         private final Handler handler = new Handler(Looper.getMainLooper());
         @Override
@@ -1102,10 +1124,27 @@ public class MDMStatusActivity extends Activity {
     public boolean onMenuItemSelected(@NonNull MenuItem item) {
         return false;
     }*/
+    boolean retvalue =true;
     @Deprecated
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(final MenuItem item){
         super.onOptionsItemSelected(item);
+        
+        if(sp.getBoolean("lockstatus",false)){
+            PasswordManager.requestPasswordAndSave(new Runnable() {
+                    @Override
+                    public void run() {
+                       retvalue= optionselected(item);
+                    }
+                },MDMStatusActivity.this);
+        }else{
+            retvalue= optionselected(item);
+        }
+        
+        return retvalue;
+        
+    }
+    boolean optionselected(MenuItem item){
         Intent intent;
         switch(item.getItemId()) {
             case R.id.men_ite_sett:
@@ -1136,18 +1175,17 @@ public class MDMStatusActivity extends Activity {
             case R.id.men_ite_remove:
                 if(!sp.getBoolean(locksp,false)){
                     PasswordManager.requestPasswordAndSave(new Runnable() {
-                        @Deprecated
-                        @Override
-                        public void run() {
-                            showRemoveMDMConfirmationDialog(MDMStatusActivity.this);
-                        }
-                    },MDMStatusActivity.this);
+                            @Deprecated
+                            @Override
+                            public void run() {
+                                showRemoveMDMConfirmationDialog(MDMStatusActivity.this);
+                            }
+                        },MDMStatusActivity.this);
                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-        
     }
 	// Check if Manage External Storage permission is granted (for Android 11+)
     public static boolean hasManageExternalStoragePermission(Context context) {

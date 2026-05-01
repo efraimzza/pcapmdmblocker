@@ -130,9 +130,10 @@ public class MDMSettingsActivity extends Activity {
             setupButton(R.id.btn_manage_vpn, "ניהול ניטור רשת (vpn)", MainActivity.class);
             setupButton(R.id.btn_change_password, "שנה סיסמה", null);
             setupButton(R.id.btn_remove_frp, "הסר frp", null); 
-            setupButton(R.id.btn_activate_frp, "הפעל frp", null); 
+           // setupButton(R.id.btn_activate_frp, "הפעל frp", null); 
             setupButton(R.id.btn_manage_frp, "ניהול frp ידני", FrpActivity.class);
             setupButton(R.id.btn_update_mdm_app, "עדכון אפליקציית MDM", null);
+            setupButton(R.id.btn_lock_status, "נעילת מסך ראשי עם סיסמה", null);
             setupButton(R.id.btn_lock_mdm, "נעילת הגדרות והסרה", null);
             setupButton(R.id.btn_select_route, "בחירת מסלול לניטור רשת (vpn)", null); // תצטרך אקטיביטי לזה
             setupButton(R.id.btn_def_rest_multi, "השבתות מומלצות למולטימדיה", null);
@@ -159,9 +160,10 @@ public class MDMSettingsActivity extends Activity {
                         // with password
                         if (v.getId() == R.id.btn_change_password ||
                             v.getId() == R.id.btn_remove_frp ||
-                            v.getId() == R.id.btn_activate_frp ||
+                           // v.getId() == R.id.btn_activate_frp ||
                             v.getId() == R.id.btn_update_mdm_app ||
                             v.getId() == R.id.btn_lock_mdm ||
+                            v.getId() == R.id.btn_lock_status ||
                             v.getId() ==  R.id.btn_select_route ||
                             v.getId() == R.id.btn_def_rest_multi ||
                             v.getId() == R.id.btn_def_rest_cube ||
@@ -192,13 +194,15 @@ public class MDMSettingsActivity extends Activity {
                 PasswordManager. showSetPasswordDialog(MDMSettingsActivity.this);
             }else if (buttonId == R.id.btn_remove_frp) {
                 removefrp(MDMSettingsActivity.this);
-            } else if (buttonId == R.id.btn_activate_frp) {
+            }/* else if (buttonId == R.id.btn_activate_frp) {
                 activatefrp();
-            } else if (buttonId == R.id.btn_update_mdm_app) {
+            }*/ else if (buttonId == R.id.btn_update_mdm_app) {
                 updateMdm("");
                 //startDownload();
             } else if (buttonId == R.id.btn_lock_mdm) {
                 showLockMDMConfirmationDialog(MDMSettingsActivity.this);
+            } else if (buttonId == R.id.btn_lock_status) {
+                showLockStatusConfirmationDialog(MDMSettingsActivity.this);
             } else if (buttonId == R.id.btn_select_route) {
                 final PathType[] paths = PathType.values();
                 String[] pathNames = new String[paths.length];
@@ -391,6 +395,7 @@ public class MDMSettingsActivity extends Activity {
            }
                     
     }
+    /*
     private void activatefrp(){
         try {
             
@@ -424,7 +429,7 @@ public class MDMSettingsActivity extends Activity {
 		} catch (Exception e) {
 		    Toast.makeText(getApplicationContext(), "e-frp2"+e , Toast.LENGTH_SHORT).show();
 		}
-    }
+    }*/
     private void logCurrentFrp(){
         try {
             if (Build.VERSION.SDK_INT > 29) {
@@ -1063,6 +1068,30 @@ public static void cancelDownload(String fileurl) {
                 }
             })
             .setNegativeButton("ביטול", null)
+            .show();
+    }
+    public void showLockStatusConfirmationDialog(final Activity activity) {
+        new AlertDialog.Builder(activity)
+            .setTitle("נעילת מסך ראשי עם סיסמה")
+            .setMessage("האם אתה בטוח שברצונך לנעול מסך הבית עם סיסמה?")
+            .setPositiveButton("כן, נעל!", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    spe.putBoolean("lockstatus",true).commit();
+                }
+            })
+            .setNeutralButton("ביטול", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            })
+            .setNegativeButton("ביטול נעילה", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    spe.putBoolean("lockstatus",false).commit();
+                }
+            })
             .show();
     }
     @Override

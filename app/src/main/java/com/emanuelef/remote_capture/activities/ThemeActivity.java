@@ -90,7 +90,13 @@ public class ThemeActivity extends BaseActivity {
 
                     }
                 });
-            
+            screen.findPreference("flt_pref").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference p1) {
+                        Intent intent = new Intent(getContext(), FloatingActivity.class);
+                        startActivity(intent);
+                        return true;
+                    }});
         }
 
     }

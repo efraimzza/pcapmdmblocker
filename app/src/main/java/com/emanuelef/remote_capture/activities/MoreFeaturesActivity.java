@@ -25,7 +25,7 @@ public class MoreFeaturesActivity extends Activity {
             if(getActionBar().isShowing())
                 getActionBar().hide();
         }catch(Exception e){}
-        // כפתור לדוגמה: הוספת קיצור דרך להגדרות מולטימדיה
+        
         Button btnAddMultimediaSettingsShortcut = findViewById(R.id.btn_add_multimedia_settings_shortcut);
         if (btnAddMultimediaSettingsShortcut != null) {
             btnAddMultimediaSettingsShortcut.setOnClickListener(new View.OnClickListener() {
@@ -143,5 +143,7 @@ public class MoreFeaturesActivity extends Activity {
                     }
                 });
         }
+        
+        
     }
 }

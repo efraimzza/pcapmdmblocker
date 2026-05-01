@@ -1278,6 +1278,7 @@ public class CaptureService extends VpnService implements Runnable {
     }
 
     public void notifyBlacklistedConnection(ConnectionDescriptor conn) {
+        /*
         int uid = conn.uid;
 
         AppsResolver resolver = new AppsResolver(this);
@@ -1311,7 +1312,7 @@ public class CaptureService extends VpnService implements Runnable {
             .setStyle(new Notification.BigTextStyle().bigText(content))
             .setContentText(content);
         Notification notification = mMalwareBuilder.build();
-
+        */
         // Use the UID as the notification ID to group alerts from the same app
         //mHandler.post(() -> Utils.sendImportantNotification(this, uid, notification));
     }

@@ -30,6 +30,7 @@ import android.preference.PreferenceManager;
 
 import com.emanuelef.remote_capture.model.CaptureSettings;
 import com.emanuelef.remote_capture.model.Prefs;
+import android.widget.Toast;
 
 public class BootReceiver extends BroadcastReceiver {
     private static final String TAG = "BootReceiver";
@@ -39,12 +40,12 @@ public class BootReceiver extends BroadcastReceiver {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String action = intent.getAction();
         Log.d(TAG, "onReceive: " + action);
-
+        Toast.makeText(context,"חסימת mdm - המכשיר הופעל",0).show();
         if(!action.equals(Intent.ACTION_BOOT_COMPLETED) && !action.equals("android.intent.action.QUICKBOOT_POWERON")) {
             Log.w(TAG, "Unexpected action: " + action);
             return;
         }
-
+        
         if(!Prefs.startAtBoot(prefs))
             return;
 

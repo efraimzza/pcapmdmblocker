@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.emanuelef.remote_capture.debug">
 
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -38,6 +37,10 @@
     <!-- Required with root to properly resolve UIDs cross-users/profiles. Granted via root -->
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" android:protectionLevel="signature"  tools:ignore="ProtectedPermissions" />
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+        
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-feature android:name="android.hardware.wifi" android:required="false" />
@@ -205,10 +208,12 @@
 
         <receiver
             android:name="com.emanuelef.remote_capture.BootReceiver"
-            android:exported="false">
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
         <receiver
@@ -225,10 +230,8 @@
 
             <intent-filter>
 
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED">
-
-                </action>
-
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+                <action android:name="android.app.action.TRANSFER_OWNERSHIP_COMPLETE" />
             </intent-filter>
 
         </receiver>
@@ -299,6 +302,8 @@
         <activity android:name="com.emanuelef.remote_capture.activities.mbackupActivity" />
         <activity android:name="com.emanuelef.remote_capture.activities.AccessActivity" />
         <activity android:name="com.emanuelef.remote_capture.activities.FrpActivity" />
+        <activity android:name="com.emanuelef.remote_capture.activities.FloatingActivity" />
+            
         <receiver
             android:name="com.emanuelef.remote_capture.activities.InstallReceiver"
             android:exported="true">
@@ -349,6 +354,9 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility"/>
         </service>
+        <service
+            android:name="com.emanuelef.remote_capture.activities.FloatingWindow"
+            android:exported="true" />
     </application>
 
     <!--application

@@ -25,6 +25,11 @@
                 android:summary="החלפת הסמל במסך הבית לירוק כשה mdm פעיל"
                 android:iconSpaceReserved="false"
                 android:defaultValue="true" />
+            <Preference
+                android:key="flt_pref"
+                android:title="סימן מיים"
+                android:summary="ניהול סימן מיים"
+                android:iconSpaceReserved="false" />
         </PreferenceCategory>
  
 </PreferenceScreen>

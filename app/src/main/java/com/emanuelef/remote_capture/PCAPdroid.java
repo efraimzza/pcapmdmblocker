@@ -55,6 +55,7 @@ import android.net.VpnService;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import com.emanuelef.remote_capture.activities.admin;
+import com.emanuelef.remote_capture.activities.FloatingWindow;
 //import cat.ereza.customactivityoncrash.config.CaocConfig;
 
 /* The PCAPdroid app class.
@@ -214,7 +215,18 @@ try{
             } catch (Exception e) {}
         }
     }
-        
+    if(sp.getBoolean("fltstartauto",false)){
+        try {
+            stopService(new Intent(getApplicationContext(), FloatingWindow.class));
+        } catch (Exception e) {}
+        try{
+        spe.putBoolean("moveWindow",false).commit();
+        startService(new Intent(getApplicationContext(), FloatingWindow.class)
+                     .putExtra("strength",sp.getInt("strength",30))
+                     .putExtra("scale",sp.getInt("scale",64)));
+            }catch (Throwable t) {LogUtil.logToFile(t);}
+    }
+                 
         }catch(RuntimeException | Exception | ExceptionInInitializerError | Throwable e){
             //LogUtil.logToFile(e.toString());
             Intent intent = new Intent(getApplicationContext(), MDMSettingsActivity.class);
