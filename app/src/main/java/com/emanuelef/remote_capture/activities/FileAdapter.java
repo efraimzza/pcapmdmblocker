@@ -16,11 +16,19 @@ import java.util.Locale;
 import java.io.File;
 
 import com.emanuelef.remote_capture.R;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import android.os.Handler;
+import android.os.Looper;
 
 public class FileAdapter extends BaseAdapter {
     private final Context context;
     private final List<FileItem> fileList;
 
+    private final ExecutorService executor = Executors.newFixedThreadPool(3);
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    
+    
     public FileAdapter(Context context, List<FileItem> fileList) {
         this.context = context;
         this.fileList = fileList;
@@ -71,14 +79,55 @@ public class FileAdapter extends BaseAdapter {
         String sizeString = convertFileSize(item.size);
         String timeString = convertTime(item.lastModified);
         holder.line2.setText(sizeString + " | " + timeString);
+        /*
+         // Icon Logic
+         Drawable icon = getFileIcon(item);
 
-        // Icon Logic
-        Drawable icon = getFileIcon(item);
-        holder.icon.setImageDrawable(icon);
+         holder.icon.setImageDrawable(icon);
+         */
+        holder.icon.setImageResource(getDefaultIconRes(item));
 
+        // מניעת טעינת תמונה לא נכונה בזמן גלילה מהירה
+        holder.icon.setTag(item.path);
+
+        if (isApkFile(item.name)) {
+            loadApkIconAsync(holder.icon, item.path);
+        }
         return convertView;
     }
+    private boolean isApkFile(String fileName) {
+        String lower = fileName.toLowerCase(Locale.ROOT);
+        return lower.endsWith(".apk") || lower.endsWith(".xapk") || 
+            lower.endsWith(".apks") || lower.endsWith(".apkm");
+    }
 
+    private int getDefaultIconRes(FileItem item) {
+        if (new File(item.path).isDirectory()) return R.drawable.ic_folder;
+        if (isApkFile(item.name)) return R.drawable.ic_apk;
+        return R.drawable.ic_unknown;
+    }
+
+    private void loadApkIconAsync(final ImageView imageView, final String apkPath) {
+        executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    //final Drawable apkIcon = getApkIcon(apkPath);
+                    final Drawable apkIcon = ProfessionalIconLoader.getIcon(context,apkPath);
+                    if (apkIcon != null) {
+                        mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // בדיקה שה-ImageView עדיין מיועד לאותו קובץ (מניעת באג גלילה)
+                                    if (imageView.getTag() != null && imageView.getTag().equals(apkPath)) {
+                                        imageView.setImageDrawable(apkIcon);
+                                    }
+                                }
+                            });
+                    }
+                }
+            });
+    }
+    
     // --- Utility Methods (Outside of getView for clarity) ---
 
     private String convertFileSize(long size) {
