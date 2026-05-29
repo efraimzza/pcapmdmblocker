@@ -51,9 +51,15 @@ import java.util.HashSet;
 import java.util.Arrays;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import com.emanuelef.remote_capture.PCAPdroid;
+import com.emanuelef.remote_capture.CaptureService;
+import com.emanuelef.remote_capture.model.MatchList;
+import com.emanuelef.remote_capture.model.Blocklist;
+import com.emanuelef.remote_capture.model.AppDescriptor;
+import com.emanuelef.remote_capture.AppsResolver;
 
 @Deprecated
-public class AppSuspendActivity extends Activity {
+public class AppPickerActivity extends Activity {
 
     private DevicePolicyManager mDpm;
     private ComponentName mAdminComponentName;
@@ -68,15 +74,16 @@ public class AppSuspendActivity extends Activity {
     private int currentSortOptionId = R.id.rb_sort_name_dialog; // ID של כפתור הרדיו הנבחר
 
     public static ProgressDialog progressDialog; // משתנה לדיאלוג התקדמות
-
-    
-
+    String state=null;
     @Deprecated
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.setTheme(this);
         setContentView(R.layout.activity_app_management);
+        state=getIntent().getStringExtra("state");
+        if(state==null)finish();
+        LogUtil.logToFile(state);
         mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminComponentName = new ComponentName(this, admin.class);
         try{
@@ -89,7 +96,7 @@ public class AppSuspendActivity extends Activity {
         new LoadAppsTask().execute();
 
         mFilteredAppList = new ArrayList<AppItem>();
-        mAdapter = new AppListAdapter(this, mFilteredAppList,false);
+        mAdapter = new AppListAdapter(this, mFilteredAppList,true);
         lvApps.setAdapter(mAdapter);
 
         Button btnShowFilterOptions = (Button) findViewById(R.id.btn_filter_apps);
@@ -118,12 +125,12 @@ public class AppSuspendActivity extends Activity {
                                     applyAppVisibilityChanges();
                                 }catch(Exception e){}
                             }
-                        },AppSuspendActivity.this);
+                        },AppPickerActivity.this);
                 }
             });
 
         findViewById(R.id.btn_install_apk).setVisibility(Button.GONE);
-        ((TextView)findViewById(R.id.AppMngTitle)).setText("השהיית אפליקציות");
+        ((TextView)findViewById(R.id.AppMngTitle)).setText("בחירת אפליקציות");
     }
 
     // הוסף AsyncTask חדש לטעינת אפליקציות
@@ -134,7 +141,7 @@ public class AppSuspendActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(AppSuspendActivity.this);
+            progressDialog = new ProgressDialog(AppPickerActivity.this);
             progressDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_button_background);
             progressDialog.setMessage("טוען רשימת אפליקציות...");
             progressDialog.setCancelable(false);
@@ -146,11 +153,32 @@ public class AppSuspendActivity extends Activity {
             PackageManager pm = getPackageManager();
             List<ApplicationInfo> installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA | PackageManager.MATCH_UNINSTALLED_PACKAGES);
             List<AppItem> appList = new ArrayList<AppItem>();
-
+            //AppsResolver mApps;
+            //mApps = new AppsResolver(getApplicationContext());
             for (ApplicationInfo appInfo : installedApps) {
                 boolean isHiddenByMDM =false;
                 try{
-                    isHiddenByMDM = mDpm.isPackageSuspended(mAdminComponentName, appInfo.packageName);
+                    //is in rules
+                    
+                    if(state.equals("whitelist")){
+
+                        final MatchList whitelist = PCAPdroid.getInstance().getMalwareWhitelist();
+                        isHiddenByMDM=whitelist.matchesApp(appInfo.uid);
+                    }else if(state.equals("fwWhitelist")){
+                        final MatchList fwWhitelist = PCAPdroid.getInstance().getFirewallWhitelist();
+                        isHiddenByMDM=fwWhitelist.matchesApp(appInfo.uid);
+                    }else if(state.equals("decryptionList")){
+                        final MatchList decryptionList = PCAPdroid.getInstance().getDecryptionList();
+                        isHiddenByMDM=decryptionList.matchesApp(appInfo.uid);
+                    }else if(state.equals("blocklist")){
+                        final Blocklist blocklist = PCAPdroid.getInstance().getBlocklist();
+                        isHiddenByMDM=blocklist.matchesApp(appInfo.uid);
+                    }
+                    //AppDescriptor app = mApps.getAppByPackage(package_name, 0);
+                    
+                    
+                    
+                    //isHiddenByMDM = mDpm.isPackageSuspended(mAdminComponentName, appInfo.packageName);
                 }catch(Exception e){}
                 long lastUpdateTime = 0;
                 try {
@@ -187,7 +215,6 @@ public class AppSuspendActivity extends Activity {
     }
 
     // ... (loadAppList, hasLauncherIcon)
-
 
     private void showFilterOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -250,7 +277,7 @@ public class AppSuspendActivity extends Activity {
                     // אין צורך לעשות כלום, הדיאלוג ייסגר
                 }
             });
-        ((RadioButton)dialogView.findViewById(R.id.rb_filter_hidden_dialog)).setText("מושהות");
+        ((RadioButton)dialogView.findViewById(R.id.rb_filter_hidden_dialog)).setText("נבחרו");
         builder.show();
     }
 
@@ -312,11 +339,6 @@ public class AppSuspendActivity extends Activity {
 
         mAdapter.notifyDataSetChanged();
     }
-    
-
-    
-
-    
 
     private boolean hasLauncherIcon(PackageManager pm, String packageName) {
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
@@ -340,28 +362,85 @@ public class AppSuspendActivity extends Activity {
             // אם מצב ה-hidden השתנה עבור האפליקציה הזו
             boolean currentHiddenState = false;
             try{
-             currentHiddenState = mDpm.isPackageSuspended(mAdminComponentName, appItem.getPackageName());
-            }catch(Exception e){}
+                int uid=0;
+                
+                    uid=Utils.getPackageUid(getPackageManager(), appItem.getPackageName(), 0);
+                MatchList matchList = null;
+                Blocklist blocklist=null;
+                //LogUtil.logToFile(state);
+                if(state.equals("whitelist")){
+                    matchList = PCAPdroid.getInstance().getMalwareWhitelist();
+                }else if(state.equals("fwWhitelist")){
+                    matchList = PCAPdroid.getInstance().getFirewallWhitelist();
+                }else if(state.equals("decryptionList")){
+                    matchList = PCAPdroid.getInstance().getDecryptionList();
+                }else if(state.equals("blocklist")){
+                    blocklist = PCAPdroid.getInstance().getBlocklist();
+                }
+                if(!state.equals("blocklist")){
+                    currentHiddenState=matchList.matchesApp(uid);
+                }else if(state.equals("blocklist")){
+                    currentHiddenState=blocklist.matchesApp(uid);
+                }
+                
+                //currentHiddenState = mDpm.isPackageSuspended(mAdminComponentName, appItem.getPackageName());
+            
             if (currentHiddenState != appItem.isHidden()) {
                 if(appItem.isHidden()){
-                    sus.add(appItem.getPackageName());
+                    if(!state.equals("blocklist")){
+                        matchList.addApp(appItem.getPackageName());
+                    }else if(state.equals("blocklist")){
+                        blocklist.addApp(appItem.getPackageName());
+                    }
+                    
+                    //sus.add(appItem.getPackageName());
                 }else{
-                    unsus.add(appItem.getPackageName());
+                    if(!state.equals("blocklist")){
+                        matchList.removeApp(appItem.getPackageName());
+                    }else if(state.equals("blocklist")){
+                        blocklist.removeApp(appItem.getPackageName());
+                    }
+                    
+                    //unsus.add(appItem.getPackageName());
                 }
             }
-            
+                if(!state.equals("blocklist")){
+                    matchList.save();
+                }else if(state.equals("blocklist")){
+                    blocklist.saveAndReload();
+                }
+                if(state.equals("whitelist")){
+                    CaptureService.reloadMalwareWhitelist();
+                }else if(state.equals("fwWhitelist")){
+                    if(CaptureService.isServiceActive())
+                        CaptureService.requireInstance().reloadFirewallWhitelist();
+                }else if(state.equals("decryptionList")){
+                    CaptureService.reloadDecryptionList();
+                }
+            }catch(Exception e){LogUtil.logToFile(e);}
+
         }
+        //logic to add & remove
+        /*
+        final MatchList whitelist = PCAPdroid.getInstance().getMalwareWhitelist();
+        whitelist.addApp("");
+        whitelist.save();
+        CaptureService.reloadMalwareWhitelist();
+        
         String[] susa={};
         susa=sus.toArray(susa);
         mDpm.setPackagesSuspended(mAdminComponentName,susa,true);
         String[] unsusa={};
         unsusa=unsus.toArray(unsusa);
         mDpm.setPackagesSuspended(mAdminComponentName,unsusa,false);
+        */
         Toast.makeText(getApplicationContext(), "שינויים באפליקציות נשמרו!", Toast.LENGTH_SHORT).show();
+        //finish in picker mode
+        finish();
         // רענן את הרשימה לאחר שמירה כדי לשקף שינויים (לדוגמה, בסינון 'מוסתרות')
         // טען מחדש את הרשימה המקורית מהמערכת
-        new LoadAppsTask().execute();
-        applyFiltersAndSort(); // סנן ומיין אותה מחדש
+        //new LoadAppsTask().execute();
+        //applyFiltersAndSort(); // סנן ומיין אותה מחדש
     }
 
     /*
@@ -469,7 +548,6 @@ public class AppSuspendActivity extends Activity {
                             }, 5000);
                     }
                 }});
-
 
         //context.getMainLooper().loop();
     }

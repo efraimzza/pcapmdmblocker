@@ -1,6 +1,5 @@
 package com.mdm.store;
 
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -14,11 +13,11 @@ public final class ApkSourcePriority {
 
     // רשימת קדימויות ברירת מחדל (פנימית וקבועה)
     private static final List DEFAULT_PRIORITY = Collections.unmodifiableList(Arrays.asList(
+                                                                                  "GPlay",
                                                                                   "APKPure",
                                                                                   "APKCombo",
                                                                                   "Aptoide",
                                                                                   "FDroid"
-                                                                              // GPlay לא נכלל כי הוא לא מספק קישור הורדה ישיר
                                                                               ));
 
     // רשימת הקדימויות הניתנת לשינוי (משתמש ב-CopyOnWriteArrayList כתחליף בטוח לשינויים)

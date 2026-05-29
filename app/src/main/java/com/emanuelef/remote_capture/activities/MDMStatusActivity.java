@@ -96,6 +96,7 @@ import android.widget.CompoundButton;
 import java.util.concurrent.Executor;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.CheckBox;
 
 @Deprecated
 public class MDMStatusActivity extends Activity {
@@ -681,7 +682,7 @@ public class MDMStatusActivity extends Activity {
 
 // // פונקציית עזר לבדיקת הסטטוס האמיתי (למשל מתוך ה-DeviceAdmin או SharedPreferences)
 
-    // // פונקציה להחלפת אייקון והפעלה מחדש עוקפת חסימות
+    // פונקציה להחלפת אייקון והפעלה מחדש עוקפת חסימות
     public void changeIconAndForceRestart(boolean isActive) {
         Context context = getApplicationContext();
         PackageManager pm = context.getPackageManager();
@@ -856,26 +857,9 @@ public class MDMStatusActivity extends Activity {
                             
 
                             );
-            String[] listidentmult={"Fanvace M36",
-                "MECHEN X56",
-                "s9863a1h10",
-                "uis7865_6h10_go",
-                "ums512_1h10",
-                "UIS8581A",
-                "uis7862a_1h10",
-                "uis8581a2h10",
-                ""};
-            boolean found= false;
-            String curdevice=Build.DEVICE;
-            for(String device:listidentmult){
-                if(curdevice.toLowerCase().equals(device.toLowerCase())){
-
-                    found=true;
-                    break;
-                }
-            }
             
-            if(found){
+            
+            if(found()){
                 buident.append("\nלמכשיר שלך יש אפשרות להפעיל את החסימה בלחצן אחד אחרי הכנת המכשיר! (-הפעלה למולטימדיה ועוד)");
                 linlactivatemult.setVisibility(View.VISIBLE);
                 bunextorskip.setText("בחירת סוג הפעלה ידנית");
@@ -903,6 +887,27 @@ public class MDMStatusActivity extends Activity {
             linldetails.setVisibility(View.GONE);
         }
         }catch(Exception e){}
+    }
+    boolean found(){
+        String[] listidentmult={"Fanvace M36",
+            "MECHEN X56",
+            "s9863a1h10",
+            "uis7865_6h10_go",
+            "ums512_1h10",
+            "UIS8581A",
+            "uis7862a_1h10",
+            "uis8581a2h10",
+            ""};
+        boolean found= false;
+        String curdevice=Build.DEVICE;
+        for(String device:listidentmult){
+            if(curdevice.toLowerCase().equals(device.toLowerCase())){
+
+                found=true;
+                break;
+            }
+        }
+        return found;
     }
     private void startwithroot(final Activity activity) {
             // אם לא פעיל, נבקש להפעיל
@@ -1312,6 +1317,9 @@ public class MDMStatusActivity extends Activity {
             
             tvtc.setTextAppearance(R.style.TextTitle);
             edtxd = new EditText(mcon);
+            final CheckBox cbabout=new CheckBox(mcon);
+            cbabout.setText("שליחת פרטים על המכשיר שלך?");
+            cbabout.setChecked(true);
             String mailbod =mcon.getResources().getString(R.string.mailbod);
             edtxd.setHint(mailbod);
             //edtxd.setInputType(2);
@@ -1321,6 +1329,7 @@ public class MDMStatusActivity extends Activity {
             bud.setText(R.string.send);
             linl.addView(tvtc);
             linl.addView(edtxd);
+            linl.addView(cbabout);
             linl.addView(tvc);
             linl.addView(bud);
             sv.addView(linl);
@@ -1338,6 +1347,14 @@ public class MDMStatusActivity extends Activity {
                         } else {
                             String resa=edtxd.getText().toString();
                             if (!resa.equals("")) {
+                                resa=cbabout.isChecked()?"המכשיר שזוהה - "+//Build.BOARD+"\n"+
+                                    "מכשיר="+Build.DEVICE+"\n"+
+                                    //  Build.DISPLAY+"\n"+
+                                    "מודל="+Build.MODEL+"\n"+
+                                    "בראנד="+Build.BRAND+"\n"+
+                                    "זיהוי="+Build.ID
+                                    //     Build.BOOTLOADER+"\n"+
+                                    +"\n"+(found()?"נמצא ברשימה":"לא נמצא ברשימה")+"\n"+resa:resa;
                                 alertDialogb.hide();
                                 String md_email="";
                                 String md_password="";

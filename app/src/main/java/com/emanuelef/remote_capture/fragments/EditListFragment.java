@@ -74,6 +74,7 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Fragment;
 import com.emanuelef.remote_capture.activities.LogUtil;
+import com.emanuelef.remote_capture.activities.AppPickerActivity;
 
 public class EditListFragment extends Fragment implements MatchList.ListChangeListener {
     private ListEditAdapter mAdapter;
@@ -311,7 +312,27 @@ public class EditListFragment extends Fragment implements MatchList.ListChangeLi
             showAddHostRule();
             return true;
         } else if(id == R.id.add_app) {
-            showAddAppRule();
+            //activity like appsactivity to add apps...
+            //logic - if changed - remove all apps and add all selected
+            //showAddAppRule();
+            String state=null;
+            switch (mListInfo.getType()){
+                case MALWARE_WHITELIST:
+                    state="whitelist";
+                    break;
+                case FIREWALL_WHITELIST:
+                    state="fwWhitelist";
+                    break;
+                case DECRYPTION_LIST:
+                    state="decryptionList";
+                    break;
+                case BLOCKLIST:
+                    state="blocklist";
+                    break;
+                default:
+                    break;
+            }
+            startActivity(new Intent(requireContext(), AppPickerActivity.class).putExtra("state",state));
             return true;
         } /*else if(id == R.id.add_country) {
             showAddCountryRule();

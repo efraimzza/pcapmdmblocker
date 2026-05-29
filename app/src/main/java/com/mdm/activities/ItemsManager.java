@@ -4,7 +4,6 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
-
 import com.mdm.store.ApkLinkResolverService;
 import com.mdm.store.ApkDownloadInfo;
 import android.content.SharedPreferences;
@@ -89,11 +88,7 @@ public class ItemsManager {
             }).start();
     }*/
     // ItemsManager.java (עדכון)
-  
 
-    
-
-  
         /*
         private boolean isAppInstalled(String packageName) {
             // Mock: com.mdm.zing ו-com.waze מותקנות
@@ -391,7 +386,7 @@ public class ItemsManager {
                                 }
                             }
 
-                            // --- 2. לולאת עדכון על כל הפריטים במאגר ---
+             // --- 2. לולאת עדכון על כל הפריטים במאגר ---
                             List<StoreItem> itemsToUpdate = new ArrayList<StoreItem>(allItems);
 
                             for (int i = 0; i < itemsToUpdate.size(); i++) {
@@ -654,11 +649,12 @@ public class ItemsManager {
         }
         return list;
     }
+    ApkLinkResolverService resolverService=null;
         public void refreshAllItems(final boolean refreshinfo, final StoreConfiguration config, final RefreshCompleteListener listener) {
             new Thread(new Runnable() {
                     public void run() {
                         // ... [existing initialization code] ...
-                        ApkLinkResolverService resolverService = new ApkLinkResolverService();
+                        if(resolverService==null) resolverService = new ApkLinkResolverService();
                         synchronized (listLock) { 
                             // --- 1. סריקת אפליקציות מותקנות (לצורך הוספה למאגר) ---
                             // סורק את כל האפליקציות המותקנות במכשיר
@@ -759,7 +755,7 @@ public class ItemsManager {
                                     continue; 
                                 }
                                     try {
-                                        ApkDownloadInfo downloadInfo = resolverService.getApkDownloadLink(item.packageName);
+                                        ApkDownloadInfo downloadInfo = resolverService.getApkDownloadLink(context,item.packageName);
 
                                         boolean isInstalled = isAppInstalled(item.packageName);
 

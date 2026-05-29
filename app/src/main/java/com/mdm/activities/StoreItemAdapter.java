@@ -102,7 +102,7 @@ public class StoreItemAdapter extends BaseAdapter {
         holder.button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // לוגיקת הורדה: פתיחת הקישור הפנימי של הפריט
-                    Dialogs.showDownloadConfirmation(context, item);
+                    Dialogs.showDownloadConfirmation(context, item, itemsManager);
                 }
             });
 

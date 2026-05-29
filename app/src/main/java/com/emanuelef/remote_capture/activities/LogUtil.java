@@ -28,6 +28,9 @@ public class LogUtil {
             // silent
         }
     }
+    public static void i(String a, String b){logToFile(a+" "+b);}
+    public static void e(String a, String b){logToFile(a+" "+b);}
+    public static void w(String a, String b){logToFile(a+" "+b);}
 }
 
 

@@ -21,12 +21,14 @@ public class AppListAdapter extends ArrayAdapter<AppItem> {
     private final Context context;
     private final List<AppItem> appList;
     private String mdmPackageName;
+    private final boolean isPicker;
 
-    public AppListAdapter(Context context, List<AppItem> appList) {
+    public AppListAdapter(Context context, List<AppItem> appList,boolean isPicker) {
         super(context, R.layout.app_list_item, appList);
         this.context = context;
         this.appList = appList;
         this.mdmPackageName = context.getPackageName();
+        this.isPicker=isPicker;
     }
 
     @Override
@@ -57,7 +59,7 @@ public class AppListAdapter extends ArrayAdapter<AppItem> {
         holder.appLastUpdated.setText(lastUpdated);
 
         // הגדר את מצב ה-Switch ללא ליסנר כאן
-        if (appItem.getPackageName().equals(mdmPackageName)) {
+        if (appItem.getPackageName().equals(mdmPackageName)&&!isPicker) {
             holder.hideSwitch.setChecked(false); // תמיד לא מסומן עבור ה-MDM app
             holder.hideSwitch.setEnabled(false); // בטל את האפשרות ללחוץ עליו ישירות
         } else {
@@ -68,7 +70,7 @@ public class AppListAdapter extends ArrayAdapter<AppItem> {
         convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (appItem.getPackageName().equals(mdmPackageName)) {
+                    if (appItem.getPackageName().equals(mdmPackageName)&&!isPicker) {
                         Toast.makeText(context.getApplicationContext(), "לא ניתן להסתיר את אפליקציית ה-MDM.", Toast.LENGTH_SHORT).show();
                     } else {
                         boolean newCheckedState = !holder.hideSwitch.isChecked();

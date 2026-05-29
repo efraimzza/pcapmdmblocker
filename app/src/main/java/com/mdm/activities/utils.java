@@ -49,6 +49,9 @@ import com.emanuelef.remote_capture.activities.LogUtil;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.BufferedInputStream;
+import java.net.HttpURLConnection;
+import org.json.JSONObject;
+import java.util.Iterator;
 
 public class utils {
     
@@ -56,6 +59,84 @@ public class utils {
     private static Handler handler=new Handler(Looper.getMainLooper());
     private static Runnable updateProgressRunnable;
     private static boolean isDownloadCanceled = false;
+    public static void startDownloadnewGplay(Activity mactivity,final String pkgname,String jstr){
+        String uri = jstr;
+        try {
+            List<PackageInstaller.SessionInfo> lses= mactivity. getPackageManager().getPackageInstaller().getAllSessions();
+            if (lses != null) {
+                for (PackageInstaller.SessionInfo pses:lses) {
+                    if (pses != null&&pses.getInstallerPackageName()!=null) {
+                        try {
+                            if (pses.getInstallerPackageName().equals(mactivity. getPackageName())) {
+                                mactivity. getPackageManager().getPackageInstaller().abandonSession(pses.getSessionId());
+                            }
+                        } catch (Exception e) {
+                            LogUtil.logToFile(""+e);
+                            Toast.makeText(mactivity. getApplicationContext(), "" + e, 0).show();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LogUtil.logToFile(""+e);
+            Toast.makeText(mactivity. getApplicationContext(), "" + e, 0).show();
+        }
+        // הגדר כותרת ותיאור עבור ההתראה
+
+        //new File(mactivity. getExternalFilesDir("")+"/updatebeta.apk").delete();
+        //String destinationFile = mactivity. getExternalFilesDir("")+"/updatebeta.apk";
+
+        // אפס את דגל הביטול לפני התחלת הורדה חדשה
+        isDownloadCanceled = false;
+
+        startDownloadGplay(mactivity,pkgname,jstr,new Runnable(){
+                @Override
+                public void run() {
+                }
+            }, new Runnable(){
+
+                @Override
+                public void run() {
+                }
+            });
+        // הכנס את ההורדה לתור וקבל את מזהה ההורדה
+
+        showProgressDialognew(mactivity,uri);
+    }
+    public static String getRedirectLocation(String urlString) {
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(urlString);
+            connection = (HttpURLConnection) url.openConnection();
+
+            // 1. חובה: כיבוי מעקב אוטומטי אחר הפניות
+            connection.setInstanceFollowRedirects(false); 
+
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            int status = connection.getResponseCode();
+
+            // 2. בדיקה אם הסטטוס הוא הפניה (301, 302, 303, 307, 308)
+            if (status == HttpURLConnection.HTTP_MOVED_PERM || 
+                status == HttpURLConnection.HTTP_MOVED_TEMP ||
+                status == 303 || status == 307 || status == 308) {
+
+                // 3. חילוץ הקישור הישיר מכותרת Location
+                String newLocation = connection.getHeaderField("Location");
+                if (newLocation != null && !newLocation.isEmpty()) {
+                    return newLocation;
+                }
+            }
+        } catch (Exception e) {
+            // כשל בחיבור
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return "";
+    }
     public static void startDownloadnew(Activity mactivity,String mlink,boolean isDrive) {
         String uri = mlink;
 
@@ -117,8 +198,8 @@ public class utils {
         progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ביטול", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //isDownloadCanceled = true; is already in the cancelDownload method
-                    cancelDownload(fileurl);
+                    isDownloadCanceled = true; //is already in the cancelDownload method//but because the gplay links jstr...
+                    //cancelDownload(fileurl);
                     handler.removeCallbacks(updateProgressRunnable);
                     dialog.dismiss();
                     Toast.makeText(mactivity.getApplicationContext(), "ההורדה בוטלה.", Toast.LENGTH_SHORT).show();
@@ -220,7 +301,27 @@ public class utils {
                 }
             });
     }
-    
+    public static void startDownloadGplay(final Activity context, final String pkgname,final String jstr, final Runnable runonsuc, final Runnable runonfail) {
+        /*if (connections.containsKey(fileurl)) {
+         LogUtil.logToFile("Download already in progress for: " + fileurl);
+         return;
+         }*/
+
+        //canceledDownloads.put(jstr, false);
+
+        executor.submit(new Runnable() {
+                // @Override
+                public void run() {
+                    boolean success = manualDownloadGplay(context, pkgname,jstr);
+
+                    //canceledDownloads.remove(jstr);
+
+                    final Runnable resultRunner = success ? runonsuc : runonfail;
+                    mainHandler.post(resultRunner);
+
+                }
+            });
+    }
     static int fileLength=0;
     static int total = 0;
     /*private static boolean manualDownload(final Context context, final String fileurl,  String filename) {
@@ -626,9 +727,137 @@ public class utils {
         cancelDownload(fileurl);
         if(downloadSuccess){
             
-                oncon(context, context.getExternalFilesDir("") + "/"+finalFilename);
+                oncon(context, context.getExternalFilesDir("") + "/"+finalFilename,false);
            
         }
+        return downloadSuccess;
+    }
+    private static boolean manualDownloadGplay(final Activity context,final String pkgname, final String jstr) {
+        int retryCount = 0;
+        int maxRetries = 5;
+        boolean downloadSuccess = false;
+        String finalFilename = ""; // // השם הסופי שישמש אותנו //
+        fileLength=0;
+        total=0;
+        try{
+        if(jstr.equals("")) return false;
+            JSONObject json = new JSONObject(jstr);
+            Iterator<String> its=json.keys();
+            while(its.hasNext()){
+                finalFilename=its.next();
+                String fileurl=json.getString(finalFilename);
+         
+            LogUtil.logToFile(finalFilename);
+            /*if(finalFilename.equals("")){
+             LogUtil.logToFile("head err="+finalFilename);
+             cancelDownload(fileurl);
+             return false;
+             }*/
+
+            //finalFilename="Activity Launcher_2.1.6_APKPure.xapk";
+            /*
+             //isnt secure - can replace the files with the same file name...
+             //only with pwd...
+             if(new File(context.getExternalFilesDir(""), finalFilename).exists()){
+             oncon(context, context.getExternalFilesDir("")+"/"+ finalFilename);
+             return true;
+             }*/
+            // // נתיב הקובץ הזמני מבוסס על השם שחולץ //
+                new File(context.getExternalFilesDir("")+"/"+pkgname).mkdirs();
+            File tempFile = new File(context.getExternalFilesDir("")+"/"+pkgname, finalFilename + ".tmp");
+            //   while (retryCount < maxRetries && !downloadSuccess) {
+            if (canceledDownloads.getOrDefault(fileurl, false)||isDownloadCanceled) return false;
+            InputStream input = null;
+            RandomAccessFile output = null;
+            HttpsURLConnection connection = null;
+            try {
+                //LogUtil.logToFile(driveUrl);
+                URL url = new URL(fileurl);
+                connection = (HttpsURLConnection) url.openConnection();
+                // // הוספת SSLContext שוב לחיבור הראשי //
+                TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+                        @Override public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {}
+                        @Override public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {}
+                    }
+                };
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+                SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+                connection.setSSLSocketFactory(sslSocketFactory);
+                long existingFileSize = 0;
+                if (tempFile.exists()) {
+                    existingFileSize = tempFile.length();
+                    // // בקשת המשך מהנקודה הקיימת //
+                    connection.setRequestProperty("Range", "bytes=" + existingFileSize + "-");
+                }else{
+                    connection.setRequestProperty("Connection", "Close");
+                }
+                connection.setConnectTimeout(30000);
+                connection.setReadTimeout(60000);
+                connections.put(fileurl, connection);
+                connection.connect();
+                int responseCode = connection.getResponseCode();
+                //LogUtil.logToFile("rc="+responseCode);
+                if (responseCode == HttpsURLConnection.HTTP_OK || responseCode == HttpsURLConnection.HTTP_PARTIAL) {
+
+                    output = new RandomAccessFile(tempFile, "rw");
+
+                    if (responseCode == HttpsURLConnection.HTTP_OK) {
+                        existingFileSize = 0;
+                        output.setLength(0); 
+                    } else {
+                        output.seek(existingFileSize);
+                    }
+
+                    // // עדכון הגודל הכולל לצורך הדיאלוג //
+                    fileLength = (int) (connection.getContentLength() + existingFileSize);
+                    input = connection.getInputStream();
+
+                    byte[] data = new byte[8192];
+                    total = (int) existingFileSize;
+                    int count;
+
+                    while ((count = input.read(data)) != -1) {
+                        if (canceledDownloads.getOrDefault(fileurl, false)||isDownloadCanceled) break;
+                        output.write(data, 0, count);
+                        total += count;
+                    }
+
+                    if (!canceledDownloads.getOrDefault(fileurl, false)&&!isDownloadCanceled) {
+                        downloadSuccess = true;
+                        // // סיום מוצלח: שינוי שם לקובץ סופי ללא .tmp //
+                        tempFile.renameTo(new File(context.getExternalFilesDir("")+"/"+pkgname, finalFilename));
+                    }
+                }
+            } catch (Exception e) {
+                retryCount++;
+                LogUtil.logToFile(retryCount+" "+e.toString());
+                // // הודעת לוג על ניסיון המשך //
+                try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
+                try {
+                    if (output != null) output.close();
+                    if (input != null) input.close();
+                    if (connection != null) connection.disconnect();
+                } catch (Exception ignored) {}//before breaking...
+                break; //break the "for"
+            } finally {
+                try {
+                    if (output != null) output.close();
+                    if (input != null) input.close();
+                    if (connection != null) connection.disconnect();
+                } catch (Exception ignored) {}
+            }
+            //    }
+            cancelDownload(fileurl);
+            
+        }
+            if(downloadSuccess){
+                oncon(context, context.getExternalFilesDir("") + "/"+pkgname,true);
+            }
+        }catch(Throwable t){}
         return downloadSuccess;
     }
     public static void cancelDownload(String fileurl) {
@@ -698,7 +927,7 @@ public class utils {
 
         return "";
     }
-    static void oncon(final Activity mcontext,String path){
+    static void oncon(final Activity mcontext,String path,final boolean isFolder){
         if(!path.equals("")){
             utils. deleteTempDir(new File(mcontext.getFilesDir().toString() + "/cach"),true);
             mfilepath=path;
@@ -720,7 +949,7 @@ public class utils {
                     progressDialog.show();
                             }
                         });
-                    startInstallSession(mcontext, mfilepath, new File(mfilepath), true);
+                    startInstallSession(mcontext, new File(mfilepath), isFolder);
 
                 }}.start();
         }
@@ -812,7 +1041,7 @@ public class utils {
     static String reserr="";
     static Context mcontext;
     @Deprecated
-    public static void startInstallSession(Context context, String mfilepath, File sourceFile, boolean isPasswordAlreadyChecked) {
+    public static void startInstallSession(Context context, File sourceFile, boolean isFolder) {
         reserr="";
         mcontext=context;
         if (sourceFile == null || !sourceFile.exists()) {
@@ -833,6 +1062,7 @@ public class utils {
         Signature[] mainApkSignatures = null;
 
         try {
+            if(!isFolder){
             if (sourceFile.getName().toLowerCase().endsWith(".zip") ||
                 sourceFile.getName().toLowerCase().endsWith(".apks") ||
                 sourceFile.getName().toLowerCase().endsWith(".xapk") ||
@@ -933,6 +1163,18 @@ public class utils {
                 //Toast.makeText(context, "פורמט קובץ לא נתמך: " + sourceFile.getName(), Toast.LENGTH_LONG).show();
                 return;
             }
+            }else{
+                for(File f:sourceFile.listFiles()){
+                    apksToInstall.add(f);
+                }
+                
+                //LogUtil.logToFile("in 1");
+                //LogUtil.logToFile(sourceFile.getAbsolutePath());
+                mainPackageName = getApkPackageName(context, new File(sourceFile,"base.apk").getAbsolutePath());
+                //LogUtil.logToFile(mainPackageName);
+                mainApkSignatures = getApkSignature(context, new File(sourceFile,"base.apk").getAbsolutePath());
+                //LogUtil.logToFile("in 2");
+            }
             if (mainPackageName == null || mainApkSignatures == null || mainApkSignatures.length == 0) {
                 //utils.progressDialog.setMessage("שגיאה: לא ניתן לקרוא שם חבילה או חתימה מקובץ ה-APK הראשי.");
                 //dismissprogress(context);
@@ -984,14 +1226,14 @@ public class utils {
                 PackageInstaller.SessionParams.MODE_FULL_INSTALL);
             // אם isPasswordAlreadyChecked הוא true, זה אומר שהמשתמש אישר והסיסמה נבדקה (במקרה של התקנה חדשה)
             // לכן, ניתן לדרוש שההתקנה תתבצע ללא אינטראקציה נוספת אם האפליקציה מאושרת
-            if (isPasswordAlreadyChecked) {
+          //  if (isPasswordAlreadyChecked) {
                 // דגל INSTALL_REPLACE_EXISTING רלוונטי רק אם זהו עדכון לאפליקציה קיימת
                 // אם זו התקנה ראשונית, הוא פשוט יתקין אותה.
                 // אם אתה רוצה לאפשר התקנה שקטה לחלוטין (ללא דיאלוג התקנה למשתמש),
                 // נדרשות הרשאות מערכת/MDM מתקדמות יותר ושיטות ספציפיות למכשיר.
                 // עבור מצב רגיל, המערכת עדיין עשויה לבקש אישור.
                 // params.setInstallerPackageName(context.getPackageName()); // יציין שהאפליקציה שלך היא המקור
-            }
+          //  }
 
             params.setAppPackageName(mainPackageName);
 
@@ -1000,10 +1242,10 @@ public class utils {
 
             //boolean deltempDir = new File(context.getCacheDir()+"/").delete();
             deleteTempDir(new File(context.getFilesDir().toString() + "/cach"),true);
+            if(!isFolder){
             if (!sourceFile.getName().toLowerCase().endsWith(".apk")) {
-                if (! addzipToSession(session, new File(mfilepath))) {
+                if (! addzipToSession(session, sourceFile)) {
                     try {
-
                         if (session != null)
                             session.abandon();
                         //utils.prgmsg(context,reserr,true);
@@ -1014,14 +1256,23 @@ public class utils {
                     return;
                 }
             } else {
-                if (!addApkToSession(session, new File(mfilepath))) {
-
+                if (!addApkToSession(session, sourceFile)) {
                     if (session != null)
                         session.abandon();
                     //utils.prgmsg(context,reserr,true);
                     //dismissprogress(context);
-
                     return;
+                }
+            }
+            }else{
+                for(File f:sourceFile.listFiles()){
+                    if (!addApkToSession(session, f)) {
+                        if (session != null)
+                            session.abandon();
+                        //utils.prgmsg(context,reserr,true);
+                        //dismissprogress(context);
+                        return;
+                    }
                 }
             }
 

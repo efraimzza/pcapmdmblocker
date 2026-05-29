@@ -91,7 +91,7 @@ public class AppManagementActivity extends Activity {
         new LoadAppsTask().execute();
 
         mFilteredAppList = new ArrayList<AppItem>();
-        mAdapter = new AppListAdapter(this, mFilteredAppList);
+        mAdapter = new AppListAdapter(this, mFilteredAppList,false);
         lvApps.setAdapter(mAdapter);
 
         Button btnShowFilterOptions = (Button) findViewById(R.id.btn_filter_apps);

@@ -30,7 +30,10 @@ import java.util.Arrays;
 import android.content.SharedPreferences;
 import com.emanuelef.remote_capture.activities.LogUtil;
 import com.emanuelef.remote_capture.activities.picker;
-
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.CompoundButton;
+import org.json.JSONObject;
+import java.util.Iterator;
 
 public class Dialogs {
 
@@ -57,18 +60,21 @@ public class Dialogs {
         
         final EditText inputLink = new EditText(context);
         final CheckBox cbdr=new CheckBox(context);
+        cbdr.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+                @Override public void onCheckedChanged(CompoundButton p1, boolean isChecked) {
+                    inputLink.setHint(isChecked?"הזיהוי של הדרייב (34 תווים...)":"קישור הורדה (http://...)");
+                }
+            });
         cbdr.setText("דרייב?");
         
         final EditText inputTitle = new EditText(context);
         final Button burefresh=new Button(context);
         burefresh.setBackgroundResource(R.drawable.ic_refresh);
         burefresh.setOnClickListener(new OnClickListener(){
-
                 @Override
                 public void onClick(View p1) {
                     inputTitle.setText(
                     getTitle(context, inputPN.getText().toString()));
-                    
                 }
             });
         
@@ -386,8 +392,8 @@ public class Dialogs {
 
         // --- 5. דיאלוג אישור הורדה (showDownloadConfirmation) ---
 
-        public static void showDownloadConfirmation(final Activity context, final StoreItem item) {
-            if ((item.downloadLink != null && !item.downloadLink.equals("")&&(item.downloadLink.startsWith("https:/")))||(item.customLink!=null&&!item.customLink.equals(""))) {
+        public static void showDownloadConfirmation(final Activity context, final StoreItem item, final ItemsManager itemsManager) {
+            if ((item.downloadLink != null && !item.downloadLink.equals("")&&(item.downloadLink.startsWith("https:/")))||(item.customLink!=null&&!item.customLink.equals(""))||(item.source.equals("GPlay"))) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("התקנה / עדכון");
             builder.setMessage("האם ברצונך לפתוח את הקישור ולהתחיל בהורדה של '" + item.title + "'?");
@@ -396,13 +402,28 @@ public class Dialogs {
                     public void onClick(DialogInterface dialog, int which) {
                         // הדרישה: download option - open
                         try {
+                            
                             String mlink="";
                                 if(item.customLink != null && !item.customLink.equals("")){
                                     mlink = item.customLink;
                                 }else{
                                     mlink = item.downloadLink;
                                 }
-                            utils.startDownloadnew(context,mlink,item.isDrive);
+                                if(!mlink.equals("")){
+                                    utils.startDownloadnew(context,mlink,item.isDrive);
+                                }
+                                else if((item.source.equals("GPlay"))){
+                                    //regenerate
+                                    String jstr=itemsManager.resolverService.gplayLinkResolver(context,item.packageName).downloadLink;
+                                    if(!jstr.equals("")){
+                                        utils.startDownloadnewGplay(context,item.packageName, jstr);
+                                        /*JSONObject json = new JSONObject(jstr);
+                                        Iterator<String> its=json.keys();
+                                        while(its.hasNext()){
+                                            json.getString(its.next());
+                                        }*/
+                                    }
+                                }
                         } catch (Exception e) {
                             LogUtil.logToFile(e.getMessage()+"d:"+item.downloadLink+"c:"+item.customLink);
                             Toast.makeText(context, "שגיאה בפתיחת הקישור: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -868,13 +889,7 @@ public class Dialogs {
                 }}.start();
         }
 
-        // --- 2. דיאלוג הוספת אפליקציה חדשה (נשאר כפי שהיה) ---
-        // ... [showAddAppDialog] ...
-
-        // --- 3. דיאלוג ייצוא (נשאר כפי שהיה) ---
-        // ... [showExportDialog] ...
-
-        // --- 4. דיאלוג אישור איפוס פריטים (נשאר כפי שהיה) ---
+        
         public static void showClearItemsConfirmationDialog(final Context context, final ItemsManager itemsManager) {
             new AlertDialog.Builder(context)
                 .setTitle("איפוס רשימת הפריטים")
@@ -890,7 +905,7 @@ public class Dialogs {
                 .setNegativeButton("בטל", null)
                 .show();
         }
-    final static String[] originalStores = {"APKPure", "APKCombo", "Aptoide", "FDroid"};
+    final static String[] originalStores = {"GPlay", "APKPure", "APKCombo", "Aptoide", "FDroid"};
     static List availableOptions;
     static List finalPriorityList = new ArrayList();
         public static void selectPriority(Activity activity){

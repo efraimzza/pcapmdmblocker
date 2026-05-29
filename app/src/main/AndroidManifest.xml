@@ -250,6 +250,12 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter-->
+            <intent-filter>
+                <action
+                    android:name="android.intent.action.MAIN" />
+                <category
+                    android:name="android.intent.category.NOTIFICATION_PREFERENCES" />
+            </intent-filter>
         </activity>
         
 
@@ -285,6 +291,7 @@
         <activity android:name="com.emanuelef.remote_capture.activities.AboutActivitya" />
         <activity android:name="com.emanuelef.remote_capture.activities.AppManagementActivity" />
         <activity android:name="com.emanuelef.remote_capture.activities.AppSuspendActivity" />
+        <activity android:name="com.emanuelef.remote_capture.activities.AppPickerActivity" />
         <activity android:name="com.emanuelef.remote_capture.activities.PrAppManagementActivity" />
         <activity android:name="com.emanuelef.remote_capture.activities.activityadbpair" />
         <activity android:name="com.emanuelef.remote_capture.activities.actqrmdm" />
