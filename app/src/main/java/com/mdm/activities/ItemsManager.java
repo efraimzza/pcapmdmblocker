@@ -769,6 +769,7 @@ public class ItemsManager {
                                         }
 
                                     } catch (Exception e) {
+                                        LogUtil.logToFile(e);
                                         LogUtil.logToFile("ItemsManager"+ "Error updating " + item.packageName + ": " + e.getMessage());
                                     }
                                 

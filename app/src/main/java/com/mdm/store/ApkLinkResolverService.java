@@ -57,12 +57,12 @@ public class ApkLinkResolverService {
                                 //run on this thread...
               //                  try {
                                 GPlayApplicationInfo info = gpls.getGPlayApplicationInfo(packageName,false);
-                                if (!info.downloadLink.isEmpty()) {
+                                //if (!info.downloadLink.isEmpty()) {
                                     return new ApkDownloadInfo(
                                         info.packageName, source, info.title, info.version, info.versionCode, 
                                         info.signature, info.downloadLink, 0L // fileSize לא נגיש
                                     );
-                                }
+                                //}
               //                  } catch (Exception e) {
                                     // שמירת השגיאה האחרונה לדיווח אם אף מקור לא הצליח
               //                      lastException = e; 

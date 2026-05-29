@@ -101,7 +101,7 @@ public class utils {
             });
         // הכנס את ההורדה לתור וקבל את מזהה ההורדה
 
-        showProgressDialognew(mactivity,uri);
+        
     }
     public static String getRedirectLocation(String urlString) {
         HttpURLConnection connection = null;
@@ -745,9 +745,17 @@ public class utils {
             Iterator<String> its=json.keys();
             while(its.hasNext()){
                 finalFilename=its.next();
-                String fileurl=json.getString(finalFilename);
-         
+                final String fileurl=json.getString(finalFilename);
+                
             LogUtil.logToFile(finalFilename);
+               
+                handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            showProgressDialognew(context, fileurl);
+                        }
+                    });
+                
             /*if(finalFilename.equals("")){
              LogUtil.logToFile("head err="+finalFilename);
              cancelDownload(fileurl);
@@ -851,16 +859,23 @@ public class utils {
                 } catch (Exception ignored) {}
             }
             //    }
-            cancelDownload(fileurl);
+            
             
         }
+            its=json.keys();
+            while(its.hasNext()){
+                finalFilename=its.next();
+                String fileurl=json.getString(finalFilename);
+            cancelDownload(fileurl);
+            }
             if(downloadSuccess){
                 oncon(context, context.getExternalFilesDir("") + "/"+pkgname,true);
             }
-        }catch(Throwable t){}
+        }catch(Throwable t){LogUtil.logToFile(t);}
         return downloadSuccess;
     }
     public static void cancelDownload(String fileurl) {
+        LogUtil.logToFile("canceld "+fileurl);
         isDownloadCanceled = true;
         if (canceledDownloads.containsKey(fileurl)) {
             canceledDownloads.put(fileurl, true);

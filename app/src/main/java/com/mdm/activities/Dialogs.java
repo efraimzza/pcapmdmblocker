@@ -34,6 +34,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CompoundButton;
 import org.json.JSONObject;
 import java.util.Iterator;
+import java.util.concurrent.Executor;
 
 public class Dialogs {
 
@@ -391,7 +392,13 @@ public class Dialogs {
         }
 
         // --- 5. דיאלוג אישור הורדה (showDownloadConfirmation) ---
-
+    public static final Executor etMainExecutor = new Executor() {
+        private final Handler handler = new Handler(Looper.getMainLooper());
+        @Override
+        public void execute(Runnable command) {
+            handler.post(command);
+        }
+    };
         public static void showDownloadConfirmation(final Activity context, final StoreItem item, final ItemsManager itemsManager) {
             if ((item.downloadLink != null && !item.downloadLink.equals("")&&(item.downloadLink.startsWith("https:/")))||(item.customLink!=null&&!item.customLink.equals(""))||(item.source.equals("GPlay"))) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -413,16 +420,27 @@ public class Dialogs {
                                     utils.startDownloadnew(context,mlink,item.isDrive);
                                 }
                                 else if((item.source.equals("GPlay"))){
+                                    new Thread(){public void run(){
+                                        try{
                                     //regenerate
-                                    String jstr=itemsManager.resolverService.gplayLinkResolver(context,item.packageName).downloadLink;
-                                    if(!jstr.equals("")){
-                                        utils.startDownloadnewGplay(context,item.packageName, jstr);
-                                        /*JSONObject json = new JSONObject(jstr);
-                                        Iterator<String> its=json.keys();
-                                        while(its.hasNext()){
-                                            json.getString(its.next());
-                                        }*/
-                                    }
+                                    final String jstr=itemsManager.resolverService.gplayLinkResolver(context,item.packageName).downloadLink;
+                                                etMainExecutor.execute(new Runnable(){
+                                                        @Deprecated
+                                                        @Override
+                                                        public void run() {
+                                                            if(!jstr.equals("")){
+                                                                utils.startDownloadnewGplay(context,item.packageName, jstr);
+                                                                /*JSONObject json = new JSONObject(jstr);
+                                                                 Iterator<String> its=json.keys();
+                                                                 while(its.hasNext()){
+                                                                 json.getString(its.next());
+                                                                 }*/
+                                                            }
+                                                        }
+                                                    });
+                                    
+                                     } catch (Exception e) {LogUtil.logToFile(e);}
+                                    }}.start();
                                 }
                         } catch (Exception e) {
                             LogUtil.logToFile(e.getMessage()+"d:"+item.downloadLink+"c:"+item.customLink);
