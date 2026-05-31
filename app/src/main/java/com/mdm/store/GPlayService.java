@@ -264,8 +264,9 @@ public class GPlayService {
             if(detresponse.getItem()!=null)
                         if(detresponse.getItem().getAppInfo()!=null)
                             if(detresponse.getItem().getAppInfo().getTitle()!=null)
-                                LogUtil.logToFile(detresponse.getItem().getAppInfo().getTitle()+"2"
-                +detresponse.getItem().getTitle()
+                                LogUtil.logToFile(
+                                //detresponse.getItem().getAppInfo().getTitle()+"2"+
+                detresponse.getItem().getTitle()
                               //  +detresponse.getItem().getDescriptionHtml()
                                                   
                               //                    +detresponse.getFooterHtml()
