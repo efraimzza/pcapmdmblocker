@@ -187,84 +187,95 @@ public class utils {
 
     @Deprecated
     private static void showProgressDialognew(final Activity mactivity, final String fileurl) {
-        lastBytes = 0; 
+        lastBytes = 0;
+        
+        //clear old
+        try{
+            if(updateProgressRunnable!=null){
+                handler.removeCallbacks(updateProgressRunnable);
+            }
+            if(progressDialog!=null&&progressDialog.isShowing()){
+                progressDialog.dismiss();
+            }
+        }catch(Throwable t){LogUtil.logToFile(t);}
+        try{
+            progressDialog = new ProgressDialog(mactivity);
+            progressDialog.setTitle("הורדת קובץ");
+            progressDialog.setMessage("מתחיל הורדה...");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setCancelable(false);
 
-        progressDialog = new ProgressDialog(mactivity);
-        progressDialog.setTitle("הורדת קובץ");
-        progressDialog.setMessage("מתחיל הורדה...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setCancelable(false);
+            progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ביטול", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        isDownloadCanceled = true; //is already in the cancelDownload method//but because the gplay links jstr...
+                        //cancelDownload(fileurl);
+                        handler.removeCallbacks(updateProgressRunnable);
+                        dialog.dismiss();
+                        Toast.makeText(mactivity.getApplicationContext(), "ההורדה בוטלה.", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ביטול", new DialogInterface.OnClickListener() {
+            progressDialog.show();
+
+            updateProgressRunnable = new Runnable() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    isDownloadCanceled = true; //is already in the cancelDownload method//but because the gplay links jstr...
-                    //cancelDownload(fileurl);
-                    handler.removeCallbacks(updateProgressRunnable);
-                    dialog.dismiss();
-                    Toast.makeText(mactivity.getApplicationContext(), "ההורדה בוטלה.", Toast.LENGTH_SHORT).show();
-                }
-            });
+                public void run() {
+                    if (isDownloadCanceled) {
+                        handler.removeCallbacks(this);
+                        if(progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        Toast.makeText(mactivity.getApplicationContext(), "ההורדה בוטלה.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-        progressDialog.show();
+                    long bytesDownloaded = total;
+                    long totalBytes = fileLength;
 
-        updateProgressRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isDownloadCanceled) {
-                    handler.removeCallbacks(this);
-                    if(progressDialog.isShowing())
-                    progressDialog.dismiss();
-                    Toast.makeText(mactivity.getApplicationContext(), "ההורדה בוטלה.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                    // // חישוב מהירות לשנייה //
+                    long bytesInLastSecond = bytesDownloaded - lastBytes;
+                    lastBytes = bytesDownloaded;
+                    String speedStr = formatFileSize(bytesInLastSecond) + "/s";
 
-                long bytesDownloaded = total;
-                long totalBytes = fileLength;
+                    // // חישוב זמן נותר (ETA) //
+                    String etaStr = "מחשב...";
+                    if (bytesInLastSecond > 0 && totalBytes > 0) {
+                        long bytesRemaining = totalBytes - bytesDownloaded;
+                        long secondsRemaining = bytesRemaining / bytesInLastSecond;
 
-                // // חישוב מהירות לשנייה //
-                long bytesInLastSecond = bytesDownloaded - lastBytes;
-                lastBytes = bytesDownloaded;
-                String speedStr = formatFileSize(bytesInLastSecond) + "/s";
+                        // // פורמט זמן קריא (דקות:שניות) //
+                        if (secondsRemaining < 60) {
+                            etaStr = secondsRemaining + " שניות";
+                        } else {
+                            etaStr = (secondsRemaining / 60) + " דקות ו-" + (secondsRemaining % 60) + " שניות";
+                        }
+                    }
 
-                // // חישוב זמן נותר (ETA) //
-                String etaStr = "מחשב...";
-                if (bytesInLastSecond > 0 && totalBytes > 0) {
-                    long bytesRemaining = totalBytes - bytesDownloaded;
-                    long secondsRemaining = bytesRemaining / bytesInLastSecond;
+                    if (totalBytes > 0) {
+                        int progress = (int) ((bytesDownloaded * 100) / totalBytes);
+                        progressDialog.setProgress(progress);
 
-                    // // פורמט זמן קריא (דקות:שניות) //
-                    if (secondsRemaining < 60) {
-                        etaStr = secondsRemaining + " שניות";
+                        String downloadedStr = formatFileSize(bytesDownloaded);
+                        String totalStr = formatFileSize(totalBytes);
+
+                        progressDialog.setMessage("הורדה: " + progress + "% (" + downloadedStr + " / " + totalStr + ")\n" +
+                                                  "מהירות: " + speedStr + " | נותר: " + etaStr);
                     } else {
-                        etaStr = (secondsRemaining / 60) + " דקות ו-" + (secondsRemaining % 60) + " שניות";
+                        progressDialog.setMessage("הורדה: " + formatFileSize(bytesDownloaded) + "\nמהירות: " + speedStr);
+                    }
+
+                    if (totalBytes > 0 && bytesDownloaded >= totalBytes) {
+                        handler.removeCallbacks(this);
+                        progressDialog.dismiss();
+                        //oncon(mactivity, mactivity.getExternalFilesDir("") + "/updatebeta.apk");
+                    } else {
+                        handler.postDelayed(this, 1000);
                     }
                 }
+            };
+            handler.post(updateProgressRunnable);
 
-                if (totalBytes > 0) {
-                    int progress = (int) ((bytesDownloaded * 100) / totalBytes);
-                    progressDialog.setProgress(progress);
-
-                    String downloadedStr = formatFileSize(bytesDownloaded);
-                    String totalStr = formatFileSize(totalBytes);
-
-                    // // הצגת כל הנתונים: אחוזים, נפח, מהירות וזמן נותר //
-                    progressDialog.setMessage("הורדה: " + progress + "% (" + downloadedStr + " / " + totalStr + ")\n" +
-                                              "מהירות: " + speedStr + " | נותר: " + etaStr);
-                } else {
-                    progressDialog.setMessage("הורדה: " + formatFileSize(bytesDownloaded) + "\nמהירות: " + speedStr);
-                }
-
-                if (totalBytes > 0 && bytesDownloaded >= totalBytes) {
-                    handler.removeCallbacks(this);
-                    progressDialog.dismiss();
-                    //oncon(mactivity, mactivity.getExternalFilesDir("") + "/updatebeta.apk");
-                } else {
-                    handler.postDelayed(this, 1000);
-                }
-            }
-        };
-        handler.post(updateProgressRunnable);
+        }catch(Throwable t){LogUtil.logToFile(t);}
     }
 
 // // פונקציית העזר להמרת גדלים (ללא שינוי) //
@@ -744,124 +755,126 @@ public class utils {
             JSONObject json = new JSONObject(jstr);
             Iterator<String> its=json.keys();
             while(its.hasNext()){
+
                 finalFilename=its.next();
                 final String fileurl=json.getString(finalFilename);
-                
-            LogUtil.logToFile(finalFilename);
-               
+
+                LogUtil.logToFile(finalFilename);
+
+                fileLength=0;
+                total=0;
                 handler.post(new Runnable() {
                         @Override
                         public void run() {
                             showProgressDialognew(context, fileurl);
                         }
                     });
-                
-            /*if(finalFilename.equals("")){
-             LogUtil.logToFile("head err="+finalFilename);
-             cancelDownload(fileurl);
-             return false;
-             }*/
 
-            //finalFilename="Activity Launcher_2.1.6_APKPure.xapk";
-            /*
-             //isnt secure - can replace the files with the same file name...
-             //only with pwd...
-             if(new File(context.getExternalFilesDir(""), finalFilename).exists()){
-             oncon(context, context.getExternalFilesDir("")+"/"+ finalFilename);
-             return true;
-             }*/
-            // // נתיב הקובץ הזמני מבוסס על השם שחולץ //
+                /*if(finalFilename.equals("")){
+                 LogUtil.logToFile("head err="+finalFilename);
+                 cancelDownload(fileurl);
+                 return false;
+                 }*/
+
+                //finalFilename="Activity Launcher_2.1.6_APKPure.xapk";
+                /*
+                 //isnt secure - can replace the files with the same file name...
+                 //only with pwd...
+                 if(new File(context.getExternalFilesDir(""), finalFilename).exists()){
+                 oncon(context, context.getExternalFilesDir("")+"/"+ finalFilename);
+                 return true;
+                 }*/
+                // // נתיב הקובץ הזמני מבוסס על השם שחולץ //
                 new File(context.getExternalFilesDir("")+"/"+pkgname).mkdirs();
-            File tempFile = new File(context.getExternalFilesDir("")+"/"+pkgname, finalFilename + ".tmp");
-            //   while (retryCount < maxRetries && !downloadSuccess) {
-            if (canceledDownloads.getOrDefault(fileurl, false)||isDownloadCanceled) return false;
-            InputStream input = null;
-            RandomAccessFile output = null;
-            HttpsURLConnection connection = null;
-            try {
-                //LogUtil.logToFile(driveUrl);
-                URL url = new URL(fileurl);
-                connection = (HttpsURLConnection) url.openConnection();
-                // // הוספת SSLContext שוב לחיבור הראשי //
-                TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
-                        @Override public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {}
-                        @Override public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {}
-                    }
-                };
-                SSLContext sslContext = SSLContext.getInstance("TLS");
-                sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-                SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-
-                connection.setSSLSocketFactory(sslSocketFactory);
-                long existingFileSize = 0;
-                if (tempFile.exists()) {
-                    existingFileSize = tempFile.length();
-                    // // בקשת המשך מהנקודה הקיימת //
-                    connection.setRequestProperty("Range", "bytes=" + existingFileSize + "-");
-                }else{
-                    connection.setRequestProperty("Connection", "Close");
-                }
-                connection.setConnectTimeout(30000);
-                connection.setReadTimeout(60000);
-                connections.put(fileurl, connection);
-                connection.connect();
-                int responseCode = connection.getResponseCode();
-                //LogUtil.logToFile("rc="+responseCode);
-                if (responseCode == HttpsURLConnection.HTTP_OK || responseCode == HttpsURLConnection.HTTP_PARTIAL) {
-
-                    output = new RandomAccessFile(tempFile, "rw");
-
-                    if (responseCode == HttpsURLConnection.HTTP_OK) {
-                        existingFileSize = 0;
-                        output.setLength(0); 
-                    } else {
-                        output.seek(existingFileSize);
-                    }
-
-                    // // עדכון הגודל הכולל לצורך הדיאלוג //
-                    fileLength = (int) (connection.getContentLength() + existingFileSize);
-                    input = connection.getInputStream();
-
-                    byte[] data = new byte[8192];
-                    total = (int) existingFileSize;
-                    int count;
-
-                    while ((count = input.read(data)) != -1) {
-                        if (canceledDownloads.getOrDefault(fileurl, false)||isDownloadCanceled) break;
-                        output.write(data, 0, count);
-                        total += count;
-                    }
-
-                    if (!canceledDownloads.getOrDefault(fileurl, false)&&!isDownloadCanceled) {
-                        downloadSuccess = true;
-                        // // סיום מוצלח: שינוי שם לקובץ סופי ללא .tmp //
-                        tempFile.renameTo(new File(context.getExternalFilesDir("")+"/"+pkgname, finalFilename));
-                    }
-                }
-            } catch (Exception e) {
-                retryCount++;
-                LogUtil.logToFile(retryCount+" "+e.toString());
-                // // הודעת לוג על ניסיון המשך //
-                try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
+                File tempFile = new File(context.getExternalFilesDir("")+"/"+pkgname, finalFilename + ".tmp");
+                //   while (retryCount < maxRetries && !downloadSuccess) {
+                if (canceledDownloads.getOrDefault(fileurl, false)||isDownloadCanceled) return false;
+                InputStream input = null;
+                RandomAccessFile output = null;
+                HttpsURLConnection connection = null;
                 try {
-                    if (output != null) output.close();
-                    if (input != null) input.close();
-                    if (connection != null) connection.disconnect();
-                } catch (Exception ignored) {}//before breaking...
-                break; //break the "for"
-            } finally {
-                try {
-                    if (output != null) output.close();
-                    if (input != null) input.close();
-                    if (connection != null) connection.disconnect();
-                } catch (Exception ignored) {}
+                    //LogUtil.logToFile(driveUrl);
+                    URL url = new URL(fileurl);
+                    connection = (HttpsURLConnection) url.openConnection();
+                    // // הוספת SSLContext שוב לחיבור הראשי //
+                    TrustManager[] trustAllCerts = new TrustManager[]{
+                        new X509TrustManager() {
+                            public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+                            @Override public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {}
+                            @Override public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {}
+                        }
+                    };
+                    SSLContext sslContext = SSLContext.getInstance("TLS");
+                    sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+                    SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+                    connection.setSSLSocketFactory(sslSocketFactory);
+                    long existingFileSize = 0;
+                    if (tempFile.exists()) {
+                        existingFileSize = tempFile.length();
+                        // // בקשת המשך מהנקודה הקיימת //
+                        connection.setRequestProperty("Range", "bytes=" + existingFileSize + "-");
+                    }else{
+                        connection.setRequestProperty("Connection", "Close");
+                    }
+                    connection.setConnectTimeout(30000);
+                    connection.setReadTimeout(60000);
+                    connections.put(fileurl, connection);
+                    connection.connect();
+                    int responseCode = connection.getResponseCode();
+                    //LogUtil.logToFile("rc="+responseCode);
+                    if (responseCode == HttpsURLConnection.HTTP_OK || responseCode == HttpsURLConnection.HTTP_PARTIAL) {
+
+                        output = new RandomAccessFile(tempFile, "rw");
+
+                        if (responseCode == HttpsURLConnection.HTTP_OK) {
+                            existingFileSize = 0;
+                            output.setLength(0); 
+                        } else {
+                            output.seek(existingFileSize);
+                        }
+
+                        // // עדכון הגודל הכולל לצורך הדיאלוג //
+                        fileLength = (int) (connection.getContentLength() + existingFileSize);
+                        input = connection.getInputStream();
+
+                        byte[] data = new byte[8192];
+                        total = (int) existingFileSize;
+                        int count;
+
+                        while ((count = input.read(data)) != -1) {
+                            if (canceledDownloads.getOrDefault(fileurl, false)||isDownloadCanceled) break;
+                            output.write(data, 0, count);
+                            total += count;
+                        }
+
+                        if (!canceledDownloads.getOrDefault(fileurl, false)&&!isDownloadCanceled) {
+                            downloadSuccess = true;
+                            // // סיום מוצלח: שינוי שם לקובץ סופי ללא .tmp //
+                            tempFile.renameTo(new File(context.getExternalFilesDir("")+"/"+pkgname, finalFilename));
+                        }
+                    }
+                } catch (Exception e) {
+                    retryCount++;
+                    LogUtil.logToFile(retryCount+" "+e.toString());
+                    // // הודעת לוג על ניסיון המשך //
+                    try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
+                    try {
+                        if (output != null) output.close();
+                        if (input != null) input.close();
+                        if (connection != null) connection.disconnect();
+                    } catch (Exception ignored) {}//before breaking...
+                    break; //break the "for"
+                } finally {
+                    try {
+                        if (output != null) output.close();
+                        if (input != null) input.close();
+                        if (connection != null) connection.disconnect();
+                    } catch (Exception ignored) {}
+                }
+                //    }
+
             }
-            //    }
-            
-            
-        }
             its=json.keys();
             while(its.hasNext()){
                 finalFilename=its.next();

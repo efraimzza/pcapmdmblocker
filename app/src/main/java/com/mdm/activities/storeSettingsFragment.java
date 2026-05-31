@@ -158,6 +158,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
         private static final String KEY_PRIORITY_LIST = "source_priority_list";
     private static final String KEY_VIEW_PRIORITY_LIST = "view_priority_list";
         private static final String KEY_CLEAR_ITEMS = "clear_all_items";
+    private static final String KEY_CLEAR_AUTH = "clear_auth";
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -177,6 +178,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
             findPreference(KEY_CLEAR_ITEMS).setOnPreferenceClickListener(this);
             findPreference(KEY_PRIORITY_LIST).setOnPreferenceClickListener(this);
             findPreference(KEY_VIEW_PRIORITY_LIST).setOnPreferenceClickListener(this);
+            findPreference(KEY_CLEAR_AUTH).setOnPreferenceClickListener(this);
             updatePreferenceSummaries();
         }
 
@@ -210,12 +212,15 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
                 Dialogs.showClearItemsConfirmationDialog(getActivity(), itemsManager);
                 return true;
             } else if (key.equals(KEY_PRIORITY_LIST)) {
-                // פתח דיאלוג בחירת אפליקציות מערכת
+               
                 Dialogs.selectPriority(getActivity());
                 return true;
             } else if (key.equals(KEY_VIEW_PRIORITY_LIST)) {
-                // פתח דיאלוג בחירת אפליקציות מערכת
+                
                 Dialogs.loadPriorityFromPrefs(getActivity(),false);
+                return true;
+            }else if (key.equals(KEY_CLEAR_AUTH)) {
+                Dialogs.showClearAuthWarning(getActivity());
                 return true;
             }
             return false;

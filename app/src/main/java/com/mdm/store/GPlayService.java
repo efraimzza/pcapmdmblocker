@@ -164,7 +164,7 @@ public class GPlayService {
     void login(){//final interf listener){
         //if(alreadyloggedin) {getDetails(); return;}
         //if(notsavedauth)anonymousauthgood();
-        
+        if(api!=null){getDetails(); return;}
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String jsonString = prefs.getString(AUTH_KEY, "");
         if(jsonString.equals("")){
@@ -231,6 +231,7 @@ public class GPlayService {
             }
             } catch (Throwable e) {
                 LogUtil.logToFile(e);
+                LogUtil.logToFile("login");
             }
     //    }}.start();
     }
@@ -263,20 +264,22 @@ public class GPlayService {
             if(detresponse.getItem()!=null)
                         if(detresponse.getItem().getAppInfo()!=null)
                             if(detresponse.getItem().getAppInfo().getTitle()!=null)
-                                LogUtil.logToFile(detresponse.getItem().getAppInfo().getTitle()
-                                +detresponse.getItem().getDescriptionHtml()
-                                                  +detresponse.getPostAcquireDetailsStreamUrl()
-                                                  +detresponse.getFooterHtml()
+                                LogUtil.logToFile(detresponse.getItem().getAppInfo().getTitle()+"2"
+                +detresponse.getItem().getTitle()
+                              //  +detresponse.getItem().getDescriptionHtml()
+                                                  
+                              //                    +detresponse.getFooterHtml()
                                                   +detresponse.getDetailsStreamUrl()
-                                                  +detresponse.getUserReview().getTitle());
+                                                  );
                 versionCode=detresponse.getItem().getDetails().getAppDetails().getVersionCode();
-        
+                LogUtil.logToFile("vc="+versionCode);
                 //if (not have update) no need to get links... & ret no need update
                 //else get option to install (getLinks();) (not get links now for all beacause the err too many requests
                 //if click install && source is gplay - then reEntry to get links
                 //dont forgat to save the api on the full store to avoid relogins
     } catch (Throwable e) {
         LogUtil.logToFile(e);
+        LogUtil.logToFile("details");
     }
    // }}.start();
     }
@@ -307,6 +310,7 @@ public class GPlayService {
         }
         } catch (Throwable e) {
             LogUtil.logToFile(e);
+            LogUtil.logToFile("links");
         }
         return "";
     }

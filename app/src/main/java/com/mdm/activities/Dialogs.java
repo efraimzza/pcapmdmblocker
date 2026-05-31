@@ -1020,6 +1020,24 @@ public class Dialogs {
                  showSummary(activity,false);
         }
     }
+    public static void showClearAuthWarning(final Activity activity) {
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("מחיקת חשבון");
+        builder.setMessage("האם למחוק את החשבון האנונימי השמור?");
+        builder.setPositiveButton("מחק", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(activity).edit();
+                    prefs.putString("StoreAuthJson", "").commit();
+                    Toast.makeText(activity, "נמחק!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        builder.setNegativeButton("ביטול", null);
+
+        builder.setCancelable(false);
+        builder.show();
+    }
 // ... [rest of the file] ...
     
 }
