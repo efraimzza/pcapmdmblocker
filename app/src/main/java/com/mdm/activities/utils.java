@@ -88,7 +88,7 @@ public class utils {
 
         // אפס את דגל הביטול לפני התחלת הורדה חדשה
         isDownloadCanceled = false;
-
+        
         startDownloadGplay(mactivity,pkgname,jstr,new Runnable(){
                 @Override
                 public void run() {
@@ -167,7 +167,7 @@ public class utils {
 
         // אפס את דגל הביטול לפני התחלת הורדה חדשה
         isDownloadCanceled = false;
-
+        
         startDownload(mactivity, uri,isDrive, new Runnable(){
                 @Override
                 public void run() {
@@ -180,13 +180,14 @@ public class utils {
             });
         // הכנס את ההורדה לתור וקבל את מזהה ההורדה
 
-        showProgressDialognew(mactivity,uri);
+        //showProgressDialognew(mactivity,uri); //is now in the download method...
+        
     }
     
     private static long lastBytes = 0;
 
     @Deprecated
-    private static void showProgressDialognew(final Activity mactivity, final String fileurl) {
+    private static void showProgressDialognew(final Activity mactivity, final String fileName) {
         lastBytes = 0;
         
         //clear old
@@ -200,7 +201,7 @@ public class utils {
         }catch(Throwable t){LogUtil.logToFile(t);}
         try{
             progressDialog = new ProgressDialog(mactivity);
-            progressDialog.setTitle("הורדת קובץ");
+            progressDialog.setTitle("מוריד "+fileName);
             progressDialog.setMessage("מתחיל הורדה...");
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setCancelable(false);
@@ -544,6 +545,8 @@ public class utils {
         boolean downloadSuccess = false;
         String finalFilename = ""; // // השם הסופי שישמש אותנו //
         String driveUrl="";
+        fileLength=0;
+        total=0;
         if(isDrive){
             try {
                 // // שלב 1: השגת דף האישור וחילוץ שם, UUID ואישור
@@ -651,6 +654,13 @@ public class utils {
             return true;
         }*/
         // // נתיב הקובץ הזמני מבוסס על השם שחולץ //
+        final String filename=finalFilename;//for final require for prg dialog in runnable...
+        handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    showProgressDialognew(context, filename);
+                }
+            });
         File tempFile = new File(context.getExternalFilesDir(""), finalFilename + ".tmp");
 
      //   while (retryCount < maxRetries && !downloadSuccess) {
@@ -757,16 +767,19 @@ public class utils {
             while(its.hasNext()){
 
                 finalFilename=its.next();
+                
+                final String filename=finalFilename;//for final require for prg dialog in runnable...
+                
                 final String fileurl=json.getString(finalFilename);
 
                 LogUtil.logToFile(finalFilename);
-
+                downloadSuccess = false;
                 fileLength=0;
                 total=0;
                 handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            showProgressDialognew(context, fileurl);
+                            showProgressDialognew(context, filename);
                         }
                     });
 
