@@ -19,7 +19,7 @@
 
 package com.emanuelef.remote_capture.model;
 
-import android.annotation.NonNull;
+
 
 public class AppStats implements Cloneable {
     private final int uid;
@@ -36,7 +36,7 @@ public class AppStats implements Cloneable {
         return uid;
     }
 
-    @NonNull
+    
     public AppStats clone() {
         AppStats rv = new AppStats(uid);
         rv.sentBytes = sentBytes;

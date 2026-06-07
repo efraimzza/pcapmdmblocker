@@ -67,7 +67,7 @@ import java.security.MessageDigest;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
-import android.annotation.Nullable;
+
 import java.io.FileOutputStream;
 import android.content.ClipboardManager;
 import com.emanuelef.remote_capture.R;

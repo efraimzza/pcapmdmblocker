@@ -37,14 +37,12 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
 import android.app.Activity;
 import android.preference.PreferenceManager;
 
 import com.emanuelef.remote_capture.AppsResolver;
 import com.emanuelef.remote_capture.Billing;
-import com.emanuelef.remote_capture.BuildConfig;
+
 import com.emanuelef.remote_capture.CaptureHelper;
 import com.emanuelef.remote_capture.CaptureService;
 import com.emanuelef.remote_capture.Log;
@@ -77,7 +75,7 @@ public class CaptureCtrl extends Activity {
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState) {
         // Important: calls must occur in the following order:
         //  requestWindowFeature -> setContentView -> getInsetsController()
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -194,7 +192,7 @@ public class CaptureCtrl extends Activity {
         super.onDestroy();
     }
 
-    private boolean isControlApp(@NonNull String action) {
+    private boolean isControlApp( String action) {
         // By default, only the app which started the capture can perform other actions
         return !action.equals(ACTION_START) && (mStarterApp != null)
                 && (mStarterApp.getPackageName().equals(getCallingPackage()));
@@ -248,7 +246,7 @@ public class CaptureCtrl extends Activity {
         return null;
     }
 
-    private void processRequest(Intent req_intent, @NonNull String action) {
+    private void processRequest(Intent req_intent,  String action) {
         Intent res = new Intent();
         Utils.showToast(this, R.string.ctrl_consent_allowed);
 

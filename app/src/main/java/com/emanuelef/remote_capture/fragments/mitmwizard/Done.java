@@ -19,8 +19,7 @@
 
 package com.emanuelef.remote_capture.fragments.mitmwizard;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -29,7 +28,7 @@ import com.emanuelef.remote_capture.R;
 
 public class Done extends StepFragment {
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mStepLabel.setText(R.string.mitm_setup_wizard_done);
 

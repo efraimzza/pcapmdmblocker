@@ -51,8 +51,7 @@ import com.github.appintro.model.SliderPagerBuilder;
 
 import org.jetbrains.annotations.Nullable;
 */
-import android.annotation.Nullable;
-import android.annotation.NonNull;
+
 import android.preference.PreferenceManager;
 
 public class OnBoardingActivity  {
@@ -84,9 +83,9 @@ public class OnBoardingActivity  {
             return fragment;
         }
 
-        @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        
+        
+        public View onCreateView( LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         /*    View view = super.onCreateView(inflater, container, savedInstanceState);
             if(view == null)
                 return null;
@@ -199,14 +198,14 @@ public class OnBoardingActivity  {
     }
 
     @Override
-    protected void onSkipPressed(@Nullable Fragment currentFragment) {
+    protected void onSkipPressed( Fragment currentFragment) {
         Log.d(TAG, "onSkipPressed");
         super.onSkipPressed(currentFragment);
         runMainActivity();
     }
 
     //@Override
-    protected void onDonePressed(@Nullable Fragment currentFragment) {
+    protected void onDonePressed( Fragment currentFragment) {
         Log.d(TAG, "onDonePressed");
         super.onDonePressed(currentFragment);
         runMainActivity();

@@ -18,7 +18,7 @@ import com.emanuelef.remote_capture.Utils;
 import java.util.List;
 import android.app.Activity;
 import android.app.ActionBar;
-import android.annotation.NonNull;
+//import android.annotation.NonNull;
 import android.app.Fragment;
 import java.util.concurrent.Executor;
 import android.os.Handler;
@@ -85,7 +85,7 @@ public class BaseActivity extends Activity {
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected( MenuItem item) {
         if(mBackAction && (item.getItemId() == android.R.id.home)) {
             onBackPressed();
             return true;

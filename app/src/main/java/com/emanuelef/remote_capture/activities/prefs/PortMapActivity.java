@@ -24,7 +24,6 @@ import android.os.Bundle;
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.activities.BaseActivity;
 import com.emanuelef.remote_capture.fragments.prefs.PortMapFragment;
-import android.annotation.NonNull;
 import android.view.MenuItem;
 import android.widget.Switch;
 import android.view.Menu;
@@ -81,8 +80,8 @@ try{
    
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
-        //public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onOptionsItemSelected( MenuItem menuItem) {
+        //public boolean onMenuItemSelected( MenuItem menuItem) {
         if(menuItem.getItemId() == R.id.add_mapping) {
             try{
             portma.openAddDialog();

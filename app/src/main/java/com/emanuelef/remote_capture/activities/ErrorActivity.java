@@ -49,14 +49,13 @@ import cat.ereza.customactivityoncrash.config.CaocConfig;
 */
 import android.app.AlertDialog;
 import android.app.Activity;
-import android.annotation.Nullable;
-import android.annotation.NonNull;
+
 
 public final class ErrorActivity extends Activity {
 
     @SuppressLint("PrivateResource")
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState) {
        // Utils.enableEdgeToEdge(this);
         super.onCreate(savedInstanceState);
         Utils.setTheme(this);
@@ -179,8 +178,8 @@ public final class ErrorActivity extends Activity {
         }*/
     }
 /*
-    @NonNull
-    public static String getAllErrorDetailsFromIntent(@NonNull Context context, @NonNull Intent intent) {
+    
+    public static String getAllErrorDetailsFromIntent( Context context,  Intent intent) {
         String errorDetails = Utils.getBuildInfo(context);
         errorDetails += "\nStack trace:  \n";
         errorDetails += CustomActivityOnCrash.getStackTraceFromIntent(intent);

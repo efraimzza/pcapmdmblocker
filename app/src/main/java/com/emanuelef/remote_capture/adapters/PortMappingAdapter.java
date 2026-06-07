@@ -27,8 +27,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.Utils;
@@ -49,9 +48,9 @@ public class PortMappingAdapter extends ArrayAdapter<PortMap> {
     }
 
     @SuppressLint("SetTextI18n")
-    @NonNull
+    
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position,  View convertView,  ViewGroup parent) {
         if(convertView == null)
             convertView = mLayoutInflater.inflate(R.layout.port_mapping_item, parent, false);
 

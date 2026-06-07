@@ -37,7 +37,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import android.annotation.Nullable;
 import android.util.ArraySet;
 
 /* A container for the connections. This is used to store active/closed connections until the capture
@@ -316,7 +315,7 @@ public class ConnectionsRegister {
     }
 
     // get the i-th oldest connection
-    public synchronized @Nullable ConnectionDescriptor getConn(int i) {
+    public synchronized ConnectionDescriptor getConn(int i) {
         if((i < 0) || (i >= mCurItems))
             return null;
 
@@ -337,7 +336,7 @@ public class ConnectionsRegister {
         return(incr_id - first.incr_id);
     }
 
-    public synchronized @Nullable ConnectionDescriptor getConnById(int incr_id) {
+    public synchronized  ConnectionDescriptor getConnById(int incr_id) {
         int pos = getConnPositionById(incr_id);
         if(pos < 0)
             return null;

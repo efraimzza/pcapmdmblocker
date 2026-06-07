@@ -37,17 +37,7 @@ public class Blocklist extends MatchList {
     public synchronized boolean checkGracePeriods() {
         long now = SystemClock.elapsedRealtime();
         boolean changed = false;
-        Iterator<Map.Entry<Integer,Long>> iter = mUidToGrace.entrySet().iterator();
-
-        /*while(iter.hasNext()) {
-            Map.Entry<Integer, Long> entry = iter.next();
-
-            if(now >= entry.getValue()) {
-                Log.i(TAG, "Grace period ended for app: " + entry.getKey());
-                iter.remove();
-                changed = true;
-            }
-        }*/
+        /*Iterator<Map.Entry<Integer,Long>> iter = mUidToGrace.entrySet().iterator();
         //new
         final ArrayMap<Integer, Long> cpmUidToGrace = new ArrayMap<>();
         while(iter.hasNext()) {
@@ -59,6 +49,29 @@ public class Blocklist extends MatchList {
                 changed = true;
             }else{
                 cpmUidToGrace.put(entry.getKey(),entry.getValue());
+            }
+        }*/
+        //old
+        /*while(iter.hasNext()) {
+            Map.Entry<Integer, Long> entry = iter.next();
+
+            if(now >= entry.getValue()) {
+                Log.i(TAG, "Grace period ended for app: " + entry.getKey());
+                iter.remove();
+                changed = true;
+            }
+        }*/
+       
+        final ArrayMap<Integer, Long> cpmUidToGrace = new ArrayMap<>();
+
+        for (Integer uid : mUidToGrace.keySet()) {
+            Long graceTime = mUidToGrace.get(uid);
+
+            if (now >= graceTime) {
+                Log.i(TAG, "Grace period ended for app: " + uid);
+                changed = true;
+            } else {
+                cpmUidToGrace.put(uid, graceTime);
             }
         }
         mUidToGrace=cpmUidToGrace;

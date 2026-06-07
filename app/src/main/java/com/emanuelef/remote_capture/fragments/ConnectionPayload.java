@@ -52,12 +52,11 @@ import com.emanuelef.remote_capture.model.ConnectionDescriptor;
 import com.emanuelef.remote_capture.model.PayloadChunk;
 import com.emanuelef.remote_capture.model.Prefs;
 import com.emanuelef.remote_capture.views.EmptyRecyclerView;
-import android.annotation.NonNull;
+
 import android.app.AlertDialog;
 import android.preference.PreferenceManager;
 import android.content.DialogInterface;
 import android.view.View.OnClickListener;
-import android.annotation.Nullable;
 import android.app.Fragment;
 import com.emanuelef.remote_capture.activities.LogUtil;
 
@@ -88,7 +87,7 @@ public class ConnectionPayload extends Fragment implements ConnectionDetailsActi
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach( Context context) {
         super.onAttach(context);
         mActivity = (ConnectionDetailsActivity) context;
         mActivity.addConnUpdateListener(this);
@@ -115,7 +114,7 @@ public class ConnectionPayload extends Fragment implements ConnectionDetailsActi
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         setMenuVisibility(true);
         Bundle args = getArguments();
@@ -262,7 +261,7 @@ public class ConnectionPayload extends Fragment implements ConnectionDetailsActi
     }
     
     //@Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+    public void onCreateMenu( Menu menu, MenuInflater menuInflater) {
        // menuInflater.inflate(R.menu.connection_payload, menu);
         mMenu = menu;
         if((mCurChunks > 0) && mJustCreated) {
@@ -274,7 +273,7 @@ public class ConnectionPayload extends Fragment implements ConnectionDetailsActi
     }
 
     //@Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         int id = item.getItemId();
 /*
         if(id == R.id.printable_text) {

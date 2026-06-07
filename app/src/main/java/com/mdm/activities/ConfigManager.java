@@ -132,7 +132,7 @@ public class ConfigManager {
             // --- חדש: עדכון ConfigManager מה-PreferenceManager עבור ערכי ברירת מחדל ---
             // כאשר משתמשים ב-PreferenceFragment, עלינו לוודא שערכי ברירת המחדל
             // מה-XML נטענים ל-SharedPreferences הגלובלי (של PreferenceManager)
-            PreferenceManager.setDefaultValues(context, R.xml.storePreferences, false);
+            PreferenceManager.setDefaultValues(context, R.xml.storepreferences, false);
             //SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
             // עקיפה של ערכי ברירת המחדל של ConfigManager עם אלו של PreferenceManager

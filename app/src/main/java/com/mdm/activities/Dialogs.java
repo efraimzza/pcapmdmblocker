@@ -35,6 +35,7 @@ import android.widget.CompoundButton;
 import org.json.JSONObject;
 import java.util.Iterator;
 import java.util.concurrent.Executor;
+import com.emanuelef.remote_capture.model.Prefs;
 
 public class Dialogs {
 
@@ -399,7 +400,7 @@ public class Dialogs {
             handler.post(command);
         }
     };
-        public static void showDownloadConfirmation(final Activity context, final StoreItem item, final ItemsManager itemsManager) {
+    public static void showDownloadConfirmation(final storeActivity context, final StoreItem item, final ItemsManager itemsManager) {
             if ((item.downloadLink != null && !item.downloadLink.equals("")&&(item.downloadLink.startsWith("https:/")))||(item.customLink!=null&&!item.customLink.equals(""))||(item.source.equals("GPlay"))) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("התקנה / עדכון");
@@ -417,7 +418,10 @@ public class Dialogs {
                                     mlink = item.downloadLink;
                                 }
                                 if(!mlink.equals("")){
-                                    utils.startDownloadnew(context,mlink,item.isDrive);
+                                    //if(!Prefs.istest(PreferenceManager.getDefaultSharedPreferences(context)))
+                                    //utils.startDownloadnew(context,mlink,item.isDrive);
+                                    //else
+                                    utils.startDownloadnew(context,mlink,item.packageName,item.isDrive?"drive":"normal");
                                 }
                                 else if((item.source.equals("GPlay"))){
                                     new Thread(){public void run(){
@@ -429,7 +433,10 @@ public class Dialogs {
                                                         @Override
                                                         public void run() {
                                                             if(!jstr.equals("")){
-                                                                utils.startDownloadnewGplay(context,item.packageName, jstr);
+                                                                //if(!Prefs.istest(PreferenceManager.getDefaultSharedPreferences(context)))
+                                                                //utils.startDownloadnewGplay(context,item.packageName, jstr);
+                                                                //else
+                                                                utils.startDownloadnew(context,jstr,item.packageName,"gplay");
                                                                 /*JSONObject json = new JSONObject(jstr);
                                                                  Iterator<String> its=json.keys();
                                                                  while(its.hasNext()){
@@ -472,7 +479,6 @@ public class Dialogs {
                 return;
             }
         }
-// [חלק מה-Dialogs.java - יש להוסיף את המתודה הבאה]
 
     // --- 6. דיאלוג הוספת אפליקציה לפי Package Name ---
 /*
@@ -923,7 +929,8 @@ public class Dialogs {
                 .setNegativeButton("בטל", null)
                 .show();
         }
-    final static String[] originalStores = {"GPlay", "APKPure", "APKCombo", "Aptoide", "FDroid"};
+    final static String[] originalStores = {"GPlay","APKPure","APKCombo","Aptoide","FDroid"};
+    final static String originalStoresPref = "GPlay,APKPure,APKCombo,Aptoide,FDroid";
     static List availableOptions;
     static List finalPriorityList = new ArrayList();
         public static void selectPriority(Activity activity){
@@ -1007,7 +1014,7 @@ public class Dialogs {
     // טעינת המחרוזת והפיכתה חזרה לרשימה //
     public static void loadPriorityFromPrefs(Activity activity,boolean create) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        String savedData = prefs.getString(PREF_PRIORITY_KEY, "");
+        String savedData = prefs.getString(PREF_PRIORITY_KEY, originalStoresPref);
 
         if (!savedData.isEmpty()) {
             String[] splitData = savedData.split(",");

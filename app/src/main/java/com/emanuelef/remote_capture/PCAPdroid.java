@@ -27,7 +27,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
-import android.annotation.NonNull;
 import android.preference.PreferenceManager;
 
 import com.emanuelef.remote_capture.activities.ErrorActivity;
@@ -227,7 +226,7 @@ try{
             }catch (Throwable t) {LogUtil.logToFile(t);}
     }
                  
-        }catch(RuntimeException | Exception | ExceptionInInitializerError | Throwable e){
+        }catch(Throwable e){
             //LogUtil.logToFile(e.toString());
             Intent intent = new Intent(getApplicationContext(), MDMSettingsActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -275,7 +274,7 @@ try{
             
     }
 
-    public static @NonNull PCAPdroid getInstance() {
+    public static  PCAPdroid getInstance() {
         return mInstance.get();
     }
 

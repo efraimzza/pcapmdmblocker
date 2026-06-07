@@ -30,7 +30,6 @@ import com.emanuelef.remote_capture.Utils;
 import com.emanuelef.remote_capture.model.Prefs;
 
 import java.util.Objects;
-import android.annotation.Nullable;
 
 public class Socks5Settings extends SettingsSubFragment {
     /*private EditTextPreference mProxyHost;
@@ -40,7 +39,7 @@ public class Socks5Settings extends SettingsSubFragment {
     private SwitchPreference mSocks5AuthEnabled;
 */
    // @Override
-    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
       //  setPreferencesFromResource(R.xml.socks5_preferences, rootKey);
 
         /* SOCKS5 Proxy IP validation */

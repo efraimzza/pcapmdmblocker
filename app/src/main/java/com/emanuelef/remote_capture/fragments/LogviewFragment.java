@@ -40,8 +40,7 @@ import com.emanuelef.remote_capture.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import android.annotation.Nullable;
-import android.annotation.NonNull;
+
 import android.app.Activity;
 import android.app.Fragment;
 
@@ -67,7 +66,7 @@ public class LogviewFragment extends Fragment{
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         Bundle args = getArguments();
         assert args != null;
         mLogPath = args.getString("path");

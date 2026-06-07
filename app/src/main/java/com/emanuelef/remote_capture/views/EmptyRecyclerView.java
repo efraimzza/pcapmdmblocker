@@ -24,7 +24,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.annotation.Nullable;
+
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Adapter;
@@ -68,12 +68,12 @@ public class EmptyRecyclerView extends ListView {
         init();
     }
 
-    public EmptyRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public EmptyRecyclerView(Context context,  AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public EmptyRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public EmptyRecyclerView(Context context,  AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
@@ -198,7 +198,7 @@ public class EmptyRecyclerView extends ListView {
         }
     }
 
-    public void setEmptyView(@Nullable View view) {
+    public void setEmptyView( View view) {
         if (mEmptyView != null)
             mEmptyView.setOnApplyWindowInsetsListener(null);
 

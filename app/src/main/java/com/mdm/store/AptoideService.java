@@ -13,6 +13,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.json.JSONException;
 import com.emanuelef.remote_capture.activities.LogUtil;
+import java.util.ArrayList;
 
 public class AptoideService {
 
@@ -26,8 +27,11 @@ public class AptoideService {
         StringBuilder url = new StringBuilder(basePath);
         if (!parameters.isEmpty()) {
             url.append("?");
-            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            /*for (Map.Entry<String, String> entry : parameters.entrySet()) {
                 url.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            }*/
+            for (String key : parameters.keySet()) {
+                url.append(key).append("=").append(parameters.get(key)).append("&");
             }
             url.deleteCharAt(url.length() - 1); // Remove trailing &
         }
@@ -186,7 +190,7 @@ public class AptoideService {
         public String obb = null;
         public String pay = null;
         public AptoideAppcoins appcoins = new AptoideAppcoins();
-        public List<String> soft_locks = List.of();
+        public List<String> soft_locks = new ArrayList<String>();
     }
 
     public static class AptoideAge {
@@ -235,9 +239,9 @@ public class AptoideService {
         public AptoideHardware hardware = new AptoideHardware();
         public AptoideMalware malware = new AptoideMalware();
         public AptoideFlags flags = new AptoideFlags();
-        public List<String> used_features = List.of();
-        public List<String> used_permissions = List.of();
-        public List<String> tags = List.of();
+        public List<String> used_features = new ArrayList<String>();
+        public List<String> used_permissions = new ArrayList<String>();
+        public List<String> tags =new ArrayList<String>();
     }
 
     public static class AptoideSignature {
@@ -249,9 +253,9 @@ public class AptoideService {
         public int sdk = 0;
         public String screen = "";
         public int gles = 0;
-        public List<String> cpus = List.of();
-        public List<List<Integer>> densities = List.of();
-        public List<AptoideDependency> dependencies = List.of();
+        public List<String> cpus = new ArrayList<String>();
+        public List<List<Integer>> densities = new ArrayList<List<Integer>>();
+        public List<AptoideDependency> dependencies = new ArrayList<AptoideDependency>();
     }
 
     public static class AptoideDependency {
@@ -277,7 +281,7 @@ public class AptoideService {
     }
 
     public static class AptoideFlags {
-        public List<AptoideVote> votes = List.of();
+        public List<AptoideVote> votes = new ArrayList<AptoideVote>();
     }
 
     public static class AptoideVote {
@@ -286,12 +290,12 @@ public class AptoideService {
     }
 
     public static class AptoideMedia {
-        public List<String> keywords = List.of();
+        public List<String> keywords = new ArrayList<String>();
         public String description = "";
         public String summary = "";
         public String news = "";
-        public List<AptoideVideo> videos = List.of();
-        public List<AptoideScreenshot> screenshots = List.of();
+        public List<AptoideVideo> videos = new ArrayList<AptoideVideo>();
+        public List<AptoideScreenshot> screenshots = new ArrayList<AptoideScreenshot>();
     }
 
     public static class AptoideVideo {
@@ -320,7 +324,7 @@ public class AptoideService {
     public static class AptoideRating {
         public double avg = 0.0;
         public int total = 0;
-        public List<AptoideRatingVote> votes = List.of();
+        public List<AptoideRatingVote> votes = new ArrayList<AptoideRatingVote>();
     }
 
     public static class AptoideRatingVote {
@@ -331,7 +335,7 @@ public class AptoideService {
     public static class AptoideAppcoins {
         public boolean advertising = false;
         public boolean billing = false;
-        public List<String> flags = List.of();
+        public List<String> flags = new ArrayList<String>();
     }
   
         // עזרי בטיחות לקריאת נתונים מ-JSONObject

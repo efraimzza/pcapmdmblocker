@@ -19,8 +19,6 @@
 
 package com.emanuelef.remote_capture;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
 import com.emanuelef.remote_capture.model.Prefs;
 import android.preference.PreferenceManager;
 
@@ -37,49 +35,49 @@ public class Log {
         MITMADDON_LOGGER = CaptureService.initLogger(cachedir + "/" + MITM_LOGGER_PATH, LOG_LEVEL_INFO);
     }
 
-    public static void writeLog(int logger, int level, @Nullable String tag, @NonNull String message) {
+    public static void writeLog(int logger, int level,  String tag,  String message) {
         if(!PCAPdroid.isUnderTest()/*&&Prefs.isdebug(PreferenceManager.getDefaultSharedPreferences(PCAPdroid.getInstance().getApplicationContext()))*/)
             CaptureService.writeLog(logger, level, ((tag != null) ? ("[" + tag + "] ") : "") + message);
     }
 
-    public static void d(@Nullable String tag, @NonNull String message) {
+    public static void d( String tag,  String message) {
         android.util.Log.d(tag, message);
         writeLog(DEFAULT_LOGGER, android.util.Log.DEBUG, null, message);
     }
 
-    public static void i(@Nullable String tag, @NonNull String message) {
+    public static void i( String tag,  String message) {
         android.util.Log.i(tag, message);
         writeLog(DEFAULT_LOGGER, android.util.Log.INFO, tag, message);
     }
 
-    public static void i(int logger, @NonNull String message) {
+    public static void i(int logger,  String message) {
         writeLog(logger, android.util.Log.INFO, null, message);
     }
 
-    public static void w(@Nullable String tag, @NonNull String message) {
+    public static void w( String tag,  String message) {
         android.util.Log.w(tag, message);
         writeLog(DEFAULT_LOGGER, android.util.Log.WARN, tag, message);
     }
 
-    public static void w(int logger, @NonNull String message) {
+    public static void w(int logger,  String message) {
         writeLog(logger, android.util.Log.WARN, null, message);
     }
 
-    public static void e(@Nullable String tag, @NonNull String message) {
+    public static void e( String tag,  String message) {
         android.util.Log.e(tag, message);
         writeLog(DEFAULT_LOGGER, android.util.Log.ERROR, tag, message);
     }
 
-    public static void e(int logger, @NonNull String message) {
+    public static void e(int logger,  String message) {
         writeLog(logger, android.util.Log.ERROR, null, message);
     }
 
-    public static void wtf(@Nullable String tag, @NonNull String message) {
+    public static void wtf( String tag,  String message) {
         android.util.Log.wtf(tag, message);
         writeLog(DEFAULT_LOGGER, android.util.Log.ASSERT, tag, message); // ANDROID_LOG_FATAL
     }
 
-    public static void level(int logger, int level, @NonNull String message) {
+    public static void level(int logger, int level,  String message) {
         switch (level) {
             case android.util.Log.INFO:
                 Log.i(logger, message);

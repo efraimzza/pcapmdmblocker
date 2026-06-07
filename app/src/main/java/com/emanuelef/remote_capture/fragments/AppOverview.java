@@ -57,8 +57,7 @@ import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.Utils;
 import com.emanuelef.remote_capture.model.AppDescriptor;
 import com.emanuelef.remote_capture.model.AppStats;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.app.Activity;
 import android.app.Fragment;
 
@@ -97,7 +96,7 @@ public class AppOverview extends Fragment{
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         assert getArguments() != null;
         mUid = getArguments().getInt(UID_ARG);
@@ -257,7 +256,7 @@ public class AppOverview extends Fragment{
     }
     
    // @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+    public void onCreateMenu( Menu menu, MenuInflater menuInflater) {
       //  menuInflater.inflate(R.menu.app_overview_menu, menu);
 
         if(mPinfo == null)
@@ -265,7 +264,7 @@ public class AppOverview extends Fragment{
     }
 
    // @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         int id = item.getItemId();
 /*
         if(id == R.id.app_info) {

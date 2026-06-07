@@ -33,7 +33,7 @@ import com.emanuelef.remote_capture.model.AppDescriptor;
 import com.emanuelef.remote_capture.R;
 
 import java.util.List;
-import android.annotation.NonNull;
+
 import android.widget.ArrayAdapter;
 import com.emanuelef.remote_capture.activities.LogUtil;
 
@@ -66,9 +66,9 @@ public class AppsAdapter extends ArrayAdapter<AppDescriptor> {
         }
     }
 
- /*   @NonNull
+ /*   
     @Override
-    public AppsAdapter.AppViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AppsAdapter.AppViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.app_installed_item, parent, false);
         AppViewHolder recyclerViewHolder = new AppViewHolder(view);
 
@@ -79,7 +79,7 @@ public class AppsAdapter extends ArrayAdapter<AppDescriptor> {
     }*/
 
   //  @Override
-   /* public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
+   /* public void onBindViewHolder( AppViewHolder holder, int position) {
         AppDescriptor app = getItem(position);
 
         holder.textInListView.setText(app.getName());

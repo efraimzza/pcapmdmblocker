@@ -53,7 +53,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import android.annotation.Nullable;
+
 import android.util.ArraySet;
 import com.emanuelef.remote_capture.activities.LogUtil;
 import org.json.JSONArray;
@@ -112,7 +112,7 @@ public class MatchList {
         }
 
         @Override
-        public boolean equals(@Nullable Object obj) {
+        public boolean equals( Object obj) {
             if(!(obj instanceof Rule))
                 return super.equals(obj);
 

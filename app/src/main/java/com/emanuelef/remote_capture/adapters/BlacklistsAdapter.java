@@ -28,8 +28,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 
 import com.emanuelef.remote_capture.CaptureService;
 import com.emanuelef.remote_capture.R;
@@ -41,7 +40,7 @@ import java.util.Iterator;
 public class BlacklistsAdapter extends ArrayAdapter<BlacklistDescriptor> {
     private final LayoutInflater mLayoutInflater;
 
-    public BlacklistsAdapter(@NonNull Context context, Iterator<BlacklistDescriptor> iterator) {
+    public BlacklistsAdapter( Context context, Iterator<BlacklistDescriptor> iterator) {
         super(context, R.layout.blacklist_item);
         mLayoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -51,9 +50,9 @@ public class BlacklistsAdapter extends ArrayAdapter<BlacklistDescriptor> {
         }
     }
 
-    @NonNull
+    
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position,  View convertView,  ViewGroup parent) {
         if(convertView == null)
             convertView = mLayoutInflater.inflate(R.layout.blacklist_item, parent, false);
 

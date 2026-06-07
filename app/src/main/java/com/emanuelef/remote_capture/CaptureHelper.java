@@ -42,7 +42,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.annotation.Nullable;
+
 
 public class CaptureHelper {
     private static final String TAG = "CaptureHelper";

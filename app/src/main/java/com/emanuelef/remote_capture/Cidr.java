@@ -25,8 +25,6 @@
 
 package com.emanuelef.remote_capture;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -149,7 +147,7 @@ public class Cidr {
     }
 
   //  @Override
- /*   public boolean equals(@Nullable Object obj) {
+ /*   public boolean equals( Object obj) {
         if (!(obj instanceof Cidr other))
             return super.equals(obj);
 
@@ -157,7 +155,7 @@ public class Cidr {
                 (other.endAddress.equals(endAddress));
     }*/
 
-    @NonNull
+    
    // @Override
     public String toString() {
         return stringCidr;

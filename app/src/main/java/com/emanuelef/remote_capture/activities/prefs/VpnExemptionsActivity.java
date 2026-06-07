@@ -20,8 +20,7 @@
 package com.emanuelef.remote_capture.activities.prefs;
 
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -63,7 +62,7 @@ public class VpnExemptionsActivity extends BaseActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    protected void onSaveInstanceState( Bundle outState) {
         super.onSaveInstanceState(outState);
        // getSupportFragmentManager().putFragment(outState, "fragment", mFragment);
          getFragmentManager().putFragment(outState, "fragment", mFragment);
@@ -84,10 +83,10 @@ public class VpnExemptionsActivity extends BaseActivity {
     public static class VpnExceptionsFragment extends AppsToggles {
         private static final String TAG = "VpnExceptions";
         private final Set<String> mExcludedApps = new ArraySet<>();
-        private @Nullable SharedPreferences mPrefs;
+        private  SharedPreferences mPrefs;
 
         @Override
-        public void onAttach(@NonNull Context context) {
+        public void onAttach( Context context) {
             super.onAttach(context);
             mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
             assert mPrefs != null;

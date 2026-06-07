@@ -87,7 +87,7 @@ import javax.mail.internet.MimeMessage;
 */
 import com.emanuelef.remote_capture.AppsResolver;
 import com.emanuelef.remote_capture.Billing;
-import com.emanuelef.remote_capture.BuildConfig;
+
 import com.emanuelef.remote_capture.CaptureHelper;
 import com.emanuelef.remote_capture.ConnectionsRegister;
 import com.emanuelef.remote_capture.Log;
@@ -124,7 +124,7 @@ import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.preference.PreferenceManager;
 import android.widget.Toolbar;
-import android.annotation.NonNull;
+
 import android.text.Layout;
 import android.view.LayoutInflater;
 import com.emanuelef.remote_capture.interfaces.CaptureStartListener;
@@ -593,7 +593,7 @@ public class MainActivity extends BaseActivity {
     private static class MainStateAdapter extends FragmentStateAdapter {
         MainStateAdapter(final FragmentActivity fa) { super(fa); }
 
-        @NonNull
+        
         @Override
         public Fragment createFragment(int position) {
             Log.d(TAG, "createFragment");
@@ -683,7 +683,7 @@ public class MainActivity extends BaseActivity {
     }
 
   
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean onNavigationItemSelected( MenuItem item) {
         int id = item.getItemId();
 /*
         if(id == R.id.item_apps) {
@@ -928,7 +928,7 @@ public class MainActivity extends BaseActivity {
     }*/
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected( MenuItem item) {
         int id = item.getItemId();
 
         if(id == R.id.action_start) {

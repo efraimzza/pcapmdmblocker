@@ -21,8 +21,8 @@ package com.emanuelef.remote_capture.interfaces;
 
 import android.view.View;
 
-import android.annotation.NonNull;
+
 
 public interface FragmentViewCreatedListener {
-    void onFragmentViewCreated(@NonNull View view);
+    void onFragmentViewCreated( View view);
 }

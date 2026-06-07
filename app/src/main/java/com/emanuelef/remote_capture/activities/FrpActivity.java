@@ -103,9 +103,9 @@ public class FrpActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         super.onOptionsItemSelected(item);
-        
-        switch(item.getItemId()) {
-            case R.id.menu_frp_add_account:
+        int id=item.getItemId();
+       // switch(item.getItemId()) {
+            if(id==  R.id.menu_frp_add_account){
                 if(al.size()>=10){
                     Toast.makeText(this,"כמה חשבונות יש לך?...",0).show();
                 }else{
@@ -114,9 +114,10 @@ public class FrpActivity extends Activity {
                     
                 }
                 return true;
-            default:
+            }else{
                 return super.onOptionsItemSelected(item);
-        }
+            }
+        //}
 
     }
     

@@ -54,7 +54,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import android.annotation.NonNull;
+
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -186,7 +186,7 @@ public class ConnectionDetailsActivity extends BaseActivity implements Connectio
     private class StateAdapter extends FragmentStateAdapter {
         StateAdapter(final FragmentActivity fa) { super(fa); }
 
-        @NonNull
+        
         @Override
         public Fragment createFragment(int position) {
             //Log.d(TAG, "createFragment");

@@ -67,7 +67,7 @@ import java.security.MessageDigest;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
-import android.annotation.Nullable;
+
 import java.io.FileOutputStream;
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.Utils;
@@ -353,7 +353,7 @@ public class MdmProvisioningActivity extends Activity {
         return null;
     }
 
-    @Nullable
+    
     public String getHotspotIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {

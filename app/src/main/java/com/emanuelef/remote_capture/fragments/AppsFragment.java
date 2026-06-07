@@ -56,8 +56,7 @@ import com.emanuelef.remote_capture.model.ConnectionDescriptor;
 import com.emanuelef.remote_capture.model.MatchList;
 import com.emanuelef.remote_capture.model.Prefs;
 import com.emanuelef.remote_capture.views.EmptyRecyclerView;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.preference.PreferenceManager;
@@ -95,7 +94,7 @@ public class AppsFragment extends Fragment implements ConnectionsListener {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         mRecyclerView = view.findViewById(R.id.recycler_view);
         //mRecyclerView.setLayoutManager(new EmptyRecyclerView.MyLinearLayoutManager(getContext()));
         registerForContextMenu(mRecyclerView);
@@ -161,14 +160,14 @@ public class AppsFragment extends Fragment implements ConnectionsListener {
     }
 
     //@Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+    public void onCreateMenu( Menu menu, MenuInflater menuInflater) {
        // menuInflater.inflate(R.menu.apps_menu, menu);
         mMenu = menu;
         refreshSortField();
     }
 
     //@Override
-    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onMenuItemSelected( MenuItem menuItem) {
         int id = menuItem.getItemId();
 /*
         if(id == R.id.reset) {
@@ -217,8 +216,8 @@ public class AppsFragment extends Fragment implements ConnectionsListener {
     }
 
     @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v,
-                                    @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu( ContextMenu menu,  View v,
+                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         Log.d(TAG, "onCreateContextMenu");
 /*
@@ -260,7 +259,7 @@ public class AppsFragment extends Fragment implements ConnectionsListener {
     }
 
     @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
+    public boolean onContextItemSelected( MenuItem item) {
         int id = item.getItemId();
         Blocklist blocklist = PCAPdroid.getInstance().getBlocklist();
         MatchList whitelist = PCAPdroid.getInstance().getFirewallWhitelist();

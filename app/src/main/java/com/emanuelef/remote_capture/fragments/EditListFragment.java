@@ -70,8 +70,8 @@ import java.util.Scanner;
 import java.util.Set;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
+
 import android.app.Fragment;
 import com.emanuelef.remote_capture.activities.LogUtil;
 import com.emanuelef.remote_capture.activities.AppPickerActivity;
@@ -112,7 +112,7 @@ public class EditListFragment extends Fragment implements MatchList.ListChangeLi
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         mListView = view.findViewById(R.id.listview);
         mEmptyText = view.findViewById(R.id.list_empty);
@@ -343,7 +343,7 @@ public class EditListFragment extends Fragment implements MatchList.ListChangeLi
     }
     
    // @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {
+    public void onCreateMenu( Menu menu, MenuInflater inflater) {
        /* inflater.inflate(R.menu.list_edit_menu, menu);
 
         if(!Utils.supportsFileDialog(requireContext())) {
@@ -383,7 +383,7 @@ menu.findItem(R.id.add_country).setVisible(false);
     }
 
    // @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         int id = item.getItemId();
         ListView lv = requireActivity().findViewById(R.id.listview);
 /*

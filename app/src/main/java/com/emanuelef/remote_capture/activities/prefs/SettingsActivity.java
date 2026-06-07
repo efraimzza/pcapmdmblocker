@@ -32,8 +32,7 @@ import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.View;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.app.AlertDialog;
 /*
  import androidx.core.graphics.Insets;
@@ -123,9 +122,9 @@ FragmentViewCreatedListener {
 
 
     /*
-     @Nullable
+     
      @Override
-     public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+     public View onCreateView( View parent,  String name,  Context context,  AttributeSet attrs) {
      View view = super.onCreateView(parent, name, context, attrs);
      /*if (view != null)
      ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
@@ -137,14 +136,14 @@ FragmentViewCreatedListener {
      }
 
      @Override
-     public void onFragmentViewCreated(@NonNull View view) {
+     public void onFragmentViewCreated( View view) {
      // necessary, otherwise insets are not dispatched after fragment replace
      // if (mInsets != null)
      //ViewCompat.dispatchApplyWindowInsets(view, mInsets);
      }*/
     /*
      @Override
-     public boolean onPreferenceStartFragment(@NonNull PreferenceFragmentCompat caller, @NonNull Preference pref) {
+     public boolean onPreferenceStartFragment( PreferenceFragmentCompat caller,  Preference pref) {
      PreferenceFragmentCompat targetFragment = null;
      String prefKey = pref.getKey();
 
@@ -286,7 +285,7 @@ FragmentViewCreatedListener {
         }
 
         @Override
-        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        public void onViewCreated( View view,  Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
             onCreatePreferences(savedInstanceState, "");
 

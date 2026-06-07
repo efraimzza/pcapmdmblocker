@@ -5,8 +5,8 @@ import android.os.Bundle;
 import com.emanuelef.remote_capture.R;
 import android.preference.PreferenceFragment;
 import android.view.View;
-import android.annotation.Nullable;
-import android.annotation.NonNull;
+
+
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.content.SharedPreferences;
@@ -42,7 +42,7 @@ public class ThemeActivity extends BaseActivity {
         
         
         @Override
-        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        public void onViewCreated( View view,  Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
             
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());

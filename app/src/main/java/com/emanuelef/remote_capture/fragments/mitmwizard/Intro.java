@@ -22,16 +22,13 @@ package com.emanuelef.remote_capture.fragments.mitmwizard;
 import android.os.Bundle;
 import android.view.View;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
-
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.Utils;
 import com.emanuelef.remote_capture.activities.MainActivity;
 
 public class Intro extends StepFragment {
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mStepIcon.setVisibility(View.GONE);
         Utils.setTextUrls(mStepLabel, R.string.mitm_setup_wizard_intro, MainActivity.TLS_DECRYPTION_DOCS_URL);

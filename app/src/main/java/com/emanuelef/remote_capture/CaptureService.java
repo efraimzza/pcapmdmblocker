@@ -99,8 +99,6 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
 import android.preference.PreferenceManager;
 import java.util.Observer;
 import java.util.Observable;
@@ -486,7 +484,7 @@ public class CaptureService extends VpnService implements Runnable {
                 // the api checker -
             HttpURLConnection connection=null;
             try {
-                URL url = new URL("https://api.internal.netfree.link/user/0");
+                URL url = new URL("http://api.internal.netfree.link/user/0");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setConnectTimeout(15000);
@@ -579,7 +577,7 @@ public class CaptureService extends VpnService implements Runnable {
                      }
                      }
                      }*/
-                } catch (IOException | Exception e) {
+                } catch (Exception e) {
                     // במקרה של IOException, בדוק אם יש חיבור לאינטרנט
                     //LogUtil.logToFile(e.toString()+isInternetAvailablenew());
                     try{
@@ -764,7 +762,7 @@ public class CaptureService extends VpnService implements Runnable {
     }
 
     @Override
-    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+    public int onStartCommand( Intent intent, int flags, int startId) {
         mStopping = false;
 
         // startForeground must always be called since the Service is being started with
@@ -1341,7 +1339,7 @@ public class CaptureService extends VpnService implements Runnable {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Service.CONNECTIVITY_SERVICE);
         mNetworkCallback = new ConnectivityManager.NetworkCallback() {
             @Override
-            public void onLost(@NonNull Network network) {
+            public void onLost( Network network) {
                 Log.d(TAG, "onLost " + network);
                 
                 // If the network goes offline we roll back to the fallback DNS server to
@@ -1360,7 +1358,7 @@ public class CaptureService extends VpnService implements Runnable {
             
             //new
             @Override
-            public void onAvailable(@NonNull Network network) {
+            public void onAvailable( Network network) {
                 
                 String fallbackDnsV4 = Prefs.getDnsServerV4(mPrefs);
                 dns_server = fallbackDnsV4;
@@ -1403,7 +1401,7 @@ public class CaptureService extends VpnService implements Runnable {
 
             //@RequiresApi(api = Build.VERSION_CODES.O)
             @Override
-            public void onLinkPropertiesChanged(@NonNull Network network, @NonNull LinkProperties linkProperties) {
+            public void onLinkPropertiesChanged( Network network,  LinkProperties linkProperties) {
                 Log.d(TAG, "onLinkPropertiesChanged " + network);
 
                 if(network.getNetworkHandle() == mMonitoredNetwork)
@@ -1680,17 +1678,17 @@ public class CaptureService extends VpnService implements Runnable {
         return((INSTANCE != null) && INSTANCE.mDnsEncrypted);
     }
 
-    public static @NonNull CaptureService requireInstance() {
+    public static  CaptureService requireInstance() {
         CaptureService inst = INSTANCE;
         assert(inst != null);
         return(inst);
     }
 
-    public static @Nullable ConnectionsRegister getConnsRegister() {
+    public static  ConnectionsRegister getConnsRegister() {
         return((INSTANCE != null) ? INSTANCE.conn_reg : null);
     }
 
-    public static @NonNull ConnectionsRegister requireConnsRegister() {
+    public static  ConnectionsRegister requireConnsRegister() {
         ConnectionsRegister reg = getConnsRegister();
 
         assert(reg != null);
@@ -2355,7 +2353,7 @@ public class CaptureService extends VpnService implements Runnable {
         nativeSetFirewallEnabled(enabled);
     }
 /*
-    public static @NonNull CaptureStats getStats() {
+    public static  CaptureStats getStats() {
         CaptureStats stats = lastStats.getValue();
         return((stats != null) ? stats : new CaptureStats());
     }*/
@@ -2400,7 +2398,7 @@ public class CaptureService extends VpnService implements Runnable {
         return HAS_ERROR;
     }
 
-    public static @Nullable Utils.PrivateDnsMode getPrivateDnsMode() {
+    public static  Utils.PrivateDnsMode getPrivateDnsMode() {
         return isServiceActive() ? INSTANCE.mPrivateDnsMode : null;
     }
 

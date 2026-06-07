@@ -19,7 +19,7 @@
 
 package com.emanuelef.remote_capture.activities;
 
-import android.annotation.NonNull;
+
 //import androidx.core.view.MenuProvider;
 
 import android.app.ActivityManager;
@@ -173,7 +173,7 @@ public class StatsActivity extends BaseActivity  {
     }
 
   //  @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {
+    public void onCreateMenu( Menu menu, MenuInflater inflater) {
        // inflater.inflate(R.menu.copy_share_menu, menu);
     }
 
@@ -182,7 +182,7 @@ public class StatsActivity extends BaseActivity  {
     }
 
    // @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         int id = item.getItemId();
 /*
         if(id == R.id.copy_to_clipboard) {

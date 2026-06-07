@@ -1,6 +1,6 @@
 package com.emanuelef.remote_capture.activities;
 
-import android.annotation.Nullable;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
@@ -244,7 +244,7 @@ public class FloatingActivity extends Activity {
 		}
 		super.onResume();
 	}
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             try {

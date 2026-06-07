@@ -23,8 +23,8 @@ public class InstallReceiver extends BroadcastReceiver {
             String message = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE);
 
             // ודא שאתה מוחק את התיקיה הזמנית בכל מקרה
-            File tempDir = new File(context.getFilesDir()+ "/cach/apks_temp");
-            utils.deleteTempDir(tempDir,true);
+            //File tempDir = new File(context.getFilesDir()+ "/cach/apks_temp");
+            //utils.deleteTempDir(tempDir,true);
 
             // בנוסף, אם ההתקנה בוטלה בגלל סיסמה שגויה, אנו צריכים למחוק את קובץ ה-APK המקורי
             // זה קצת מורכב כי ה-Receiver לא יודע איזה קובץ APK נבחר
@@ -42,12 +42,13 @@ public class InstallReceiver extends BroadcastReceiver {
                     try{
                         Intent inte=new Intent(context,confirmationinstall.class);
                         inte.putExtra("inte",(Parcelable)intent.getParcelableExtra("android.intent.extra.INTENT"));
-                        inte.addFlags(intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        inte.addFlags(intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_REORDER_TO_FRONT|Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
                         context.startActivity(inte);
                     }catch(Exception e){
                         Toast.makeText(context, ""+e, Toast.LENGTH_LONG).show();
                     }
                     //}
+                    if (utils.progressDialog != null)
                     utils.progressDialog.setMessage("התקנה ממתינה לאישור משתמש עבור " + packageName + ": " + message);
                     Toast.makeText(context, "התקנה ממתינה לאישור משתמש עבור " + packageName, Toast.LENGTH_LONG).show();
                     break;
@@ -55,6 +56,7 @@ public class InstallReceiver extends BroadcastReceiver {
                     if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("clear_files",false)){
                         utils.deleteTempDir(new File(context.getExternalFilesDir("")+"/"),false);
                     }
+                    if (utils.progressDialog != null)
                     utils.progressDialog.setMessage("התקנה/עדכון הושלם בהצלחה עבור " + packageName + ": " + message);
                     dismissprogress();
                     Toast.makeText(context, "התקנה/עדכון הושלם בהצלחה עבור " + packageName, Toast.LENGTH_LONG).show();
@@ -68,6 +70,7 @@ public class InstallReceiver extends BroadcastReceiver {
                 case PackageInstaller.STATUS_FAILURE_INVALID:
                 case PackageInstaller.STATUS_FAILURE_STORAGE:
                     Toast.makeText(context, "התקנה נכשלה עבור " + packageName + ": " + message, Toast.LENGTH_LONG).show();
+                    if (utils.progressDialog != null)
                     utils.progressDialog.setMessage("התקנה נכשלה עבור " + packageName + ": " + message);
                     dismissprogress();
                     LogUtil.logToFile("התקנה נכשלה עבור " + packageName + ": " + message);

@@ -39,6 +39,15 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import org.json.JSONObject;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.content.Intent;
+import com.emanuelef.remote_capture.debug;
+import com.github.yeriomin.playstoreapi.DocumentDetails;
+import com.github.yeriomin.playstoreapi.AppDetails;
+import com.github.yeriomin.playstoreapi.Item;
+import com.github.yeriomin.playstoreapi.Image;
+import com.emanuelef.remote_capture.model.Prefs;
+import com.github.yeriomin.playstoreapi.ResponseWrapper;
+import com.github.yeriomin.playstoreapi.PlayResponse;
 
 public class GPlayService {
 
@@ -70,6 +79,9 @@ public class GPlayService {
         
         if (detresponse==null) {
             throw new Exception("Failed to fetch Google Play page");
+        }
+        if(versionCode==0){
+            throw new Exception("Failed to fetch GPlay version code");
         }
         return new GPlayApplicationInfo(
             packageName, 
@@ -217,8 +229,11 @@ public class GPlayService {
                 //wait on initalize max 10 secnds to time out
                 //
                 //
-                getDetails();
-                String deviceCheckinConsistencyToken=api.getDeviceCheckinConsistencyToken();
+                if(api!=null)
+                    getDetails();
+                else
+                    LogUtil.logToFile("api null");
+                //String deviceCheckinConsistencyToken=api.getDeviceCheckinConsistencyToken();
                 // We are logged in now
                 // Save and reuse the generated auth token and gsf id,
                 // unless you want to get banned for frequent relogins
@@ -230,8 +245,8 @@ public class GPlayService {
                 LogUtil.logToFile("builder null");
             }
             } catch (Throwable e) {
-                LogUtil.logToFile(e);
                 LogUtil.logToFile("login");
+                LogUtil.logToFile(e,true);
             }
     //    }}.start();
     }
@@ -259,28 +274,113 @@ public class GPlayService {
        // new Thread(){public void run(){
             try{
         // API wrapper instance is ready
-        detresponse = api.details(packageName);
+        
+                //if(Prefs.istest(PreferenceManager.getDefaultSharedPreferences(context))){
+                    PlayResponse pr= api.detailsNew(packageName);
+                    if(pr.success){
+                        ResponseWrapper w = ResponseWrapper.parseFrom(pr.response);
+                        detresponse = w.getPayload().getDetailsResponse();
+                    }else if(pr.code==401){
+                        LogUtil.logToFile("relogin..."+pr.code+pr.msg+new String(pr.err));
+                        SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(context).edit();
+                        prefs.putString("StoreAuthJson", "").commit();
+                        api=null;
+                        login();
+                        return;
+                    }else{
+                        LogUtil.logToFile("fail..."+pr.code+pr.msg+((pr.err!=null)?new String(pr.err):""));
+                        return;
+                    }
+                //}else{
+                    //detresponse = api.details(packageName);
+                //}
         if(detresponse!=null)
+            if(detresponse.hasItem())
             if(detresponse.getItem()!=null)
-                        if(detresponse.getItem().getAppInfo()!=null)
-                            if(detresponse.getItem().getAppInfo().getTitle()!=null)
+                        //if(detresponse.getItem().getAppInfo()!=null)
+                           // if(detresponse.getItem().getAppInfo().getTitle()!=null)
                                 LogUtil.logToFile(
                                 //detresponse.getItem().getAppInfo().getTitle()+"2"+
                 detresponse.getItem().getTitle()
                               //  +detresponse.getItem().getDescriptionHtml()
                                                   
                               //                    +detresponse.getFooterHtml()
-                                                  +detresponse.getDetailsStreamUrl()
+                                                 // +detresponse.getDetailsStreamUrl()
                                                   );
-                versionCode=detresponse.getItem().getDetails().getAppDetails().getVersionCode();
-                LogUtil.logToFile("vc="+versionCode);
+                                                  if(detresponse.getItem().hasDetails())
+                                                      if(detresponse.getItem().getDetails().hasAppDetails()){
+                                                          AppDetails docdet=detresponse.getItem().getDetails().getAppDetails();
+                                                          if(docdet.hasVersionCode()) versionCode=docdet.getVersionCode();else versionCode=0;
+                                                          LogUtil.logToFile("vc="+versionCode
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getTargetSdkVersion()
+                                                                            +"vcs"+docdet.getInfoUpdatedOn()
+                                                                            +"vcs"+docdet.getRecentChangesHtml()
+                                                                            +"vcs"+docdet.getCategoryName()
+                                                                            +"vcs"+docdet.getInfoDownloadSize()
+                                                                            +"vcs"+docdet.getInfoDownload()
+                                                                            +"vcs"+docdet.getDownloadLabelAbbreviated()
+                                                                            +"vcs"+docdet.hasInstallNotes()
+                                                                            +"vcs"+docdet.hasEarlyAccessInfo()
+                                                                            +"vcs"+docdet.getInstantLink()
+                                                                          /*  +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()
+                                                                            +"vcs"+docdet.getVersionString()*/
+                                                                            );
+                                                                            if(detresponse.getItem().getImageCount()>0){
+                                                                                for(Image img:detresponse.getItem().getImageList()){
+                                                                                    LogUtil.logToFile("img type="+img.getImageType()
+                                                                                    +" img url="+ img.getImageUrl()
+                                                                                    +" img urlalt="+img.getImageUrlAlt()
+                                                                                    +" img accrat="+img.getDimension().getAspectRatio()
+                                                                                    +" img wid="+img.getDimension().getWidth()
+                                                                                    +" img height="+img.getDimension().getHeight());
+                                                                                }
+                                                                            }
+                                                          Item item=detresponse.getItem();
+                                                                          if(item.getOfferCount()>0){
+                                                                              
+                                                                              LogUtil.logToFile("free="+item.getOffer(0).getMicros()
+                                                                              +"ot="+item.getOffer(0).getOfferType()
+                                                                              +"price"+item.getOffer(0).getFormattedAmount());
+                                                                          }
+                }
                 //if (not have update) no need to get links... & ret no need update
                 //else get option to install (getLinks();) (not get links now for all beacause the err too many requests
                 //if click install && source is gplay - then reEntry to get links
                 //dont forgat to save the api on the full store to avoid relogins
     } catch (Throwable e) {
-        LogUtil.logToFile(e);
         LogUtil.logToFile("details");
+        LogUtil.logToFile(e,true);
     }
    // }}.start();
     }
@@ -310,8 +410,8 @@ public class GPlayService {
             return json.toString(4);
         }
         } catch (Throwable e) {
-            LogUtil.logToFile(e);
             LogUtil.logToFile("links");
+            LogUtil.logToFile(e,true);
         }
         return "";
     }
@@ -384,8 +484,8 @@ public class GPlayService {
     protected AndroidAppDeliveryData deliveryData;
 
     //protected String packageName="com.google.android.apps.docs";
-    protected int versionCode;
-    protected int offerType;
+    protected long versionCode=0;
+    protected int offerType=0;
 
     protected AndroidAppDeliveryData getResult(GooglePlayAPI api,String packageName) throws IOException {
         //api.acquire(packageName,versionCode,offerType);
@@ -514,11 +614,12 @@ public class GPlayService {
                 ) {
                 deliveryData = buyResponse.getPurchaseStatusResponse().getAppDeliveryData();
             }
-            if (buyResponse.hasDownloadToken()) {
-                downloadToken = buyResponse.getDownloadToken();
+            if (buyResponse.hasEncodedDeliveryToken()) {
+                downloadToken = buyResponse.getEncodedDeliveryToken();
             }
-        } catch (IOException e) {
+        } catch (Throwable e) {
             LogUtil.logToFile(getClass().getSimpleName()+ "Purchase for " + packageName + " failed with " + e.getClass().getName() + ": " + e.getMessage());
+            LogUtil.logToFile(e,true);
         }
     }
 
@@ -530,11 +631,14 @@ public class GPlayService {
             offerType,
             downloadToken
         );
+        try{
         if (deliveryResponse.hasAppDeliveryData()
             && deliveryResponse.getAppDeliveryData().hasDownloadUrl()
             ) {
             deliveryData = deliveryResponse.getAppDeliveryData();
-        } else {LogUtil.logToFile("not purchased");}/*if (!app.isFree() && !YalpStoreApplication.user.appProvidedEmail()) {
+        } else {LogUtil.logToFile("not purchased");}
+        }catch(Throwable t){LogUtil.logToFile(t,true);}
+        /*if (!app.isFree() && !YalpStoreApplication.user.appProvidedEmail()) {
          throw new NotPurchasedException();
          }*/
     }

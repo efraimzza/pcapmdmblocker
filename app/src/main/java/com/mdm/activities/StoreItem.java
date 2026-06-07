@@ -14,8 +14,23 @@ public class StoreItem {
         CUSTOM_LINK,     // הוסף ידנית עם קישור מותאם אישית
         INSTALLED_APP,   // נוצר אוטומטית כחלק מסריקת האפליקציות המותקנות
         JSON_LINK        // הגיע מקובץ JSON שיובא (מקומי או מרשת)
+    }
+    
+    public enum ItemSource {
+        GPlay("GPlay"),
+        APKPure("APKPure"),
+        APKCombo("APKCombo"),
+        Aptoide("Aptoide"),
+        FDroid("FDroid"),
+        None("None");
+        private final String description;
+        ItemSource(String description){
+            this.description = description;
         }
-
+        public String getDescription() {
+            return description;
+        }
+    }
     // --- נתונים בסיסיים (חובה) ---
     public final String packageName;
     public String title;

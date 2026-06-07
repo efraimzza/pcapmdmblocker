@@ -49,8 +49,8 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import android.app.AlertDialog;
-import android.annotation.Nullable;
-import android.annotation.NonNull;
+
+
 import android.content.DialogInterface;
 
 public class InstallCertificate extends StepFragment implements MitmListener {
@@ -75,7 +75,7 @@ public class InstallCertificate extends StepFragment implements MitmListener {
         return null;
     }
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mStepLabel.setText(R.string.checking_the_certificate);
         mStepButton.setText(canInstallCertViaIntent() ? R.string.install_action : R.string.export_action);
@@ -229,7 +229,7 @@ public class InstallCertificate extends StepFragment implements MitmListener {
     }*/
 
     @Override
-    public void onMitmGetCaCertificateResult(@Nullable String ca_pem) {
+    public void onMitmGetCaCertificateResult( String ca_pem) {
         mAddon.disconnect();
 
         // NOTE: this may be called when context is null

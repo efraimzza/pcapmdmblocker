@@ -19,8 +19,7 @@
 
 package com.emanuelef.remote_capture.views;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -38,17 +37,17 @@ public class AppsListView extends EmptyRecyclerView implements SearchView.OnQuer
     private AppsAdapter mAdapter;
     private String mLastFilter;
 
-    public AppsListView(@NonNull Context context) {
+    public AppsListView( Context context) {
         super(context);
         initialize(context);
     }
 
-    public AppsListView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public AppsListView( Context context,  AttributeSet attrs) {
         super(context, attrs);
         initialize(context);
     }
 
-    public AppsListView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public AppsListView( Context context,  AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context);
     }

@@ -38,8 +38,7 @@ import com.emanuelef.remote_capture.model.AppDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.app.Activity;
 import android.content.AsyncTaskLoader;
 import android.content.Loader;
@@ -125,7 +124,7 @@ public class AppsLoader implements LoaderManager.LoaderCallbacks<ArrayList<AppDe
         return apps;
     }
     
-    @NonNull
+    
     @Override
     public Loader<ArrayList<AppDescriptor>> onCreateLoader(final int opid, Bundle args) {
       /*  AsyncTaskLoader as = new AsyncTaskLoader<ArrayList<AppDescriptor>>(mContext) {
@@ -164,7 +163,7 @@ public class AppsLoader implements LoaderManager.LoaderCallbacks<ArrayList<AppDe
         }
     }
     @Override
-    public void onLoadFinished(@NonNull Loader<ArrayList<AppDescriptor>> loader, ArrayList<AppDescriptor> data) {
+    public void onLoadFinished( Loader<ArrayList<AppDescriptor>> loader, ArrayList<AppDescriptor> data) {
         if(mListener != null)
             mListener.onAppsInfoLoaded(data);
             
@@ -172,7 +171,7 @@ public class AppsLoader implements LoaderManager.LoaderCallbacks<ArrayList<AppDe
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<ArrayList<AppDescriptor>> loader) {
+    public void onLoaderReset( Loader<ArrayList<AppDescriptor>> loader) {
         Log.d(TAG, "onLoaderReset");
     }
 

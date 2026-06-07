@@ -59,8 +59,7 @@ import com.emanuelef.remote_capture.model.ConnectionDescriptor;
 import com.emanuelef.remote_capture.model.FilterDescriptor;
 import com.emanuelef.remote_capture.model.MatchList;
 import com.emanuelef.remote_capture.model.Prefs;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.preference.PreferenceManager;
@@ -95,7 +94,7 @@ public class FirewallStatus extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         Context ctx = view.getContext();
         setHasOptionsMenu(true);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -218,7 +217,7 @@ public class FirewallStatus extends Fragment {
     
 /*
     @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {
+    public void onCreateMenu( Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.firewall_menu, menu);
         mMenu = menu;
 
@@ -241,7 +240,7 @@ public class FirewallStatus extends Fragment {
     }
 
     @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         int id = item.getItemId();
 
         if(id == R.id.user_guide) {

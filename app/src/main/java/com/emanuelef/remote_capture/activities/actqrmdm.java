@@ -72,7 +72,7 @@ import java.nio.charset.Charset;
 import android.content.pm.PackageManager;
 import android.content.pm.ActivityInfo;
 import com.emanuelef.remote_capture.R;
-import android.annotation.Nullable;
+
 import android.view.ViewGroup;
 import com.emanuelef.remote_capture.Utils;
 
@@ -402,7 +402,7 @@ public class actqrmdm extends Activity {
         return null;
     }
     String name="";
-    @Nullable
+    
     public String getNetworkInterfaceIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {

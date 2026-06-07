@@ -19,7 +19,7 @@
 
 package com.emanuelef.remote_capture.model;
 
-import android.annotation.NonNull;
+
 //import androidx.collection.ArraySet;
 
 import com.emanuelef.remote_capture.CaptureService;
@@ -53,7 +53,7 @@ public class ListInfo {
         return mType;
     }
 
-    public @NonNull MatchList getList() {
+    public  MatchList getList() {
         switch(mType) {
             case VISUALIZATION_MASK:
                 return PCAPdroid.getInstance().getVisualizationMask();

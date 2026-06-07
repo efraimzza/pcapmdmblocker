@@ -36,8 +36,7 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 /*
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
@@ -90,7 +89,7 @@ public class ConnectionOverview extends Fragment implements ConnectionDetailsAct
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach( Context context) {
         super.onAttach(context);
         mActivity = (ConnectionDetailsActivity) context;
         mActivity.addConnUpdateListener(this);
@@ -111,7 +110,7 @@ public class ConnectionOverview extends Fragment implements ConnectionDetailsAct
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         TextView appLabel = view.findViewById(R.id.detail_app);
         TextView proto = view.findViewById(R.id.detail_protocol);
@@ -291,12 +290,12 @@ public class ConnectionOverview extends Fragment implements ConnectionDetailsAct
     }
     
    // @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+    public void onCreateMenu( Menu menu, MenuInflater menuInflater) {
         //menuInflater.inflate(R.menu.copy_share_menu, menu);
     }
 
   //  @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         int id = item.getItemId();
 /*
         if(id == R.id.copy_to_clipboard) {

@@ -55,7 +55,28 @@
             android:textSize="12sp"
             android:textColor="@android:color/holo_blue_dark"
             android:text="Source: GPlay" />
-
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/item_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="item_state" />
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/item_status_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="item_status_info" />
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/item_progress_download"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:max="100" />
     </LinearLayout>
 
     <Button

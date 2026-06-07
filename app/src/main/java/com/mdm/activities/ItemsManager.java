@@ -23,7 +23,7 @@ public class ItemsManager {
     String defitems="[\n {\n \"cl\": [\n \"com.whatsapp\"\n ]\n },\n {\n \"itemSourceType\": \"MANUAL\",\n \"packageName\": \"fm.jewishmusic.application\",\n \"title\": \"זינג\",\n \"customLink\": \"\",\n \"isDrive\": false\n },\n {\n \"itemSourceType\": \"MANUAL\",\n \"packageName\": \"in.krosbits.musicolet\",\n \"title\": \"Musicolet\",\n \"customLink\": \"\",\n \"isDrive\": false\n },\n {\n \"itemSourceType\": \"CUSTOM_LINK\",\n \"packageName\": \"com.waze\",\n \"title\": \"waze\",\n \"customLink\": \"1Z-7ZnbY8D0-exeWtSHapFPvLGbLVlZ1H\",\n \"isDrive\": true\n },\n {\n \"itemSourceType\": \"CUSTOM_LINK\",\n \"packageName\": \"com.google.android.inputmethod.latin\",\n \"title\": \"Gboard\",\n \"customLink\": \"1OwaLDf2Piln72bMD7T2HmZySlq-ZaMVb\",\n \"isDrive\": true\n },\n {\n \"itemSourceType\": \"CUSTOM_LINK\",\n \"packageName\": \"com.alphainventor.filemanager\",\n \"title\": \"File Manager +\",\n \"customLink\": \"1pbl-LWLfi9cAFUB3_nDEg8A0qY3v8A9o\",\n \"isDrive\": true\n }\n]";
     
     private final List<StoreItem> allItems = new ArrayList<StoreItem>();
-    private final Context context;
+    private final storeActivity context;
 
     public interface RefreshCompleteListener {
         void onComplete();
@@ -261,12 +261,21 @@ public class ItemsManager {
                // LogUtil.logToFile(si.downloadLink+si.customLink+si.currentVersion+si.latestVersion+(!si.currentVersion.equals(si.latestVersion))+(si.currentVersion.equals("N/A"))
                // +((si.downloadLink!=null&&!si.downloadLink.equals(""))||(si.customLink!=null&&!si.customLink.equals(""))&&(!si.currentVersion.equals(si.latestVersion)||(si.currentVersion.equals("N/A"))))
                // +(!si.currentVersion.equals(si.latestVersion)||(si.currentVersion.equals("N/A"))));
-                if((si.downloadLink!=null&&!si.downloadLink.equals(""))||(si.customLink!=null&&!si.customLink.equals(""))){
-                    if((!si.currentVersion.equals(si.latestVersion)||(si.currentVersion.equals("N/A")))){
+                if((si.downloadLink!=null&&!si.downloadLink.equals(""))||(si.customLink!=null&&!si.customLink.equals(""))||(si.source!=null&&si.source.equals("GPlay"))){
+                    if(
+                        (!si.currentVersion.equals(si.latestVersion)
+                           &&(VersionComparer.isNewer(si.latestVersion, si.currentVersion)
+                                ||(si.customLink!=null&&!si.customLink.equals(""))
+                           )
+                        ||(si.currentVersion.equals("N/A"))
+                        )
+                       ){
                     //LogUtil.logToFile(si.packageName);
                     
                     itemsvisible.add(si);
                     }
+                }else if(si.packageName.equals(context.pkgName)||DownloadService.isinqueue(si.packageName)){
+                    itemsvisible.add(si);
                 }
             }
             //return Collections.unmodifiableList(new ArrayList<>(itemsvisible));
@@ -598,7 +607,7 @@ public class ItemsManager {
     private static ItemsManager itemsManager;
         private ConfigManager configManager; // הוספת שדה
 
-        public ItemsManager(Context context, ConfigManager configManager) { // עדכון הבנאי
+        public ItemsManager(storeActivity context, ConfigManager configManager) { // עדכון הבנאי
             this.context = context;
             this.itemsManager=this;
             this.configManager = configManager;

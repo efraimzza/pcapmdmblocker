@@ -45,7 +45,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 /*
-import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
@@ -76,10 +76,8 @@ import java.util.concurrent.Executors;
 import javax.net.ssl.HttpsURLConnection;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.annotation.NonNull;
 import android.text.Html;
 import android.view.View.OnClickListener;
-import android.annotation.Nullable;
 /*
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -149,7 +147,7 @@ public class AboutActivity extends BaseActivity  {
     }
 
    // @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {
+    public void onCreateMenu( Menu menu, MenuInflater inflater) {
         /*inflater.inflate(R.menu.about_menu, menu);
 
         Billing billing = Billing.newInstance(this);
@@ -497,7 +495,7 @@ public class AboutActivity extends BaseActivity  {
             hideQrCode(dialog, getString(R.string.invalid_license));
     }
 
-    private void hideQrCode(View dialog, @Nullable String error_msg) {
+    private void hideQrCode(View dialog,  String error_msg) {
         View showQr = dialog.findViewById(R.id.show_qr_code);
         View qrLoading = dialog.findViewById(R.id.qr_code_loading);
         View qrBox = dialog.findViewById(R.id.qr_box);

@@ -20,12 +20,19 @@ import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.Utils;
 import com.emanuelef.remote_capture.activities.PasswordManager;
 import com.emanuelef.remote_capture.activities.picker;
+import com.emanuelef.remote_capture.activities.LogUtil;
+import android.content.ServiceConnection;
+import android.content.ComponentName;
+import android.os.IBinder;
+import android.os.Handler;
+import android.os.Looper;
+import android.content.Context;
 
 public class storeActivity extends Activity {
 
     private ListView listView;
     private TextView emptyView;
-    private StoreItemAdapter adapter;
+    private static StoreItemAdapter adapter;
     public static ItemsManager itemsManager;
     public static ConfigManager configManager;
 
@@ -38,7 +45,7 @@ public class storeActivity extends Activity {
         setContentView(R.layout.store_main);
         
         //for now to avoid install user files placed in the folder with the good name...
-        utils.deleteTempDir(getExternalFilesDir(""),false);
+        //utils.deleteTempDir(getExternalFilesDir(""),false);
         configManager = new ConfigManager(this);
         itemsManager = new ItemsManager(this, configManager);
         importExportManager = new ImportExportManager(this, itemsManager);
@@ -191,4 +198,164 @@ public class storeActivity extends Activity {
             }
         }
     }*/
+    private boolean isBound = false;
+    private static final Handler uiHandler = new Handler(Looper.getMainLooper());
+    static DownloadService.LocalBinder binder=null;
+    public final ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            binder = (DownloadService.LocalBinder) service;
+            //downloadService = binder.getService();
+            LogUtil.logToFile("onconnected="+binder.getService());
+            //if(downloadService!=null){
+            isBound = true;
+            startUiUpdater(); 
+            /*}else{
+             pkgName="";
+             adapter.notifyDataSetChanged();
+             }*/
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            binder=null;
+
+            isBound = false;
+            //downloadService = null;
+        }
+    };
+    static String st="";
+    @Override
+    protected void onStart() {
+        super.onStart();
+        /*if(downloadService!=null){
+         if(!downloadService.isDownloading){
+         LogUtil.logToFile("onst");
+         pkgName="";
+         adapter.notifyDataSetChanged();
+         return;
+         }
+         LogUtil.logToFile("onst1"+downloadService);
+         }//this creating a new servise?
+         LogUtil.logToFile("onst2"+downloadService);*/
+        if(binder!=null){
+            if(binder.getService()!=null){
+                if(!binder.getService().isDownloading){
+                    LogUtil.logToFile("onst");
+                    pkgName="";
+                    adapter.notifyDataSetChanged();
+                    return;
+                }
+                LogUtil.logToFile("onst1"+binder.getService());
+            }//this creating a new servise?
+            LogUtil.logToFile("onst2");
+        }
+        LogUtil.logToFile("onst3");
+        Intent intent = new Intent(this, DownloadService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        st="a";
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isBound) {
+            unbindService(serviceConnection);
+            isBound = false;
+        }
+        binder=null;//to stop the runnable if isnt in ui...
+        uiHandler.removeCallbacksAndMessages(null);
+        st="b";
+    }
+    public static String stat="";
+    public static String statusinf="";
+    public static int progre=0;
+    public static String pkgName="";
+    private static final Runnable uiUpdaterRunnable = new Runnable() {
+        @Override
+        public void run() {
+            try{
+                //if(linl_catd_down.getVisibility()==View.VISIBLE)
+                if (binder!=null && binder.getService()!=null && binder.getService().isDownloading) {
+                    // הצגת הכרטיס במקרה שהוא היה מוסתר
+                    //linl_catd_down.setVisibility(View.VISIBLE);
+                    long downloaded = binder.getService().bytesDownloaded;
+                    long total = binder.getService().totalBytes;
+                    long speed = binder.getService().bytesPerSecond;
+
+                    int progress = (total > 0) ? (int) ((downloaded * 100) / total) : 0;
+                    /*
+
+                     txtPkgName.setText(downloadService.packageName);
+                     txtFileName.setText(downloadService.finalFilename);
+                     */
+                    String etaStr = "מחשב...";
+                    if (speed > 0 && total > 0) {
+                        long bytesRemaining = total - downloaded;
+                        long secondsRemaining = bytesRemaining / speed;
+
+                        // // פורמט זמן קריא (דקות:שניות) //
+                        if (secondsRemaining < 60) {
+                            etaStr = secondsRemaining + " שניות";
+                        } else {
+                            etaStr = (secondsRemaining / 60) + " דקות ו-" + (secondsRemaining % 60) + " שניות";
+                        }
+                    }
+                    // בניית מחרוזת הסטטוס המעוצבת
+                    String speedStr = formatFileSize(speed) + "/s";
+                    String info = "התקדמות: " + progress + "% (" + formatFileSize(downloaded) + " / " + formatFileSize(total) + ")\n" +
+                        "מהירות: " + speedStr + " | נותר: " + etaStr;
+                    statusinf=info;
+                    progre=progress;
+                    stat=binder.getService().state;
+                    pkgName=binder.getService().packageName;
+                    if(adapter!=null)
+                        adapter.notifyDataSetChanged();
+                    /*
+                     txtStatusInfo.setText(info);
+
+                     // עדכון ה-ProgressBar הויזואלי
+                     progressDownload.setProgress(progress);
+
+                     btnCancelDown.setVisibility(View.VISIBLE);
+                     */
+                    LogUtil.logToFile(""+binder.getService());
+                    uiHandler.postDelayed(this, 500); 
+                }else if (binder!=null&&binder.getService()!=null){
+                    pkgName="";
+                    if(adapter!=null)
+                        adapter.notifyDataSetChanged();
+                    LogUtil.logToFile("ll"+binder.getService());
+                    uiHandler.postDelayed(this, 2000);
+                } else {
+                    /*txtStatusInfo.setText("אין הורדות פעילות ברקע.");
+                     progressDownload.setProgress(0);
+                     btnCancelDown.setVisibility(View.GONE);
+                     progressDownload.setVisibility(View.GONE);
+                     txtPkgName.setVisibility(View.GONE);
+                     txtFileName.setVisibility(View.GONE);*/
+                    pkgName="";
+                    if(adapter!=null)
+                        adapter.notifyDataSetChanged();
+                    //uiHandler.postDelayed(this, 2000);
+                    LogUtil.logToFile("lllb"+binder+st);
+                    if(binder!=null)
+                        LogUtil.logToFile("lllbs"+binder.getService()+st);
+                }
+            }catch(Throwable t){LogUtil.logToFile(t);}
+        }
+    };
+
+    public static void startUiUpdater() {
+        uiHandler.removeCallbacksAndMessages(null);
+        uiHandler.post(uiUpdaterRunnable);
+    }
+
+    private static String formatFileSize(long bytes) {
+        if (bytes <= 0) return "0 B";
+        if (bytes < 1024) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(1024));
+        String pre = "KMGTPE".charAt(exp - 1) + "";
+        return String.format("%.1f %sB", bytes / Math.pow(1024, exp), pre);
+    }
 }

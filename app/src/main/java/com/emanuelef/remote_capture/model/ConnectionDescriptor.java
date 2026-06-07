@@ -35,8 +35,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import com.emanuelef.remote_capture.activities.LogUtil;
 
 /* Holds the information about a single connection.
@@ -325,7 +324,7 @@ public class ConnectionDescriptor {
 
     public synchronized int getNumPayloadChunks() { return payload_chunks.size(); }
 
-    public synchronized @Nullable PayloadChunk getPayloadChunk(int idx) {
+    public synchronized  PayloadChunk getPayloadChunk(int idx) {
         if(getNumPayloadChunks() <= idx)
             return null;
         return payload_chunks.get(idx);
@@ -391,7 +390,7 @@ public class ConnectionDescriptor {
     }
 
     @Override
-    public @NonNull String toString() {
+    public  String toString() {
         return "[proto=" + ipproto + "/" + l7proto + "]: " + src_ip + ":" + src_port + " -> " +
                 dst_ip + ":" + dst_port + " [" + uid + "] " + info;
     }

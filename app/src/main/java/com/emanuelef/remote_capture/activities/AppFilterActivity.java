@@ -23,8 +23,7 @@ import com.emanuelef.remote_capture.model.Prefs;
 
 import java.util.Set;
 import com.emanuelef.remote_capture.R;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.util.ArraySet;
 import android.preference.PreferenceManager;
 
@@ -61,18 +60,18 @@ public class AppFilterActivity extends BaseActivity  {
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    protected void onSaveInstanceState( Bundle outState) {
         super.onSaveInstanceState(outState);
         //getSupportFragmentManager().putFragment(outState, "fragment", mFragment);
     }
 
    // @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {
+    public void onCreateMenu( Menu menu, MenuInflater inflater) {
        // inflater.inflate(R.menu.hint_menu, menu);
     }
 
    // @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         int id = item.getItemId();
 
         /*if (id == R.id.show_hint) {
@@ -99,10 +98,10 @@ public class AppFilterActivity extends BaseActivity  {
 
     public static class AppFilterFragment extends AppsToggles {
         private final Set<String> mSelectedApps = new ArraySet<>();
-        private @Nullable SharedPreferences mPrefs;
+        private  SharedPreferences mPrefs;
 
         @Override
-        public void onAttach(@NonNull Context context) {
+        public void onAttach( Context context) {
             super.onAttach(context);
             mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
             assert mPrefs != null;

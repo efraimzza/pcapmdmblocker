@@ -34,7 +34,7 @@
             android:summary="הכנס שמות מקורות (מופרדים בפסיקים, לדוגמה: FDroid, APKPure)"
             android:defaultValue="FDroid, APKPure, Aptoide"
             android:dialogTitle="ערוך סדר קדימות" /-->
-
+            
         <!--EditTextPreference
             android:key="installed_apps_check_list"
             android:title="רשימת אפליקציות לבדיקה (Combined List)"
@@ -67,6 +67,10 @@
             android:title="מחיקת קבצי התקנה"
             android:summary="מחיקת קבצי ההתקנה לאחר התקנתם" 
             android:defaultValue="true"/-->
+        <Preference
+            android:key="clear_auth"
+            android:title="איפוס חשבון אנונימי"
+            android:summary="מחק את החשבון האנונימי השמור (לצורך הורדה משרתי גוגל)" />
     </PreferenceCategory>
     
 </PreferenceScreen>

@@ -50,7 +50,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import android.annotation.NonNull;
+
 import android.content.DialogInterface;
 import android.widget.Button;
 import android.widget.ArrayAdapter;
@@ -238,9 +238,9 @@ public class PayloadAdapter extends ArrayAdapter implements HTTPReassembly.Reass
         }
     }
 
-    @NonNull
-    @Override
-    public PayloadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    
+    
+    public PayloadViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.payload_item, parent, false);
         final PayloadViewHolder holder = new PayloadViewHolder(view);
 
@@ -439,7 +439,7 @@ public class PayloadAdapter extends ArrayAdapter implements HTTPReassembly.Reass
     }
 
   //  @Override
-    public void onBindViewHolder(@NonNull PayloadViewHolder holder, int position) {
+    public void onBindViewHolder( PayloadViewHolder holder, int position) {
         Page page = getItem(position);
         PayloadChunk chunk = page.adaptChunk.getPayloadChunk();
 

@@ -171,8 +171,7 @@ import com.emanuelef.remote_capture.activities.LogUtil;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.app.NotificationManager;
@@ -212,7 +211,7 @@ public class Utils {
         OPPORTUNISTIC,
         STRICT;
 
-        @NonNull
+        
        // @Override
         public String toString() {
             return super.toString().toLowerCase();
@@ -795,7 +794,7 @@ public class Utils {
         return(Utils.getUniqueFileName(context, pcapng_format ? "pcapng" : "pcap"));
     }
 
-    public static @Nullable BitmapDrawable scaleDrawable(Resources res, Drawable drawable, int new_x, int new_y) {
+    public static  BitmapDrawable scaleDrawable(Resources res, Drawable drawable, int new_x, int new_y) {
         if((new_x <= 0) || (new_y <= 0))
             return null;
 
@@ -2127,7 +2126,7 @@ public class Utils {
     }
 
     // https://stackoverflow.com/questions/16704597/how-do-you-get-the-user-defined-device-name-in-android
-    public static @Nullable String getDeviceName(Context ctx) {
+    public static  String getDeviceName(Context ctx) {
         try {
            // if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S)
                 // NOTE: on Android 32+ this generates a security exception
@@ -2459,7 +2458,7 @@ public class Utils {
     }
 
     //@RequiresApi(api = Build.VERSION_CODES.P)
-    public static PrivateDnsMode getPrivateDnsMode(@NonNull LinkProperties linkProperties) {
+    public static PrivateDnsMode getPrivateDnsMode( LinkProperties linkProperties) {
         if(linkProperties.getPrivateDnsServerName() != null)
             return PrivateDnsMode.STRICT;
         else if(linkProperties.isPrivateDnsActive())
@@ -2545,7 +2544,7 @@ public class Utils {
         });
     }*/
 
-    public static @NonNull Enumeration<NetworkInterface> getNetworkInterfaces() {
+    public static  Enumeration<NetworkInterface> getNetworkInterfaces() {
         try {
             Enumeration<NetworkInterface> ifs = NetworkInterface.getNetworkInterfaces();
             if(ifs != null)

@@ -67,7 +67,7 @@ import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.File;
 
-import com.emanuelef.remote_capture.BuildConfig;
+
 import com.emanuelef.remote_capture.activities.AppState;
 
 import com.emanuelef.remote_capture.AppsResolver;
@@ -120,8 +120,7 @@ import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.io.OutputStream;
 import android.app.AlertDialog;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.preference.PreferenceManager;
 import android.widget.SearchView;
 import android.content.DialogInterface;
@@ -212,7 +211,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    public void onSaveInstanceState( Bundle outState) {
         super.onSaveInstanceState(outState);
 
         if(mSearchView != null)
@@ -257,7 +256,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         mHandler = new Handler(Looper.getMainLooper());
         setHasOptionsMenu(true);
         mFabDown = view.findViewById(R.id.fabDown);
@@ -280,12 +279,12 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         });
         mSizeSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
             @Override
-            public void onStartTrackingTouch(@NonNull Slider slider) {
+            public void onStartTrackingTouch( Slider slider) {
                 mSizeSliderActive = true;
             }
 
             @Override
-            public void onStopTrackingTouch(@NonNull Slider slider) {
+            public void onStopTrackingTouch( Slider slider) {
                 if (slider.getValue() == 0) {
                     // NOTE: setting LABEL_GONE is also necessary to
                     // prevent the label from being still visible in some cases
@@ -385,8 +384,8 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
                 }
                 
            /* @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-            //public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int state) {
+            public void onScrolled( RecyclerView recyclerView, int dx, int dy) {
+            //public void onScrollStateChanged( RecyclerView recyclerView, int state) {
                 recheckScroll();
             }*/
         });
@@ -465,8 +464,8 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     }
 
     @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v,
-                                    @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu( ContextMenu menu,  View v,
+                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         MenuInflater inflater = requireActivity().getMenuInflater();
@@ -751,7 +750,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     boolean firewall_wl_changed = false;
     boolean decryption_list_changed = false;
     @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
+    public boolean onContextItemSelected( MenuItem item) {
         Context ctx = requireContext();
         final ConnectionDescriptor conn = mAdapter.getSelectedItem();
         final MatchList whitelist = PCAPdroid.getInstance().getMalwareWhitelist();
@@ -1227,7 +1226,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     }
     
    // @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+    public void onCreateMenu( Menu menu, MenuInflater menuInflater) {
        /* menuInflater.inflate(R.menu.connections_menu, menu);
 
         mSave = menu.findItem(R.id.save);
@@ -1247,7 +1246,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     }
 
   //  @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         int id = item.getItemId();
 /*
         if(id == R.id.save) {

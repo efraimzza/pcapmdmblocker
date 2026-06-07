@@ -7,7 +7,7 @@ import android.content.Context;
 import android.widget.Toast;
 import com.emanuelef.remote_capture.MitmAddon;
 import java.security.cert.X509Certificate;
-import android.annotation.Nullable;
+
 import com.emanuelef.remote_capture.Log;
 import com.emanuelef.remote_capture.Utils;
 import android.content.Intent;
@@ -55,7 +55,7 @@ public class instcer extends Activity implements MitmListener{
     }
 
     @Override
-    public void onMitmGetCaCertificateResult(@Nullable String ca_pem) {
+    public void onMitmGetCaCertificateResult( String ca_pem) {
         mAddon.disconnect();
 
         // NOTE: this may be called when context is null

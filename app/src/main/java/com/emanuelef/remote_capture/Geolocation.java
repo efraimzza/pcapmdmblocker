@@ -22,8 +22,6 @@ package com.emanuelef.remote_capture;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
-import android.annotation.Nullable;
-
 import com.emanuelef.remote_capture.model.Geomodel;
 //import com.maxmind.db.Reader;
 

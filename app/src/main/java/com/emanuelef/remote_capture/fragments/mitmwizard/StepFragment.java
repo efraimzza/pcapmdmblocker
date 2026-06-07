@@ -37,8 +37,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 */
 import com.emanuelef.remote_capture.R;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.app.Activity;
 
 public class StepFragment  {
@@ -68,7 +67,7 @@ public class StepFragment  {
     }
 
     //@Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
        // super.onViewCreated(view, savedInstanceState);
 
       //  mNavController = Navigation.findNavController(view);

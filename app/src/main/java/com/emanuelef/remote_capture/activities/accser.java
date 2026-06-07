@@ -118,7 +118,7 @@ public class accser extends AccessibilityService {
             stopSelf();
             stopForeground(true);
             refreshacc.refreshacc(getApplicationContext());
-        }catch(Exception | Throwable e){LogUtil.logToFile(e.toString());}
+        }catch( Throwable e){LogUtil.logToFile(e.toString());}
 
     }
 

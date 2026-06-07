@@ -39,7 +39,7 @@ import com.emanuelef.remote_capture.Utils;
 import com.emanuelef.remote_capture.fragments.LogviewFragment;
 //import com.google.android.material.tabs.TabLayout;
 //import com.google.android.material.tabs.TabLayoutMediator;
-import android.annotation.NonNull;
+
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -125,7 +125,7 @@ public class LogviewActivity extends BaseActivity  {
             mCacheDir = fa.getCacheDir().getAbsolutePath();
         }
 
-        @NonNull
+        
         @Override
         public Fragment createFragment(int pos) {
             switch (pos) {
@@ -224,12 +224,12 @@ public class LogviewActivity extends BaseActivity  {
     
 
    // @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {
+    public void onCreateMenu( Menu menu, MenuInflater inflater) {
       //  inflater.inflate(R.menu.log_menu, menu);
     }
 
     //@Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         int id = item.getItemId();
      /*   LogviewFragment fragment = (LogviewFragment) getFragmentAtPos(mPager.getCurrentItem());
         if(fragment == null)

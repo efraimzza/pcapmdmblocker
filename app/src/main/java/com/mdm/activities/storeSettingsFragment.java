@@ -163,7 +163,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.storePreferences);
+            addPreferencesFromResource(R.xml.storepreferences);
 
             //configManager = new ConfigManager(getActivity());
             //itemsManager = new ItemsManager(getActivity(),configManager);

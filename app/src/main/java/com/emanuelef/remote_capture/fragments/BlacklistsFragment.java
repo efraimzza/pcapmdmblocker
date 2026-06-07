@@ -33,8 +33,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
 /*
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -49,8 +47,7 @@ import com.emanuelef.remote_capture.adapters.BlacklistsAdapter;
 import com.emanuelef.remote_capture.interfaces.BlacklistsStateListener;
 import com.emanuelef.remote_capture.Blacklists;
 import com.emanuelef.remote_capture.model.BlacklistDescriptor;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.widget.AdapterView;
 import android.widget.Adapter;
 import android.app.Fragment;
@@ -92,7 +89,7 @@ public class BlacklistsFragment extends Fragment implements BlacklistsStateListe
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         mvi=view;
@@ -308,14 +305,14 @@ public class BlacklistsFragment extends Fragment implements BlacklistsStateListe
     }
     
    // @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {
+    public void onCreateMenu( Menu menu, MenuInflater inflater) {
         //inflater.inflate(R.menu.blacklists_menu, menu);
       //  mUpdateItem = menu.findItem(R.id.update);
         refreshStatus();
     }
 
     //@Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         int id = item.getItemId();
 
       /*  if(id == R.id.update) {

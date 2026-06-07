@@ -22,15 +22,13 @@ package com.emanuelef.remote_capture.fragments.prefs;
 import android.os.Bundle;
 import android.view.View;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
 //import androidx.preference.PreferenceFragmentCompat;
 
 import com.emanuelef.remote_capture.interfaces.FragmentViewCreatedListener;
 
 public abstract class SettingsSubFragment  {
     /*@Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         // insets handling logic

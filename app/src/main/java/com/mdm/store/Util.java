@@ -88,11 +88,15 @@ public class Util {
 
     static public <K,V> Map<V,K> swapKeysValues(Map<K,V> map) {
         Map<V,K> swapped = new HashMap<>();
-        for(Map.Entry<K,V> entry : map.entrySet()) {
-            swapped.put(entry.getValue(), entry.getKey());
+        /*for(Map.Entry<K,V> entry : map.entrySet()) {
+         swapped.put(entry.getValue(), entry.getKey());
+         }*/
+        for (K key : map.keySet()) {
+            swapped.put(map.get(key), key);
         }
         return swapped;
     }
+    
 
     static public Map<String, String> addToStart(LinkedHashMap<String, String> map, String key, String value) {
         LinkedHashMap<String, String> clonedMap = (LinkedHashMap<String, String>) map.clone();

@@ -27,7 +27,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
-import android.annotation.NonNull;
 import android.preference.PreferenceManager;
 
 

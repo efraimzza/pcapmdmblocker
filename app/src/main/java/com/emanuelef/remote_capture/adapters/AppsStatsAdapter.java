@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import android.annotation.NonNull;
+
 //import androidx.core.content.ContextCompat;
 import android.preference.PreferenceManager;
 //import androidx.recyclerview.widget.RecyclerView;
@@ -48,7 +48,7 @@ import com.emanuelef.remote_capture.model.Prefs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import android.annotation.NonNull;
+
 import java.util.Comparator;
 
 public class AppsStatsAdapter {
@@ -143,9 +143,9 @@ public class AppsStatsAdapter {
         return mStats.size();
     }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    
+    
+    public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.app_item, parent, false);
 
         if(mListener != null)
@@ -173,7 +173,7 @@ public class AppsStatsAdapter {
     }
 
    // @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder( ViewHolder holder, int position) {
         AppStats stats = getItem(position);
 
         if(stats == null)

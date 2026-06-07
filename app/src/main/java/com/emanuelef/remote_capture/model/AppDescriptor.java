@@ -26,7 +26,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.UserHandle;
 
-import android.annotation.Nullable;
 
 import com.emanuelef.remote_capture.CaptureService;
 import com.emanuelef.remote_capture.Log;
@@ -81,7 +80,7 @@ public class AppDescriptor implements Comparable<AppDescriptor>, Serializable {
         return mName;
     }
 
-    public @Nullable Drawable getIcon() {
+    public  Drawable getIcon() {
         if(mIcon != null)
             return mIcon;
 
@@ -133,7 +132,7 @@ public class AppDescriptor implements Comparable<AppDescriptor>, Serializable {
     // the app does not have a package name (e.g. uid 0 is android system)
     public boolean isVirtual() { return (mPackageInfo == null); }
 
-    public @Nullable PackageInfo getPackageInfo() { return mPackageInfo; }
+    public  PackageInfo getPackageInfo() { return mPackageInfo; }
 
     @Override
     public int compareTo(AppDescriptor o) {

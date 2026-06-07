@@ -20,7 +20,7 @@
 package com.emanuelef.remote_capture.fragments.prefs;
 import android.os.Bundle;
 
-import android.annotation.Nullable;
+
 import android.preference.EditTextPreference;
 
 import com.emanuelef.remote_capture.R;
@@ -32,7 +32,7 @@ import android.preference.Preference;
 
 public class DnsSettings extends SettingsSubFragment {
     //@Override
-    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+    public void onCreatePreferences( Bundle savedInstanceState, String rootKey) {
       //  setPreferencesFromResource(R.xml.dns_preferences, rootKey);
 
         /*EditTextPreference p1 = Objects.requireNonNull(findPreference(Prefs.PREF_DNS_SERVER_V4));

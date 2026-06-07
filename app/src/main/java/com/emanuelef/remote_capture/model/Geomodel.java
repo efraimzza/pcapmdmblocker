@@ -19,7 +19,7 @@
 
 package com.emanuelef.remote_capture.model;
 
-import android.annotation.NonNull;
+
 /*
 import com.maxmind.db.MaxMindDbConstructor;
 import com.maxmind.db.MaxMindDbParameter;
@@ -71,7 +71,7 @@ public class Geomodel {
             return(number != 0);
         }
 
-        @Override @NonNull
+        @Override 
         public String toString() {
             if(number == 0)
                 return "Unknown ASN";

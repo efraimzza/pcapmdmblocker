@@ -42,8 +42,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Comparator;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 
 public class CtrlPermissionsAdapter extends ArrayAdapter<CtrlPermissions.Rule> implements TextAdapter {
     private final LayoutInflater mLayoutInflater;
@@ -84,9 +83,9 @@ public class CtrlPermissionsAdapter extends ArrayAdapter<CtrlPermissions.Rule> i
         addAll(sorted);
     }
 
-    @NonNull
+    
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position,  View convertView,  ViewGroup parent) {
         if(convertView == null)
             convertView = mLayoutInflater.inflate(R.layout.rule_item, parent, false);
 

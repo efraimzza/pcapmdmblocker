@@ -40,7 +40,7 @@ import com.emanuelef.remote_capture.fragments.FirewallStatus;
 import com.emanuelef.remote_capture.model.ListInfo;
 import com.emanuelef.remote_capture.model.Prefs;
 import android.preference.PreferenceManager;
-import android.annotation.NonNull;
+
 import android.app.Fragment;
 import android.widget.Button;
 import android.view.View.OnClickListener;
@@ -84,7 +84,7 @@ public class FirewallActivity extends BaseActivity {
     private class StateAdapter {
         //StateAdapter(final FragmentActivity fa) { super(fa); }
 
-        @NonNull
+        
         //@Override
         /*public Fragment createFragment(int position) {
             Log.d(TAG, "createFragment");
@@ -100,7 +100,7 @@ public class FirewallActivity extends BaseActivity {
             }
         }*/
 
-        @Override
+        
         public int getItemCount() {  return mHasWhitelist ? TOTAL_COUNT : (TOTAL_COUNT - 1);  }
 
         public int getPageTitle(final int position) {

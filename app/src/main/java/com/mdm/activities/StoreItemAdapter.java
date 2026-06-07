@@ -14,15 +14,17 @@ import android.content.pm.PackageManager;
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.activities.PasswordManager;
 import android.util.TypedValue;
+import android.widget.ProgressBar;
+import android.content.Intent;
 
 public class StoreItemAdapter extends BaseAdapter {
 
-    private final Activity context;
+    private final storeActivity context;
     private List<StoreItem> itemList;
     private final ItemsManager itemsManager;
     private final LayoutInflater inflater;
 
-    public StoreItemAdapter(Activity context, List<StoreItem> itemList, ItemsManager itemsManager) {
+    public StoreItemAdapter(storeActivity context, List<StoreItem> itemList, ItemsManager itemsManager) {
         this.context = context;
         this.itemList = itemList;
         this.itemsManager = itemsManager;
@@ -97,11 +99,46 @@ public class StoreItemAdapter extends BaseAdapter {
             holder.button.setText("התקן");
             holder.button.setVisibility(View.VISIBLE);
         }
-
+        if(DownloadService.isinqueue(item.packageName)){
+            holder.button.setText("ביטול");
+            //holder.button.setEnabled(true);
+            holder.state.setVisibility(View.VISIBLE);
+            holder.state.setText("בתור");
+        }else
+        if(item.packageName.equals(context.pkgName)){
+            holder.button.setText("ביטול");
+            //holder.button.setVisibility(View.VISIBLE);
+            //holder.button.setEnabled(false);
+            holder.state.setVisibility(View.VISIBLE);
+            holder.statusInfo.setVisibility(View.VISIBLE);
+            holder.progressDownload.setVisibility(View.VISIBLE);
+            holder.state.setText(context.stat);
+            holder.statusInfo.setText(context.statusinf);
+            holder.progressDownload.setProgress(context.progre);
+        }else{
+            //holder.button.setEnabled(true);
+            holder.state.setVisibility(View.GONE);
+            holder.statusInfo.setVisibility(View.GONE);
+            holder.progressDownload.setVisibility(View.GONE);
+        }
         // שימוש ב-OnClickListener מסורתי (ללא Lambda)
         holder.button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // לוגיקת הורדה: פתיחת הקישור הפנימי של הפריט
+                    if(((Button)v).getText().equals("ביטול")){
+                        /*if(DownloadService.isinqueue(item.packageName)){
+                         //remove
+                         //only need to send cancel with pkg...
+
+                         }else{
+                         //cancel
+
+                         }*/
+                        Intent cancelIntent = new Intent(context, DownloadService.class);
+                        cancelIntent.setAction(DownloadService.ACTION_CANCEL_DOWNLOAD);
+                        cancelIntent.putExtra(DownloadService.EXTRA_PKG,item.packageName);
+                        context.startService(cancelIntent);
+                    }else
                     Dialogs.showDownloadConfirmation(context, item, itemsManager);
                 }
             });
@@ -142,7 +179,10 @@ public class StoreItemAdapter extends BaseAdapter {
         public final TextView packageName;
         public final TextView source;
         public final Button button;
-
+        public final TextView state;
+        public final TextView statusInfo;
+        public final ProgressBar progressDownload;
+        
         public StoreItemViewHolder(View view) {
             icon = (ImageView) view.findViewById(R.id.item_icon);
             title = (TextView) view.findViewById(R.id.item_title);
@@ -150,6 +190,9 @@ public class StoreItemAdapter extends BaseAdapter {
             packageName = (TextView) view.findViewById(R.id.item_packagename);
             source = (TextView) view.findViewById(R.id.item_source);
             button = (Button) view.findViewById(R.id.item_button);
+            state = (TextView) view.findViewById(R.id.item_state);
+            statusInfo = (TextView) view.findViewById(R.id.item_status_info);
+            progressDownload = (ProgressBar) view.findViewById(R.id.item_progress_download);
         }
     }
 }

@@ -81,6 +81,7 @@ public class MDMSettingsActivity extends Activity {
     private long downloadId;
     private ProgressDialog progressDialog;
     private Handler handler;
+    private Handler uihandler=new Handler(Looper.getMainLooper());
     private Runnable updateProgressRunnable;
     private boolean isDownloadCanceled = false;
     
@@ -233,6 +234,7 @@ public class MDMSettingsActivity extends Activity {
                     });
                 builder.create().show();  
             } else if (buttonId == R.id.btn_def_rest_multi) {
+                new Thread(){public void run(){
                 boolean mdmstate=mDpm.isDeviceOwnerApp(MDMSettingsActivity.this.getPackageName());
                 if(mdmstate){
                 try{
@@ -263,16 +265,23 @@ public class MDMSettingsActivity extends Activity {
 
                 //mDpm.setApplicationHidden(mAdminComponentName, "com.google.android.apps.maps", true);//maps
                 
-                
-                    Toast.makeText(getApplicationContext(), "הופעלו השבתות מומלצות למולטימדיה!", Toast.LENGTH_SHORT).show();
-                } catch (Exception e){
-                    Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                    uihandler.post(new Runnable(){public void run(){
+                        Toast.makeText(getApplicationContext(), "הופעלו השבתות מומלצות למולטימדיה!", Toast.LENGTH_SHORT).show();
+                    }});
+                } catch (final Exception e){
+                    uihandler.post(new Runnable(){public void run(){
+                        Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                    }});
                 }
                     
                 }else{
-                    Toast.makeText(getApplicationContext(), "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
+                    uihandler.post(new Runnable(){public void run(){
+                        Toast.makeText(getApplicationContext(), "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
+                    }});
                 }
+                }}.start();
             }else if (buttonId == R.id.btn_def_rest_cube) {
+                new Thread(){public void run(){
                 boolean mdmstate=mDpm.isDeviceOwnerApp(MDMSettingsActivity.this.getPackageName());
                 if(mdmstate){
                 try{
@@ -298,16 +307,21 @@ public class MDMSettingsActivity extends Activity {
                 mDpm.setApplicationHidden(mAdminComponentName, "com.suding.apkinstaller", true);//market
                 mDpm.setApplicationHidden(mAdminComponentName, "com.google.android.apps.youtube.music", true);//YouTube music
                 
-                
-                
-                    Toast.makeText(getApplicationContext(), "הופעלו השבתות מומלצות לקוביית אנדרואיד!", Toast.LENGTH_SHORT).show();
-                } catch (Exception e){
-                    Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                    uihandler.post(new Runnable(){public void run(){
+                        Toast.makeText(getApplicationContext(), "הופעלו השבתות מומלצות לקוביית אנדרואיד!", Toast.LENGTH_SHORT).show();
+                    }});
+                } catch (final Exception e){
+                    uihandler.post(new Runnable(){public void run(){
+                        Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                    }});
                 }
                     
                 }else{
-                    Toast.makeText(getApplicationContext(), "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
+                    uihandler.post(new Runnable(){public void run(){
+                        Toast.makeText(getApplicationContext(), "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
+                    }});
                 }
+                    }}.start();
             } else if (buttonId == R.id.btn_update_whitelist) {
                if(CaptureService.isServiceActive()){
                    CaptureService.requestBlacklistsUpdate();
@@ -337,6 +351,7 @@ public class MDMSettingsActivity extends Activity {
                     });
                 builder.create().show();
             } else if (buttonId == R.id.btn_def_rest_netfree) {
+                new Thread(){public void run(){
                 boolean mdmstate=mDpm.isDeviceOwnerApp(MDMSettingsActivity.this.getPackageName());
                 if(mdmstate){
                     try{
@@ -354,16 +369,23 @@ public class MDMSettingsActivity extends Activity {
                     
                         mDpm.addUserRestriction(mAdminComponentName, UserManager.DISALLOW_SAFE_BOOT);
                         mDpm.addUserRestriction(mAdminComponentName, UserManager.DISALLOW_CONFIG_VPN);
-                        
-                        Toast.makeText(getApplicationContext(), "הופעל השבתת רשת שאינו נטפרי!", Toast.LENGTH_SHORT).show();
-                    } catch (Exception e){
-                        Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                        uihandler.post(new Runnable(){public void run(){
+                            Toast.makeText(getApplicationContext(), "הופעל השבתת רשת שאינו נטפרי!", Toast.LENGTH_SHORT).show();
+                        }});
+                    } catch (final Exception e){
+                        uihandler.post(new Runnable(){public void run(){
+                            Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                        }});
                     }
 
                 }else{
-                    Toast.makeText(getApplicationContext(), "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
+                    uihandler.post(new Runnable(){public void run(){
+                        Toast.makeText(getApplicationContext(), "אין עדיין הרשאות ניהול מכשיר", Toast.LENGTH_SHORT).show();
+                    }});
                 }
+                }}.start();
             }
+            
         }
     }
     public static void removefrp(final Activity activity){
@@ -487,16 +509,26 @@ public class MDMSettingsActivity extends Activity {
                                 final Switch swi =new Switch(MDMSettingsActivity.this);
                                 swi.setText("debug");
                                 swi.setChecked(Prefs.isdebug(mPrefs));
+                                final Switch swit =new Switch(MDMSettingsActivity.this);
+                                swit.setText("test");
+                                swit.setChecked(Prefs.istest(mPrefs));
                                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
-                                    LinearLayout.LayoutParams.MATCH_PARENT);
+                                    LinearLayout.LayoutParams.WRAP_CONTENT);
                                 swi.setLayoutParams(lp);
-                                builder.setView(swi);
-
+                                swit.setLayoutParams(lp);
+                                LinearLayout linl=new LinearLayout(MDMSettingsActivity.this);
+                                linl.setOrientation(LinearLayout.VERTICAL);
+                                linl.setLayoutParams(lp);
+                                linl.addView(swi);
+                                linl.addView(swit);
+                                builder.setView(linl);
+                                //builder.setView(swi);
                                 builder.setPositiveButton("אישור", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             Prefs.setdebugp(mPrefs,swi.isChecked());
+                                            Prefs.settestp(mPrefs,swit.isChecked());
                                             CaptureService.setdebug(Prefs.isdebug(mPrefs));
                                             dialog.cancel();
                                         }

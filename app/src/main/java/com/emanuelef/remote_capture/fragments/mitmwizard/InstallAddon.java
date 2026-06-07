@@ -23,8 +23,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
 import android.view.View;
 
 import com.emanuelef.remote_capture.R;
@@ -35,7 +33,7 @@ import android.app.Activity;
 
 public class InstallAddon extends StepFragment {
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Utils.setTextUrls(mStepLabel, R.string.install_the_mitm_addon, MitmAddon.REPOSITORY);
 

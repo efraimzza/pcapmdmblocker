@@ -20,8 +20,7 @@
 package com.emanuelef.remote_capture;
 
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -59,7 +58,7 @@ public class VpnReconnectService extends Service {
     private ConnectivityManager.NetworkCallback mNetworkCallback;
     private Network mActiveVpnNetwork;
 
-    @Nullable
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -84,7 +83,7 @@ public class VpnReconnectService extends Service {
     }
 
     @Override
-    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+    public int onStartCommand( Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
 
         if ((intent != null) && (intent.getAction() != null) && (intent.getAction().equals(STOP_ACTION))) {
@@ -169,14 +168,14 @@ public class VpnReconnectService extends Service {
 
         mNetworkCallback = new ConnectivityManager.NetworkCallback() {
             @Override
-            public void onAvailable(@NonNull Network network) {
+            public void onAvailable( Network network) {
                 Log.d(TAG, "onAvailable: " + network);
 
                 checkAvailableNetwork(cm, network);
             }
 
             @Override
-            public void onLost(@NonNull Network network) {
+            public void onLost( Network network) {
                 Log.d(TAG, "onLost: " + network);
 
                 // NOTE: when onLost is called, the TRANSPORT_VPN capability may already have been removed

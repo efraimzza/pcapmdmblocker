@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 
-import android.annotation.NonNull;
 /*
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -85,7 +84,7 @@ public class AppDetailsActivity extends BaseActivity {
     private class StateAdapter  {
         /*StateAdapter(final FragmentActivity fa) { super(fa); }
 
-        @NonNull
+        
         @Override
         public Fragment createFragment(int position) {
             //Log.d(TAG, "createFragment");

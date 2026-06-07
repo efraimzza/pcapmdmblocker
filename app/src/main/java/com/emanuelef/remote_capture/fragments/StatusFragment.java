@@ -109,8 +109,7 @@ import com.emanuelef.remote_capture.views.PrefSpinner;
 import java.util.ArrayList;
 import java.util.Set;
 import android.preference.PreferenceManager;
-import android.annotation.Nullable;
-import android.annotation.NonNull;
+
 import android.app.Activity;
 import com.emanuelef.remote_capture.model.ConnectionDescriptor;
 import java.io.FileOutputStream;
@@ -212,7 +211,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
     }*/
     
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach( Context context) {
         super.onAttach(context);
         mActivity = (MainActivity) context;
         mcon = context;
@@ -245,7 +244,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
     @Deprecated
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
    // public void moncreate() {
         //View view= LayoutInflater.from(mcon).inflate(R.layout.status,this);
         setHasOptionsMenu(true);
@@ -625,7 +624,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
     }
     
     //@Override
- //   public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+ //   public void onCreateMenu( Menu menu, MenuInflater menuInflater) {
        /* menuInflater.inflate(R.menu.main_menu, menu);
 
         mMenu = menu;
@@ -641,7 +640,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
         accmultimedia;
     }*/
     //@Override
-   /* public boolean onMenuItemSelected(@NonNull MenuItem item) {
+   /* public boolean onMenuItemSelected( MenuItem item) {
         return false;
     }*/
 /*
@@ -723,7 +722,7 @@ public class StatusFragment extends Fragment implements AppStateListener {
         //LogUtil.logToFile("notifi suc...lol3");
     }
 
-    private Pair<String, Drawable> getAppFilterTextAndIcon(@NonNull Context context) {
+    private Pair<String, Drawable> getAppFilterTextAndIcon( Context context) {
         Drawable icon = null;
         String text = "";
 

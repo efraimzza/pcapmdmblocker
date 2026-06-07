@@ -27,8 +27,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
 /*
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,7 +55,7 @@ public class AppsTogglesAdapter extends ArrayAdapter<AppDescriptor> {
     private String mFilter = "";
     private List<AppDescriptor> mApps = new ArrayList<>();
     private final List<AppDescriptor> mFilteredApps = new ArrayList<>();
-  //  private @Nullable RecyclerView mRecyclerView;
+  //  private  RecyclerView mRecyclerView;
     private ListView mRecyclerView;
     
     public AppsTogglesAdapter(Context context, Set<String> checkedItems,ListView rv) {
@@ -89,21 +87,21 @@ public class AppsTogglesAdapter extends ArrayAdapter<AppDescriptor> {
     }
 /*
    // @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView( RecyclerView recyclerView) {
         //super.onAttachedToRecyclerView(recyclerView);
        // mRecyclerView = recyclerView;
     }
 
   //  @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView( RecyclerView recyclerView) {
        // super.onDetachedFromRecyclerView(recyclerView);
         //mRecyclerView = null;
     }
 */
 /*
-    @NonNull
+    
     @Override
-    public AppsTogglesAdapter.AppViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AppsTogglesAdapter.AppViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.app_selection_item, parent, false);
         AppViewHolder recyclerViewHolder = new AppViewHolder(view);
 
@@ -134,7 +132,7 @@ public class AppsTogglesAdapter extends ArrayAdapter<AppDescriptor> {
     
 /*
    // @Override
-    public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
+    public void onBindViewHolder( AppViewHolder holder, int position) {
         AppDescriptor app = getItem(position);
 
         holder.appName.setText(app.getName());

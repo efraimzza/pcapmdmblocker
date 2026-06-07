@@ -49,7 +49,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
-import android.annotation.Nullable;
+
 import com.obsex.obseobj;
 import com.obsex.obseimp;
 
@@ -474,7 +474,7 @@ public class MitmReceiver implements Runnable, ConnectionsListener, MitmListener
     }
 
     @Override
-    public void onMitmGetCaCertificateResult(@Nullable String ca_pem) {
+    public void onMitmGetCaCertificateResult( String ca_pem) {
         if(!MitmAddon.isCAInstallationSkipped(mContext) && !Utils.isCAInstalled(ca_pem)) {
             // The certificate has been uninstalled from the system
             Utils.showToastLong(mContext, R.string.cert_reinstall_required);

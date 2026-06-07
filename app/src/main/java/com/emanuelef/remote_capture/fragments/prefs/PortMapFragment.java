@@ -58,8 +58,8 @@ import java.util.Iterator;
 import java.util.Objects;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.widget.Switch;
@@ -91,7 +91,7 @@ public class PortMapFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         view.setFitsSystemWindows(true);
         mListView = view.findViewById(R.id.listview);
         mEmptyText = view.findViewById(R.id.list_empty);
@@ -162,8 +162,8 @@ public class PortMapFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater menuInflater) {
-    //public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+    public void onCreateOptionsMenu( Menu menu, MenuInflater menuInflater) {
+    //public void onCreateMenu( Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu,menuInflater);
         menuInflater.inflate(R.menu.port_mapping_menu, menu);
 
@@ -185,8 +185,8 @@ public class PortMapFragment extends Fragment {
     }
    
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
-    //public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onOptionsItemSelected( MenuItem menuItem) {
+    //public boolean onMenuItemSelected( MenuItem menuItem) {
         if(menuItem.getItemId() == R.id.add_mapping) {
             openAddDialog();
             return true;

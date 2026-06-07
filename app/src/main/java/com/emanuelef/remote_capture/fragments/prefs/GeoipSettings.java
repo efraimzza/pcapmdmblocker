@@ -23,8 +23,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
 /*
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference;
@@ -47,7 +45,7 @@ public class GeoipSettings extends SettingsSubFragment {
     private AlertDialog mAlertDialog;
 
    // @Override
-    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+    public void onCreatePreferences( Bundle savedInstanceState,  String rootKey) {
         /*setPreferencesFromResource(R.xml.geoip_preferences, rootKey);
         Context context = requireContext();
 
@@ -128,7 +126,7 @@ public class GeoipSettings extends SettingsSubFragment {
         });*/
     }
 /*
-    private @NonNull
+    private 
     <T extends Preference> T requirePreference(String key) {
         T pref = findPreference(key);
         if(pref == null)

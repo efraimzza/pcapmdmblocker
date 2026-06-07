@@ -63,7 +63,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 import com.emanuelef.remote_capture.R;
-import com.emanuelef.remote_capture.BuildConfig;
+
 import com.emanuelef.remote_capture.Utils;
 
 import java.util.Properties;
@@ -140,6 +140,7 @@ public class MDMStatusActivity extends Activity {
         try{
             requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"},55);
         }catch(Exception e){}
+        
         mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminComponentName = new ComponentName(this,admin.class);
         sp=PreferenceManager.getDefaultSharedPreferences(this);
@@ -897,6 +898,7 @@ public class MDMStatusActivity extends Activity {
             "UIS8581A",
             "uis7862a_1h10",
             "uis8581a2h10",
+            "DSB0230",
             ""};
         boolean found= false;
         String curdevice=Build.DEVICE;
@@ -1122,11 +1124,11 @@ public class MDMStatusActivity extends Activity {
         return true;
     }
     /*@Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+    public void onCreateMenu( Menu menu, MenuInflater menuInflater) {
         menuInflater.inflate(R.menu.main_menu_status, menu);
     }
     @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         return false;
     }*/
     boolean retvalue =true;
@@ -1151,33 +1153,34 @@ public class MDMStatusActivity extends Activity {
     }
     boolean optionselected(MenuItem item){
         Intent intent;
-        switch(item.getItemId()) {
-            case R.id.men_ite_sett:
+        int id =item.getItemId();
+        //switch(item.getItemId()) {
+            if(id== R.id.men_ite_sett){
                 if(!sp.getBoolean(locksp,false)){
                     intent = new Intent(MDMStatusActivity.this, MDMSettingsActivity.class);
                     startActivity(intent);
                 }
                 return true;
-            case R.id.men_ite_store:
+            }else if(id== R.id.men_ite_store){
                 intent = new Intent(MDMStatusActivity.this, storeActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.men_ite_instruct:
+            }else if(id==  R.id.men_ite_instruct){
                 intent = new Intent(MDMStatusActivity.this, InstructionsActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.men_ite_about:
+            }else if(id==  R.id.men_ite_about){
                 intent = new Intent(MDMStatusActivity.this, AboutActivitya.class);
                 startActivity(intent);
                 return true;
-            case R.id.men_ite_theme:
+            }else if(id==  R.id.men_ite_theme){
                 intent = new Intent(MDMStatusActivity.this, ThemeActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.men_ite_mail:
+            }else if(id==  R.id.men_ite_mail){
                 sendm();
                 return true;
-            case R.id.men_ite_remove:
+            }else if(id==  R.id.men_ite_remove){
                 if(!sp.getBoolean(locksp,false)){
                     PasswordManager.requestPasswordAndSave(new Runnable() {
                             @Deprecated
@@ -1188,9 +1191,9 @@ public class MDMStatusActivity extends Activity {
                         },MDMStatusActivity.this);
                 }
                 return true;
-            default:
+            }else
                 return super.onOptionsItemSelected(item);
-        }
+        //}
     }
 	// Check if Manage External Storage permission is granted (for Android 11+)
     public static boolean hasManageExternalStoragePermission(Context context) {
@@ -1202,7 +1205,7 @@ public class MDMStatusActivity extends Activity {
             return writePermission == PackageManager.PERMISSION_GRANTED;
         }
     }
-
+    
     public static void requestManageExternalStoragePermission(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {

@@ -28,8 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 /*import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuProvider;
@@ -79,7 +78,7 @@ AppsTogglesAdapter.AppToggleListener,SearchView.OnQueryTextListener{
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( View view,  Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.recycler_view);
        // recyclerView.setLayoutManager(new EmptyRecyclerView.MyLinearLayoutManager(getContext()));
        setHasOptionsMenu(true);
@@ -129,7 +128,7 @@ AppsTogglesAdapter.AppToggleListener,SearchView.OnQueryTextListener{
     }
     
   //  @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+    public void onCreateMenu( Menu menu, MenuInflater menuInflater) {
        /* menuInflater.inflate(R.menu.search_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
         mSearchView = (SearchView) searchItem.getActionView();
@@ -142,12 +141,12 @@ AppsTogglesAdapter.AppToggleListener,SearchView.OnQueryTextListener{
     }
 
    // @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onMenuItemSelected( MenuItem menuItem) {
         return false;
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    public void onSaveInstanceState( Bundle outState) {
         super.onSaveInstanceState(outState);
 
         // this is complemented by the activity onSaveInstanceState

@@ -37,7 +37,6 @@ import android.os.ParcelFileDescriptor;
 import android.os.PowerManager;
 import android.os.RemoteException;
 
-import android.annotation.NonNull;
 //import androidx.core.content.pm.PackageInfoCompat;
 import android.preference.PreferenceManager;
 
@@ -110,7 +109,7 @@ public class MitmAddon {
         }
     }
 
-    public static @NonNull String getInstalledVersionName(Context ctx) {
+    public static  String getInstalledVersionName(Context ctx) {
         try {
             PackageInfo pInfo = Utils.getPackageInfo(ctx.getPackageManager(), MitmAPI.PACKAGE_NAME, 0);
             return pInfo.versionName;
@@ -129,7 +128,7 @@ public class MitmAddon {
 
     // Returns a non-empty string if a newer, compatible addon version is available
     // Use ignoreNewVersion to silence this
-    public static @NonNull String getNewVersionAvailable(Context ctx) {
+    public static  String getNewVersionAvailable(Context ctx) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         if(true){
             return "";
@@ -227,7 +226,7 @@ public class MitmAddon {
         }
 
         @Override
-        public void handleMessage(@NonNull Message msg) {
+        public void handleMessage( Message msg) {
             Log.d(TAG, "Message: " + msg.what);
 
             MitmListener receiver = mReceiver.get();

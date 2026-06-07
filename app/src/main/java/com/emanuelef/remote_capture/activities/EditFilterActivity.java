@@ -29,7 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 
-import android.annotation.NonNull;
+
 import android.app.ActionBar;
 //import androidx.core.view.MenuProvider;
 import android.preference.PreferenceManager;
@@ -291,12 +291,12 @@ public class EditFilterActivity extends BaseActivity  {
     }
     
     //@Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater inflater) {
+    public void onCreateMenu( Menu menu, MenuInflater inflater) {
         //inflater.inflate(R.menu.edit_filter_menu, menu);
     }
 
   //  @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem item) {
         /*if(item.getItemId() == R.id.reset_changes) {
             mFilter.clear();
            // model2view();

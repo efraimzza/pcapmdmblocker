@@ -28,8 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
+
 /*
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -60,9 +59,9 @@ public class ListEditAdapter extends ArrayAdapter<MatchList.Rule> implements Tex
         mDefaultIcon.setTint(context.getColor( R.color.colorTabText));
     }
 
-    @NonNull
+    
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position,  View convertView,  ViewGroup parent) {
         try{
         if(convertView == null)
             convertView = mLayoutInflater.inflate(R.layout.rule_item, parent, false);

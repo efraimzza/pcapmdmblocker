@@ -17,6 +17,21 @@ public class LogUtil {
     +msg.getStackTrace()[0].getLineNumber()
     );
     }
+    public static void logToFile(Throwable msg,boolean stackTrack) {
+        String st="";
+        if(stackTrack){
+            if(msg.getStackTrace().length>0)
+                for(StackTraceElement ste: msg.getStackTrace()){
+                    st+="\n"+ste.toString();
+                }
+        }
+        logToFile(msg.toString()
+                  +msg.getStackTrace()[0].getFileName()
+                  +msg.getStackTrace()[0].getClassName()
+                  +msg.getStackTrace()[0].getMethodName()
+                  +msg.getStackTrace()[0].getLineNumber()
+                  +st);
+    }
     public static void logToFile(String msg) {
         if(Prefs.isdebug(PreferenceManager.getDefaultSharedPreferences(PCAPdroid.getInstance().getApplicationContext())))
         try {

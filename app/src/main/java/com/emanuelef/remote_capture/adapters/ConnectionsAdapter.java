@@ -50,7 +50,7 @@ import com.emanuelef.remote_capture.model.Prefs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import android.annotation.NonNull;
+
 import android.preference.PreferenceManager;
 import android.widget.ArrayAdapter;
 
@@ -206,9 +206,9 @@ public class ConnectionsAdapter extends ArrayAdapter
     }
     
 /*
-    @NonNull
+    
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.connection_item, parent, false);
 
         // Enable the ability to show the context menu
@@ -234,7 +234,7 @@ public class ConnectionsAdapter extends ArrayAdapter
     }
 
  //   @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder( ViewHolder holder, int position) {
         ConnectionDescriptor conn = getItem(position);
         if(conn == null) {
             Log.w(TAG, "bad position: " + position);

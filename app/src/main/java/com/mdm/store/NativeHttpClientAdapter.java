@@ -57,6 +57,7 @@ import java.util.HashMap;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import com.emanuelef.remote_capture.activities.LogUtil;
+import com.github.yeriomin.playstoreapi.PlayResponse;
 
 public class NativeHttpClientAdapter extends HttpClientAdapter {
 
@@ -73,7 +74,14 @@ public class NativeHttpClientAdapter extends HttpClientAdapter {
     public byte[] get(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
         return request(getHttpURLConnection(buildUrl(url, params)), null, headers);
     }
-
+    
+    public PlayResponse getNew(String url, Map<String, String> params, Map<String, String> headers) {
+        try{
+        return requestNew(getHttpURLConnection(buildUrl(url, params)), null, headers);
+        }catch(Exception e){
+            return new PlayResponse(false,0,e.toString(),null,null);
+        }
+    }
     @Override
     public byte[] getEx(String url, Map<String, List<String>> params, Map<String, String> headers) throws IOException {
         return request(getHttpURLConnection(buildUrlEx(url, params)), null, headers);
@@ -296,7 +304,7 @@ public class NativeHttpClientAdapter extends HttpClientAdapter {
         connection.setReadTimeout(TIMEOUT);
         connection.setRequestProperty("Connection", "close");
         connection.setRequestProperty("Accept-Encoding", "gzip");
-        connection.addRequestProperty("Cache-Control", "max-age=300");
+        //connection.addRequestProperty("Cache-Control", "max-age=300");
         for (String headerName: headers.keySet()) {
             connection.addRequestProperty(headerName, headers.get(headerName));
         }
@@ -329,6 +337,7 @@ public class NativeHttpClientAdapter extends HttpClientAdapter {
             code = connection.getResponseCode();
             LogUtil.i(getClass().getSimpleName(), "HTTP result code " + code + " Cache " + connection.getHeaderField("X-Android-Response-Source")+" "+connection.getResponseMessage());
             content = readFully(connection.getInputStream(), isGzip);
+            LogUtil.logToFile(new String(content));
         } catch (IOException e) {
             content = readFully(connection.getErrorStream(), isGzip);
             LogUtil.e(getClass().getSimpleName(), "IOException " + e.getClass().getName() + " " + e.getMessage()+" "+new String(content));
@@ -343,7 +352,74 @@ public class NativeHttpClientAdapter extends HttpClientAdapter {
         processHttpErrorCode(code, content);
         return content;
     }
+    protected PlayResponse requestNew(HttpURLConnection connection, byte[] body, Map<String, String> headers) {
+        connection.setConnectTimeout(TIMEOUT);
+        connection.setReadTimeout(TIMEOUT);
+        connection.setRequestProperty("Connection", "close");
+        connection.setRequestProperty("Accept-Encoding", "gzip");
+        //connection.addRequestProperty("Cache-Control", "max-age=300");
+        for (String headerName: headers.keySet()) {
+            connection.addRequestProperty(headerName, headers.get(headerName));
+        }
+        try{
+        addBody(connection, body);
+        }catch(Exception e){
+            return new PlayResponse(false,0,e.toString(),null,null);
+        }
+        byte[] content = new byte[0];
+        LogUtil.i(getClass().getSimpleName(), "Requesting " + connection.getURL().toString());
+        try {
+            connection.connect();
+        } catch (Exception e) {
+            // This is a known bug in Android 7.0; it was fixed by this change which went into Android 7.1:
+            // https://android-review.googlesource.com/#/c/271775/
+            // https://github.com/square/okhttp/issues/3245
+            //throw new IOException("This is a known bug in Android 7.0; it was fixed by this change which went into Android 7.1: " + e.getMessage());
+            return new PlayResponse(false,0,e.toString(),null,null);
+        }
 
+        int code = 0;
+        boolean isGzip;
+        try {
+            isGzip = null != connection.getContentEncoding() && connection.getContentEncoding().contains("gzip");
+        } catch (Exception e) {
+            // Happens on api<=8 only, see https://issuetracker.google.com/issues/36926705
+            // The solution is stop using HttpURLConnection entirely...
+            // Luckily, it seems to happen when the token gets stale,
+            // which means it can be fixed by redoing the request with a new token
+            //LogUtil.e(getClass().getSimpleName(), "Buggy HttpURLConnection implementation detected");
+            //throw new AuthException("Actually this is a NullPointerException thrown by a buggy implementation of HttpURLConnection", 401);
+            LogUtil.logToFile(e);
+            return new PlayResponse(false,0,e.toString(),null,null);
+        }
+        try {
+            code = connection.getResponseCode();
+            LogUtil.i(getClass().getSimpleName(), "HTTP result code " + code + " Cache " + connection.getHeaderField("X-Android-Response-Source")+" "+connection.getResponseMessage());
+            content = readFully(connection.getInputStream(), isGzip);
+            LogUtil.logToFile(new String(content));
+        } catch (IOException e) {
+            try{
+            content = readFully(connection.getErrorStream(), isGzip);
+            LogUtil.e(getClass().getSimpleName(), "IOException " + e.getClass().getName() + " " + e.getMessage()+" "+new String(content));
+            if (code < 400) {
+                //throw e;
+                return new PlayResponse(false,code,e.toString(),null,content);
+            }
+            }catch(Exception ee){
+                return new PlayResponse(false,code,e.toString(),null,null);
+            }
+        } catch (Throwable e) {
+            LogUtil.e(getClass().getSimpleName(), "Unknown exception " + e.getClass().getName() + " " + e.getMessage());
+            return new PlayResponse(false,code,e.toString(),null,null);
+        } finally {
+            connection.disconnect();
+        }
+        
+            if(code>=400)return
+            processHttpErrorCodeNew(code, content);
+        return new PlayResponse(true,code,"successfuly",content,null);
+        //return content;
+    }
     static public String urlEncode(String input) {
         try {
             return URLEncoder.encode(input, "UTF-8");
@@ -388,7 +464,26 @@ public class NativeHttpClientAdapter extends HttpClientAdapter {
         e.setRawResponse(content);
         throw e;
     }
-
+    static private PlayResponse processHttpErrorCodeNew(int code, byte[] content) {
+        
+        GooglePlayException e = new GooglePlayException("Client error " + code, code);
+        if (code == 401 || code == 403) {
+            e = new AuthException("Auth error", code);
+            Map<String, String> authResponse = GooglePlayAPI.parseResponse(new String(content));
+            if (authResponse.containsKey("Error") && authResponse.get("Error").equals("NeedsBrowser")) {
+                ((AuthException) e).setTwoFactorUrl(authResponse.get("Url"));
+                LogUtil.logToFile(code+" "+new String(content)+" "+authResponse.get("Url"));
+            }
+            LogUtil.logToFile(code+" "+new String(content));
+        } else if (code == 429) {
+            e = new GooglePlayException("You are making too many requests, try again later", code);
+        } else if (code >= 500) {
+            e = new GooglePlayException("Server error " + code, code);
+        }
+        e.setRawResponse(content);
+        return new PlayResponse(false,code,e.getMessage(),null,content);
+        //throw e;
+    }
     static private byte[] readFully(InputStream inputStream, boolean gzipped) throws IOException {
         if (null == inputStream) {
             return new byte[0];

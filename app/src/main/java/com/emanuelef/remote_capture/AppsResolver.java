@@ -30,7 +30,6 @@ import android.util.SparseArray;
 import com.emanuelef.remote_capture.interfaces.DrawableLoader;
 import com.emanuelef.remote_capture.model.AppDescriptor;
 
-import android.annotation.Nullable;
 //import androidx.core.content.ContextCompat;
 
 import java.lang.reflect.InvocationTargetException;
@@ -154,7 +153,7 @@ public class AppsResolver {
     }
 
     @SuppressLint("DiscouragedPrivateApi")
-    public @Nullable AppDescriptor getAppByUid(int uid, int pm_flags) {
+    public  AppDescriptor getAppByUid(int uid, int pm_flags) {
         AppDescriptor dsc = getMappedApp(uid);
         if (dsc != null)
             return dsc;
@@ -215,7 +214,7 @@ public class AppsResolver {
         return app;
     }
 
-    public @Nullable AppDescriptor getAppByPackage(String package_name, int pm_flags) {
+    public  AppDescriptor getAppByPackage(String package_name, int pm_flags) {
         int uid = getUid(package_name);
         if(uid == Utils.UID_NO_FILTER)
             return null;
