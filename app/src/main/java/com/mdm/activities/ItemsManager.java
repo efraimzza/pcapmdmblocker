@@ -753,16 +753,16 @@ public class ItemsManager {
                             
                             }
                             if(refreshinfo){
-                            List<StoreItem> itemsToUpdate = new ArrayList<StoreItem>(allItems);
-                            // --- 2. לולאת עדכון על כל הפריטים במאגר ---
-                            // ... [existing update loop] ...
-                            for (StoreItem item : itemsToUpdate) {
-                                if (item.excludedFromUpdates) continue;
+                                List<StoreItem> itemsToUpdate = new ArrayList<StoreItem>(allItems);
+                                // --- 2. לולאת עדכון על כל הפריטים במאגר ---
+                                // ... [existing update loop] ...
+                                for (StoreItem item : itemsToUpdate) {
+                                    if (item.excludedFromUpdates) continue;
 
-                                
-                                if (item.itemSourceType == StoreItem.ItemSourceType.CUSTOM_LINK) {
-                                    continue; 
-                                }
+
+                                    if (item.itemSourceType == StoreItem.ItemSourceType.CUSTOM_LINK) {
+                                        continue; 
+                                    }
                                     try {
                                         ApkDownloadInfo downloadInfo = resolverService.getApkDownloadLink(context,item.packageName);
 
@@ -781,9 +781,28 @@ public class ItemsManager {
                                         LogUtil.logToFile(e);
                                         LogUtil.logToFile("ItemsManager"+ "Error updating " + item.packageName + ": " + e.getMessage());
                                     }
-                                
-                                // ... [rest of the update logic] ...
-                            }
+
+                                    // ... [rest of the update logic] ...
+                                }
+                            }else{
+                                //only update curVersion
+                                List<StoreItem> itemsToUpdate = new ArrayList<StoreItem>(allItems);
+                                for (StoreItem item : itemsToUpdate) {
+                                    try {
+                                        boolean isInstalled = isAppInstalled(item.packageName);
+                                        if (isInstalled) {
+                                            StoreItem updatedItem = StoreItem.updateCurentVersion(item);
+                                            
+                                            int originalIndex = allItems.indexOf(item);
+                                            if (originalIndex != -1) {
+                                                allItems.set(originalIndex, updatedItem); 
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        LogUtil.logToFile(e);
+                                        LogUtil.logToFile("ItemsManager"+ "Error updating version for " + item.packageName + ": " + e.getMessage());
+                                    }
+                                }
                             }
 
                             saveItems(false);
@@ -811,5 +830,24 @@ public class ItemsManager {
         } catch (PackageManager.NameNotFoundException e) {
             return context.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
         }
+    }
+    public Drawable getDownIcon(String url,String packageName) {
+        try{
+        if(utils.downloadIcon(context,url,packageName)){
+            return Drawable.createFromPath(context.getFilesDir()+"/imgApps/"+packageName+".png");
+        }else{
+            return context.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
+        }
+    } catch (Throwable t) {
+        return context.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
+    }
+     /*   // [יישום קיים]
+        PackageManager pm = context.getPackageManager();
+        try {
+            PackageInfo pInfo = pm.getPackageInfo(packageName, 0);
+            return pInfo.applicationInfo.loadIcon(pm) != null ? pInfo.applicationInfo.loadIcon(pm) : context.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
+        } catch (PackageManager.NameNotFoundException e) {
+            return context.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
+        }*/
     }
 }

@@ -449,13 +449,14 @@ public class DownloadService extends Service {
                                     //  retryCount++;
                                     LogUtil.logToFile(" "+e.toString());
                                     // // הודעת לוג על ניסיון המשך //
-                                    //continue qitems...
-                                    quconti();
                                     try {
                                         if (output != null) output.close();
                                         if (input != null) input.close();
                                         if (connection != null) connection.disconnect();
                                     } catch (Exception ignored) {}//before breaking...
+                                    //continue qitems...
+                                    //quconti();
+                                    downloadSuccess=false;//instead of quconti - to make sure to qconti after break
                                     break; //break the "for"
                                 } finally {
                                     try {
@@ -660,6 +661,7 @@ public class DownloadService extends Service {
     }
 
     public void quconti(){
+        LogUtil.logToFile("quconti");
         //new
         notificationManager.cancel(NOTIFICATION_ID);
         //continue - get the next k v from qitems

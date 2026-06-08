@@ -13,9 +13,10 @@ public class GPlayApplicationInfo {
     public final String signature;
     public final String downloadLink;
     public final String url;
-    public final String sizeText; // גודל כטקסט (קשה לחלץ מספר מדויק ללא API)
-
-    public GPlayApplicationInfo(String packageName, String title, String versionCode, String version,String signature, String downloadLink, String url, String sizeText) {
+    public final String sizeText;
+    public final String iconLink;
+    
+    public GPlayApplicationInfo(String packageName, String title, String versionCode, String version,String signature, String downloadLink, String url, String sizeText, String iconLink) {
         this.packageName = packageName != null ? packageName : "";
         this.title = title != null ? title : "";
         this.versionCode = versionCode != null ? versionCode : "";
@@ -24,5 +25,6 @@ public class GPlayApplicationInfo {
         this.downloadLink = downloadLink != null ? downloadLink : "";
         this.url = url != null ? url : "";
         this.sizeText = sizeText != null ? sizeText : "";
+        this.iconLink = iconLink != null ? iconLink : "";
     }
 }

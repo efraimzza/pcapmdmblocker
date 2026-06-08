@@ -55,7 +55,8 @@ public class GPlayService {
     GooglePlayAPI api=null;
     static String packageName="";
     private static final String BASE_GPLAY_URL = "https://play.google.com/store/apps/details";
-
+    String iconLink="";
+    
     private static String buildGPlayUrl(String packageName) {
         return BASE_GPLAY_URL + "?id=" + packageName + "&hl=en&gl=US";
     }
@@ -90,7 +91,8 @@ public class GPlayService {
             detresponse.getItem().getDetails().getAppDetails().getVersionString(),
             "",
             ((getLinks)?getLinks(detresponse):""),
-            "", ""
+            "", "",
+            iconLink
         );
         /*
         //old
@@ -358,6 +360,9 @@ public class GPlayService {
                                                                             );
                                                                             if(detresponse.getItem().getImageCount()>0){
                                                                                 for(Image img:detresponse.getItem().getImageList()){
+                                                                                    if(img.getImageType()==4){
+                                                                                        iconLink=img.getImageUrl();
+                                                                                    }
                                                                                     LogUtil.logToFile("img type="+img.getImageType()
                                                                                     +" img url="+ img.getImageUrl()
                                                                                     +" img urlalt="+img.getImageUrlAlt()

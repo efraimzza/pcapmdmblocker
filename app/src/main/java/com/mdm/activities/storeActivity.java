@@ -334,6 +334,19 @@ public class storeActivity extends Activity {
                      progressDownload.setVisibility(View.GONE);
                      txtPkgName.setVisibility(View.GONE);
                      txtFileName.setVisibility(View.GONE);*/
+                     if(st!=null&&st.equals("a")){
+                         itemsManager.refreshAllItems(false, configManager.loadConfig(), new ItemsManager.RefreshCompleteListener() {
+                                 public void onComplete() {
+                                     // עדכון ה-UI על ה-Main Thread
+                                     uiHandler.post((new Runnable() {
+                                             public void run() {
+                                                 if(adapter!=null)
+                                                     adapter.updateData(itemsManager.getAllItemsvisible());
+                                             }
+                                         }));
+                                 }
+                             });
+                     }
                     pkgName="";
                     if(adapter!=null)
                         adapter.notifyDataSetChanged();

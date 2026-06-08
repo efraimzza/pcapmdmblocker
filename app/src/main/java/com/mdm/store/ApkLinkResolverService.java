@@ -28,7 +28,7 @@ public class ApkLinkResolverService {
         if (!info.downloadLink.isEmpty()) {
             return new ApkDownloadInfo(
                 info.packageName, "GPlay", info.title, info.version, info.versionCode, 
-                info.signature, info.downloadLink, 0L // fileSize לא נגיש
+                info.signature, info.downloadLink, 0L,info.iconLink // fileSize לא נגיש
             );
         }
                         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class ApkLinkResolverService {
                                 //if (!info.downloadLink.isEmpty()) {
                                     return new ApkDownloadInfo(
                                         info.packageName, source, info.title, info.version, info.versionCode, 
-                                        info.signature, info.downloadLink, 0L // fileSize לא נגיש
+                                        info.signature, info.downloadLink, 0L,info.iconLink // fileSize לא נגיש
                                     );
                                 //}
               //                  } catch (Exception e) {
@@ -77,7 +77,7 @@ public class ApkLinkResolverService {
                     if (!info.downloadLink.isEmpty()) {
                         return new ApkDownloadInfo(
                             info.appId, source, info.title, info.version, info.versionCode, 
-                            info.signature, info.downloadLink, 0L // fileSize לא נגיש
+                            info.signature, info.downloadLink, 0L,"" // fileSize לא נגיש
                         );
                     }
                 } 
@@ -86,7 +86,7 @@ public class ApkLinkResolverService {
                     if (!info.downloadLink.isEmpty()) {
                         return new ApkDownloadInfo(
                             info.appId, source, info.title, info.version, info.versionCode, 
-                            "", info.downloadLink, 0L // signature ו-fileSize לא נגישים
+                            "", info.downloadLink, 0L,"" // signature ו-fileSize לא נגישים
                         );
                     }
                 } 
@@ -95,7 +95,7 @@ public class ApkLinkResolverService {
                     if (!info.file.path.isEmpty()) {
                         return new ApkDownloadInfo(
                             info.packageName, source, info.name, info.file.vername, 
-                            String.valueOf(info.file.vercode), info.file.signature.sha1, info.file.path, info.size
+                            String.valueOf(info.file.vercode), info.file.signature.sha1, info.file.path, info.size,""
                         );
                     }
                 }
@@ -104,7 +104,7 @@ public class ApkLinkResolverService {
                     if (!info.downloadLink.isEmpty()) {
                         return new ApkDownloadInfo(
                             info.packageName, source, info.name, info.version, 
-                            String.valueOf(info.versionCode), info.sig, info.downloadLink, info.fileSize
+                            String.valueOf(info.versionCode), info.sig, info.downloadLink, info.fileSize,""
                         );
                     }
                 }

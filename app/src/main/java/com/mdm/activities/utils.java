@@ -2652,4 +2652,91 @@ public class utils {
                 });
         }*/
    // }
+    public static boolean downloadIcon(Context context,String fileurl,String pkgname){
+        boolean downloadSuccess = false;
+        String finalFilename =pkgname+".png";
+
+        LogUtil.logToFile(finalFilename);
+        downloadSuccess = false;
+        
+        new File(context.getFilesDir()+"/imgApps").mkdirs();
+        File tempFile = new File(context.getFilesDir()+"/imgApps", finalFilename + ".tmp");
+        //   while (retryCount < maxRetries && !downloadSuccess) {
+
+        InputStream input = null;
+        RandomAccessFile output = null;
+        HttpsURLConnection connection = null;
+        try {
+            //LogUtil.logToFile(driveUrl);
+            URL url = new URL(fileurl);
+            connection = (HttpsURLConnection) url.openConnection();
+            // // הוספת SSLContext שוב לחיבור הראשי //
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+                    @Override public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {}
+                    @Override public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {}
+                }
+            };
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            connection.setSSLSocketFactory(sslSocketFactory);
+            long existingFileSize = 0;
+            //if (tempFile.exists()) {
+            //   existingFileSize = tempFile.length();
+            // // בקשת המשך מהנקודה הקיימת //
+            //   connection.setRequestProperty("Range", "bytes=" + existingFileSize + "-");
+            // }else{
+            connection.setRequestProperty("Connection", "Close");
+            //  }
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(60000);
+            connections.put(fileurl, connection);
+            connection.connect();
+            int responseCode = connection.getResponseCode();
+            //LogUtil.logToFile("rc="+responseCode);
+            if (responseCode == HttpsURLConnection.HTTP_OK
+            //|| responseCode == HttpsURLConnection.HTTP_PARTIAL
+                ) {
+
+                output = new RandomAccessFile(tempFile, "rw");
+
+                //if (responseCode == HttpsURLConnection.HTTP_OK) {
+                existingFileSize = 0;
+                output.setLength(0); 
+                //   } else {
+                //    output.seek(existingFileSize);
+                // }
+                
+                input = connection.getInputStream();
+
+                byte[] data = new byte[8192];
+                int count;
+                while ((count = input.read(data)) != -1) {
+                    output.write(data, 0, count);
+                }
+
+                downloadSuccess = true;
+                // // סיום מוצלח: שינוי שם לקובץ סופי ללא .tmp //
+                tempFile.renameTo(new File(context.getFilesDir()+"/imgApps", finalFilename));
+
+            }
+        } catch (Exception e) {
+            //retryCount++;
+            downloadSuccess = false;
+            LogUtil.logToFile(" "+e.toString());
+            // // הודעת לוג על ניסיון המשך //
+            try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
+
+        } finally {
+            try {
+                if (output != null) output.close();
+                if (input != null) input.close();
+                if (connection != null) connection.disconnect();
+            } catch (Exception ignored) {}
+        }
+        return downloadSuccess;
+    }
 }

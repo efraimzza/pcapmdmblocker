@@ -13,8 +13,9 @@ public class ApkDownloadInfo {
     public final String signature;
     public final String downloadLink;
     public final long fileSize;
+    public final String iconLink;
 
-    public ApkDownloadInfo(String packageName, String source, String title, String version, String versionCode, String signature, String downloadLink, long fileSize) {
+    public ApkDownloadInfo(String packageName, String source, String title, String version, String versionCode, String signature, String downloadLink, long fileSize, String iconLink) {
         this.packageName = packageName != null ? packageName : "";
         this.source = source != null ? source : "";
         this.title = title != null ? title : "";
@@ -23,5 +24,6 @@ public class ApkDownloadInfo {
         this.signature = signature != null ? signature : "";
         this.downloadLink = downloadLink != null ? downloadLink : "";
         this.fileSize = fileSize;
+        this.iconLink = iconLink != null ? iconLink : "";
     }
 }

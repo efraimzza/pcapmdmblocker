@@ -110,7 +110,11 @@ public class StoreItem {
         // אם אין כותרת מקומית, נאמץ את הכותרת מהרשת
         String finalTitle = (currentItem.title == null || currentItem.title.isEmpty() || currentItem.title.equals(currentItem.packageName)) 
             ? downloadInfo.title : currentItem.title;
-
+            
+        if(downloadInfo.iconLink!=null&&!downloadInfo.iconLink.equals("")){
+            currentItem.icon=ItemsManager.getItemsManager().getDownIcon(downloadInfo.iconLink,currentItem.packageName);
+            //currentItem.icon=downloadFromIconLinkToTemproryStorage-Files/imgApps-fileName-pkgName.png(downloadInfo.iconLink);
+        }
         // יצירת אובייקט חדש (POJO immutable)
         // יצירת אובייקט חדש
         return new StoreItem(
@@ -127,6 +131,33 @@ public class StoreItem {
             downloadInfo.downloadLink,       // קישור ההורדה החדש
             downloadInfo.signature,
             Integer.parseInt(downloadInfo.versionCode), // נדרש המרה
+            updateAvailable
+        );
+    }
+    
+    public static StoreItem updateCurentVersion(StoreItem currentItem) {
+        
+        currentItem.currentVersion=ItemsManager.getItemsManager().getInstalledVersion(currentItem.packageName);
+        String finalCurrentVersion = currentItem.currentVersion;
+        //when also have last version from the last full refresh.. & with this function removing automaticaly the item from the items visible when oncomplete...
+        
+        boolean updateAvailable = VersionComparer.isNewer(currentItem.latestVersion, currentItem.currentVersion);
+        // יצירת אובייקט חדש (POJO immutable)
+        // יצירת אובייקט חדש
+        return new StoreItem(
+            currentItem.packageName, 
+            currentItem.title,
+            currentItem.icon,
+            finalCurrentVersion,             // גרסה נוכחית (של המותקן)
+            currentItem.latestVersion,                   // הגרסה האחרונה מהרשת
+            currentItem.source,
+            currentItem.itemSourceType, 
+            currentItem.customLink,
+            currentItem.isDrive,
+            currentItem.excludedFromUpdates, 
+            currentItem.downloadLink,       // קישור ההורדה החדש
+            currentItem.signature,
+            currentItem.versionCode,
             updateAvailable
         );
     }

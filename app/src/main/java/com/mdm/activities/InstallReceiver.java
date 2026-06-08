@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import com.emanuelef.remote_capture.activities.LogUtil;
+import android.os.Looper;
 
 public class InstallReceiver extends BroadcastReceiver {
     @Deprecated
@@ -61,6 +62,22 @@ public class InstallReceiver extends BroadcastReceiver {
                     dismissprogress();
                     Toast.makeText(context, "התקנה/עדכון הושלם בהצלחה עבור " + packageName, Toast.LENGTH_LONG).show();
                     // ייתכן שתרצה לרענן את רשימת האפליקציות ב-UI (לדוגמה, לשלוח ברודקאסט חזרה ל-utils)
+                    //send to update current ui items...
+                    try{
+                        Runnable r = new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    /*Intent intent = new Intent(mactivity, DownloadService.class);
+                                     mactivity. bindService(intent,mactivity.serviceConnection, Context.BIND_AUTO_CREATE);
+                                     */
+                                    //dont bind beacause has can bind when ui is stopped & isnt have onstop to make binder null to stop the runnable when isnt in ui...
+                                    LogUtil.logToFile("update ui from install receiver");//if isnt already connected
+                                    storeActivity.startUiUpdater();
+                                }catch(Throwable t){LogUtil.logToFile(t);}
+                            }};
+                        new Handler(Looper.getMainLooper()).post(r);
+                    }catch(Throwable t){LogUtil.logToFile(t);}
                     break;
                 case PackageInstaller.STATUS_FAILURE:
                 case PackageInstaller.STATUS_FAILURE_ABORTED:
