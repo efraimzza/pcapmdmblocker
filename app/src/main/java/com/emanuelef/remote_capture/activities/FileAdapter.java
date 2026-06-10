@@ -103,6 +103,8 @@ public class FileAdapter extends BaseAdapter {
 
     private int getDefaultIconRes(FileItem item) {
         if (new File(item.path).isDirectory()) return R.drawable.ic_folder;
+        if (item.name.toLowerCase(Locale.ROOT).endsWith(".txt")||
+            item.name.toLowerCase(Locale.ROOT).endsWith(".json")) return R.drawable.ic_text_snippet;
         if (isApkFile(item.name)) return R.drawable.ic_apk;
         return R.drawable.ic_unknown;
     }

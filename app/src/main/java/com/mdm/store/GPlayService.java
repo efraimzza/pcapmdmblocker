@@ -215,7 +215,7 @@ public class GPlayService {
                 
                
                 .setEmail(json.getString("email"))
-                .setGsfId(json.getString("gsfId"))
+                //.setGsfId(json.getString("gsfId"))
                 .setToken(json.getString("authToken"))
                 ;
             if(builder!=null){

@@ -50,7 +50,9 @@ public class Blocklist extends MatchList {
             }else{
                 cpmUidToGrace.put(entry.getKey(),entry.getValue());
             }
-        }*/
+        }
+        mUidToGrace=cpmUidToGrace;
+        */
         //old
         /*while(iter.hasNext()) {
             Map.Entry<Integer, Long> entry = iter.next();

@@ -100,17 +100,18 @@ public class storeActivity extends Activity {
         if(connected){
             NetworkInfo ni=cm.getNetworkInfo(cm.getActiveNetwork());
             //LogUtil.logToFile("def==ln="+cm.getAllNetworks().length+"ei="+ni.getExtraInfo()+"re="+ni.getReason()+"st="+ni.getSubtypeName()+"t="+ni.getTypeName()+"ds="+ni.getDetailedState().name()+"s="+ni.getState().name());
-            
+
             for(Network ne:cm.getAllNetworks()){
-                 ni=cm.getNetworkInfo(ne);
+                ni=cm.getNetworkInfo(ne);
                 //LogUtil.logToFile("ln="+cm.getAllNetworks().length+"ei="+ni.getExtraInfo()+"re="+ni.getReason()+"st="+ni.getSubtypeName()+"t="+ni.getTypeName()+"ds="+ni.getDetailedState().name()+"s="+ni.getState().name());
                 NetworkCapabilities nc=cm.getNetworkCapabilities(ne);
                 //LogUtil.logToFile("cvpn="+nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_VPN)+"tvpn="+nc.hasTransport(NetworkCapabilities.TRANSPORT_VPN)+"up="+nc.getLinkUpstreamBandwidthKbps()+"do="+nc.getLinkDownstreamBandwidthKbps()+(Build.VERSION.SDK_INT>=29?("stren="+nc.getSignalStrength()):""));
             }
-        if(refreshinfo){
-            refreshinfocon=true;
-        Toast.makeText(this, "מתחיל בדיקת עדכונים...", Toast.LENGTH_SHORT).show();
-        }}else if(refreshinfo){
+            if(refreshinfo){
+                refreshinfocon=true;
+                Toast.makeText(this, "מתחיל בדיקת עדכונים...", Toast.LENGTH_SHORT).show();
+            }
+        }else if(refreshinfo){
             Toast.makeText(this, "התחבר לאינטרנט ונסה שוב...", Toast.LENGTH_SHORT).show();
         }
         itemsManager.refreshAllItems(refreshinfocon, configManager.loadConfig(), new ItemsManager.RefreshCompleteListener() {
@@ -253,7 +254,7 @@ public class storeActivity extends Activity {
         LogUtil.logToFile("onst3");
         Intent intent = new Intent(this, DownloadService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        st="a";
+        st="start";
     }
 
     @Override
@@ -265,7 +266,7 @@ public class storeActivity extends Activity {
         }
         binder=null;//to stop the runnable if isnt in ui...
         uiHandler.removeCallbacksAndMessages(null);
-        st="b";
+        st="stop";
     }
     public static String stat="";
     public static String statusinf="";
@@ -334,7 +335,7 @@ public class storeActivity extends Activity {
                      progressDownload.setVisibility(View.GONE);
                      txtPkgName.setVisibility(View.GONE);
                      txtFileName.setVisibility(View.GONE);*/
-                     if(st!=null&&st.equals("a")){
+                     if(st!=null&&st.equals("start")){
                          itemsManager.refreshAllItems(false, configManager.loadConfig(), new ItemsManager.RefreshCompleteListener() {
                                  public void onComplete() {
                                      // עדכון ה-UI על ה-Main Thread

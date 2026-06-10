@@ -34,6 +34,7 @@ import com.mdm.activities.storeActivity;
 import java.util.concurrent.Executor;
 import android.os.Handler;
 import android.os.Looper;
+import com.editor.EditorActivity;
 
 public class picker extends Activity { 
 
@@ -146,11 +147,16 @@ public class picker extends Activity {
                                 if(clickedItem.path.toLowerCase().endsWith(".json")){
                                     storeActivity.pickedfilepath=clickedItem.path;
                                     finish();
+                                }else if(clickedItem.path.toLowerCase().endsWith(".txt")){
+                                    startActivity(new Intent(picker.this,EditorActivity.class).putExtra("path",clickedItem.path));
                                 }
                             }else if(from.equals("mbackuppickzip")){
                                 if(clickedItem.path.toLowerCase().endsWith(".zipmdm")){
                                     mbackupActivity.pickedfilepath=clickedItem.path;
                                     finish();
+                                }else if(clickedItem.path.toLowerCase().endsWith(".txt")||
+                                         clickedItem.path.toLowerCase().endsWith(".json")){
+                                    startActivity(new Intent(picker.this,EditorActivity.class).putExtra("path",clickedItem.path));
                                 }
                             }
                             //Toast.makeText(getApplicationContext(), "Path: " + clickedItem.path, Toast.LENGTH_LONG).show();

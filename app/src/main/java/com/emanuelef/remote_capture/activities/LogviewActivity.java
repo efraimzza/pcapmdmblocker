@@ -45,6 +45,8 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import java.io.FileWriter;
 import java.io.IOException;
+import android.content.Intent;
+import com.editor.EditorActivity;
 
 public class LogviewActivity extends BaseActivity  {
     private static final String TAG = "LogviewActivity";
@@ -216,6 +218,9 @@ public class LogviewActivity extends BaseActivity  {
                 // silent
             }
             curfra.reloadLog();
+            return true;
+        }else if(id == R.id.editor) {
+            startActivity(new Intent(this,EditorActivity.class).putExtra("path","/storage/emulated/0/log.txt"));
             return true;
         }
 

@@ -25,8 +25,13 @@
         android:showAsAction="ifRoom" />
     <item
         android:id="@+id/clear"
-        android:title="clear"
+        android:title="@string/delete"
         android:orderInCategory="30"
-        android:icon="@drawable/ic_share"
+        android:icon="@drawable/ic_clear"
         android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/editor"
+        android:title="editor"
+        android:orderInCategory="50"
+        android:showAsAction="never" />
 </menu>
