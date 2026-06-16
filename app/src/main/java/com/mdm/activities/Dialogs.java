@@ -392,7 +392,7 @@ public class Dialogs {
             builder.show();
         }
 
-        // --- 5. דיאלוג אישור הורדה (showDownloadConfirmation) ---
+    
     public static final Executor etMainExecutor = new Executor() {
         private final Handler handler = new Handler(Looper.getMainLooper());
         @Override
@@ -408,7 +408,7 @@ public class Dialogs {
             builder.setCancelable(false);
             builder.setPositiveButton("הורדה והתקנה", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // הדרישה: download option - open
+                        
                         try {
                             
                             String mlink="";
@@ -847,7 +847,7 @@ public class Dialogs {
             //final List<String> currentCheckList = itemsManager.getConfigManager().getConfig().installedAppsCheckList;
            // final List<String> currentCheckList = itemsManager.installedAppsCheckList(context);
             
-                    final List<String> currentCheckList =new ArrayList();
+                    final List<String> currentCheckList =new ArrayList<>();
                     
             for(StoreItem si: itemsManager.getAllItems()){
                 if(si.itemSourceType.equals(StoreItem.ItemSourceType.INSTALLED_APP)){
@@ -872,7 +872,7 @@ public class Dialogs {
                             public void run() {
            
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(isSystemApps ? "בחר אפליקציות מערכת לבדיקה" : "בחר אפליקציות משתמש לבדיקה");
+            builder.setTitle(isSystemApps ? "בחר אפליקציות מערכת לעדכון" : "בחר אפליקציות משתמש לעדכון");
 
             builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override

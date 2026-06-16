@@ -48,6 +48,7 @@ import com.github.yeriomin.playstoreapi.Image;
 import com.emanuelef.remote_capture.model.Prefs;
 import com.github.yeriomin.playstoreapi.ResponseWrapper;
 import com.github.yeriomin.playstoreapi.PlayResponse;
+import com.mdm.activities.ItemsManager;
 
 public class GPlayService {
 
@@ -397,7 +398,11 @@ public class GPlayService {
         try{
         if(response!=null&&response.getItem().getOfferCount()>0){
             offerType= response.getItem().getOffer(0).getOfferType();
-            AndroidAppDeliveryData aadd=getResult(api,packageName);
+            //long installedVersionCode=ItemsManager.getItemsManager().getInstalledVersionCode(packageName);
+            long installedVersionCode=0;
+            //not update now... need to change session to MODE_INHERIT_EXISTING & send only the pkg name - not parse the package name in the session because only adding splits...
+            //for now check only the result from gplay for updates...
+            AndroidAppDeliveryData aadd=getResult(api,packageName,installedVersionCode);
             //res+=offerType+" ot;"+versionCode+" vc;"+response.getItem().getTitle();
             //res+="\n"+aadd.getDownloadUrl();
             json.put("base.apk",aadd.getDownloadUrl());
@@ -464,7 +469,7 @@ public class GPlayService {
                         versionCode=response.getItem().getDetails().getAppDetails().getVersionCode();
                         if(response!=null&&response.getItem().getOfferCount()>0){
                             offerType= response.getItem().getOffer(0).getOfferType();
-                            AndroidAppDeliveryData aadd=getResult(api,packageName);
+                            AndroidAppDeliveryData aadd=getResult(api,packageName,0);
                             //res+=offerType+" ot;"+versionCode+" vc;"+response.getItem().getTitle();
                             //res+="\n"+aadd.getDownloadUrl();
                             LogUtil.logToFile(offerType+" ot;"+versionCode+" vc;"+response.getItem().getTitle());
@@ -492,10 +497,10 @@ public class GPlayService {
     protected long versionCode=0;
     protected int offerType=0;
 
-    protected AndroidAppDeliveryData getResult(GooglePlayAPI api,String packageName) throws IOException {
+    protected AndroidAppDeliveryData getResult(GooglePlayAPI api,String packageName,long installedVersion) throws IOException {
         //api.acquire(packageName,versionCode,offerType);
         purchase(api,packageName);
-        delivery(api,packageName);
+        delivery(api,packageName,installedVersion);
         return deliveryData;
     }
     void save(){
@@ -628,10 +633,10 @@ public class GPlayService {
         }
     }
 
-    protected void delivery(GooglePlayAPI api,String packageName) throws IOException {
+    protected void delivery(GooglePlayAPI api,String packageName,long installedVersion) throws IOException {
         DeliveryResponse deliveryResponse = api.delivery(
             packageName,
-            0,
+            installedVersion,
             versionCode,
             offerType,
             downloadToken

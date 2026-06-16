@@ -16,6 +16,8 @@ import com.emanuelef.remote_capture.activities.PasswordManager;
 import android.util.TypedValue;
 import android.widget.ProgressBar;
 import android.content.Intent;
+import android.provider.Settings;
+import android.net.Uri;
 
 public class StoreItemAdapter extends BaseAdapter {
 
@@ -121,7 +123,7 @@ public class StoreItemAdapter extends BaseAdapter {
             holder.statusInfo.setVisibility(View.GONE);
             holder.progressDownload.setVisibility(View.GONE);
         }
-        // שימוש ב-OnClickListener מסורתי (ללא Lambda)
+        
         holder.button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // לוגיקת הורדה: פתיחת הקישור הפנימי של הפריט
@@ -142,7 +144,16 @@ public class StoreItemAdapter extends BaseAdapter {
                     Dialogs.showDownloadConfirmation(context, item, itemsManager);
                 }
             });
-
+        convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isAppInstalled(item.packageName)){
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        intent.setData(Uri.fromParts("package", item.packageName, null));
+                        context.startActivity(intent);
+                    }
+                }
+            });
         // 7. Long Click (edit link, remove item) - פתיחת Context Menu או דיאלוג
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
                 public boolean onLongClick(View v) {

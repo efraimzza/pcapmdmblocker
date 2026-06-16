@@ -33,10 +33,11 @@ public class transferOwner extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.setTheme(transferOwner.this);
         PasswordManager.requestPasswordAndSave(new Runnable(){
                 @Override
                 public void run() {
-                    Utils.setTheme(transferOwner.this);
+                    
                     setContentView(R.layout.activity_transfer_owner);
                     ListView lv=findViewById(R.id.actranlv);
                     PackageManager pm=getPackageManager();

@@ -27,6 +27,7 @@ import android.os.IBinder;
 import android.os.Handler;
 import android.os.Looper;
 import android.content.Context;
+import java.util.concurrent.Executor;
 
 public class storeActivity extends Activity {
 
@@ -182,9 +183,90 @@ public class storeActivity extends Activity {
         } else if (id == R.id.menu_refresh) {
             refreshData(true);
             return true;
+        } else if (id == R.id.menu_update_all) {
+            //hide if is current down or queue...
+            if(pkgName.equals("")&&(binder==null||(binder!=null&&binder.getService()==null))){
+                updateAll();
+                Toast.makeText(storeActivity.this, "מעדכן...", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(storeActivity.this, "עדיין מעדכן...", Toast.LENGTH_SHORT).show();
+            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
+    void updateAll(){
+        /*if ((item.downloadLink != null && !item.downloadLink.equals("")&&(item.downloadLink.startsWith("https:/")))||(item.customLink!=null&&!item.customLink.equals(""))||(item.source.equals("GPlay"))) {
+            }
+            //or gplay or downlink startsWith https or customlink is available
+        boolean isInstalled = isAppInstalled(item.packageName); // פונקציה לבדיקת התקנה
+        if (isInstalled) {
+            if (item.updateAvailable||item.itemSourceType.equals(StoreItem.ItemSourceType.CUSTOM_LINK)) {
+                holder.button.setText("עדכון");
+                holder.button.setVisibility(View.VISIBLE);
+            } else {
+                //not update
+                holder.button.setVisibility(View.GONE);
+            }
+        } else {
+            //need logic update - only if is update available meens version isnt 0... , or item.itemSourceType.equals(StoreItem.ItemSourceType.CUSTOM_LINK)) 
+            holder.button.setText("התקן");
+            holder.button.setVisibility(View.VISIBLE);
+        }*/
+        for(final StoreItem item:itemsManager.AllItemsAvailable()){
+        try {
+            
+            String mlink="";
+            if(item.customLink != null && !item.customLink.equals("")){
+                mlink = item.customLink;
+            }else{
+                mlink = item.downloadLink;
+            }
+            if(!mlink.equals("")){
+                //if(!Prefs.istest(PreferenceManager.getDefaultSharedPreferences(context)))
+                //utils.startDownloadnew(context,mlink,item.isDrive);
+                //else
+                utils.startDownloadnew(this,mlink,item.packageName,item.isDrive?"drive":"normal");
+            }
+            else if((item.source.equals("GPlay"))){
+                new Thread(){public void run(){
+                        try{
+                            //regenerate
+                            final String jstr=itemsManager.resolverService.gplayLinkResolver(storeActivity.this,item.packageName).downloadLink;
+                            etMainExecutor.execute(new Runnable(){
+                                    @Deprecated
+                                    @Override
+                                    public void run() {
+                                        if(!jstr.equals("")){
+                                            //if(!Prefs.istest(PreferenceManager.getDefaultSharedPreferences(context)))
+                                            //utils.startDownloadnewGplay(context,item.packageName, jstr);
+                                            //else
+                                            utils.startDownloadnew(storeActivity.this,jstr,item.packageName,"gplay");
+                                            /*JSONObject json = new JSONObject(jstr);
+                                             Iterator<String> its=json.keys();
+                                             while(its.hasNext()){
+                                             json.getString(its.next());
+                                             }*/
+                                        }
+                                    }
+                                });
+
+                        } catch (Exception e) {LogUtil.logToFile(e);}
+                    }}.start();
+            }
+        } catch (Exception e) {
+            LogUtil.logToFile(e.getMessage()+"d:"+item.downloadLink+"c:"+item.customLink);
+            Toast.makeText(this, "שגיאה בפתיחת הקישור: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        }
+    }
+    public static final Executor etMainExecutor = new Executor() {
+        private final Handler handler = new Handler(Looper.getMainLooper());
+        @Override
+        public void execute(Runnable command) {
+            handler.post(command);
+        }
+    };
    /*
     private static final int PICK_FILE_REQUEST_CODE = 42;
     

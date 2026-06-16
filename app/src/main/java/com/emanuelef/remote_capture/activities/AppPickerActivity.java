@@ -57,6 +57,8 @@ import com.emanuelef.remote_capture.model.MatchList;
 import com.emanuelef.remote_capture.model.Blocklist;
 import com.emanuelef.remote_capture.model.AppDescriptor;
 import com.emanuelef.remote_capture.AppsResolver;
+import com.mdm.activities.StoreItem;
+import com.mdm.activities.ItemsManager;
 
 @Deprecated
 public class AppPickerActivity extends Activity {
@@ -155,24 +157,56 @@ public class AppPickerActivity extends Activity {
             List<AppItem> appList = new ArrayList<AppItem>();
             //AppsResolver mApps;
             //mApps = new AppsResolver(getApplicationContext());
+            final List<String> currentCheckList =new ArrayList<>();
+            if(state.equals("store")){
+                //remove manual custom items
+                boolean faund=true;
+                while(faund){
+                    faund=false;
+                    for(ApplicationInfo pi:installedApps){
+                        for(StoreItem si:ItemsManager.getItemsManager().getAllItems()){
+                            if(!si.itemSourceType.equals(StoreItem.ItemSourceType.INSTALLED_APP)&&si.packageName.equals(pi.packageName)){
+                                installedApps.remove(pi);
+                                faund=true;
+                                break;
+                            }
+                        }
+                        if(faund)
+                            break;
+                    }
+                }
+                //is in list
+                
+                for(StoreItem si: ItemsManager.getItemsManager().getAllItems()){
+                    if(si.itemSourceType.equals(StoreItem.ItemSourceType.INSTALLED_APP)){
+                        currentCheckList.add(si.packageName);
+                        //LogUtil.logToFile("added="+si.packageName);
+                    }
+                }
+                
+            }
+            
             for (ApplicationInfo appInfo : installedApps) {
-                boolean isHiddenByMDM =false;
+                boolean isSelected =false;
                 try{
                     //is in rules
                     
                     if(state.equals("whitelist")){
 
                         final MatchList whitelist = PCAPdroid.getInstance().getMalwareWhitelist();
-                        isHiddenByMDM=whitelist.matchesApp(appInfo.uid);
+                        isSelected=whitelist.matchesApp(appInfo.uid);
                     }else if(state.equals("fwWhitelist")){
                         final MatchList fwWhitelist = PCAPdroid.getInstance().getFirewallWhitelist();
-                        isHiddenByMDM=fwWhitelist.matchesApp(appInfo.uid);
+                        isSelected=fwWhitelist.matchesApp(appInfo.uid);
                     }else if(state.equals("decryptionList")){
                         final MatchList decryptionList = PCAPdroid.getInstance().getDecryptionList();
-                        isHiddenByMDM=decryptionList.matchesApp(appInfo.uid);
+                        isSelected=decryptionList.matchesApp(appInfo.uid);
                     }else if(state.equals("blocklist")){
                         final Blocklist blocklist = PCAPdroid.getInstance().getBlocklist();
-                        isHiddenByMDM=blocklist.matchesApp(appInfo.uid);
+                        isSelected=blocklist.matchesApp(appInfo.uid);
+                    }else if(state.equals("store")){
+                        isSelected=currentCheckList.contains(appInfo.packageName);
+                        //LogUtil.logToFile("sel="+appInfo.packageName);
                     }
                     //AppDescriptor app = mApps.getAppByPackage(package_name, 0);
                     
@@ -193,7 +227,7 @@ public class AppPickerActivity extends Activity {
                                 appInfo.loadLabel(pm).toString(),
                                 appInfo.packageName,
                                 appInfo.loadIcon(pm),
-                                isHiddenByMDM,
+                                isSelected,
                                 (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0,
                                 hasLauncherIcon(pm, appInfo.packageName),
                                 lastUpdateTime
@@ -201,7 +235,8 @@ public class AppPickerActivity extends Activity {
             }
             return appList;
         }
-
+        
+        
         @Deprecated
         @Override
         protected void onPostExecute(List<AppItem> result) {
@@ -358,13 +393,20 @@ public class AppPickerActivity extends Activity {
         List<String> ss=new ArrayList<>();
         List<String> sus=new ArrayList<>();
         List<String> unsus=new ArrayList<>();
-        for (AppItem appItem : mOriginalAppList) { // עבר על הרשימה המקורית
+        
+        final List<String> currentCheckList =new ArrayList<>();
+        for(StoreItem si: ItemsManager.getItemsManager().getAllItems()){
+            if(si.itemSourceType.equals(StoreItem.ItemSourceType.INSTALLED_APP)){
+                currentCheckList.add(si.packageName);
+            }
+        }
+        for (AppItem appItem : mOriginalAppList) {
+            // עבר על הרשימה המקורית
             // אם מצב ה-hidden השתנה עבור האפליקציה הזו
             boolean currentHiddenState = false;
             try{
-                int uid=0;
                 
-                    uid=Utils.getPackageUid(getPackageManager(), appItem.getPackageName(), 0);
+                
                 MatchList matchList = null;
                 Blocklist blocklist=null;
                 //LogUtil.logToFile(state);
@@ -377,34 +419,47 @@ public class AppPickerActivity extends Activity {
                 }else if(state.equals("blocklist")){
                     blocklist = PCAPdroid.getInstance().getBlocklist();
                 }
-                if(!state.equals("blocklist")){
+                
+                int uid=0;
+                if(matchList!=null||blocklist!=null){
+                    uid=Utils.getPackageUid(getPackageManager(), appItem.getPackageName(), 0);
+                }
+                
+                if(!state.equals("blocklist")&&matchList!=null){
                     currentHiddenState=matchList.matchesApp(uid);
                 }else if(state.equals("blocklist")){
                     currentHiddenState=blocklist.matchesApp(uid);
+                }
+                else if(state.equals("store")){
+                    currentHiddenState=currentCheckList.contains(appItem.getPackageName());
                 }
                 
                 //currentHiddenState = mDpm.isPackageSuspended(mAdminComponentName, appItem.getPackageName());
             
             if (currentHiddenState != appItem.isHidden()) {
                 if(appItem.isHidden()){
-                    if(!state.equals("blocklist")){
+                    if(!state.equals("blocklist")&&matchList!=null){
                         matchList.addApp(appItem.getPackageName());
                     }else if(state.equals("blocklist")){
                         blocklist.addApp(appItem.getPackageName());
                     }
-                    
+                    else if(state.equals("store")){
+                        currentCheckList.add(appItem.getPackageName());
+                    }
                     //sus.add(appItem.getPackageName());
                 }else{
-                    if(!state.equals("blocklist")){
+                    if(!state.equals("blocklist")&&matchList!=null){
                         matchList.removeApp(appItem.getPackageName());
                     }else if(state.equals("blocklist")){
                         blocklist.removeApp(appItem.getPackageName());
                     }
-                    
+                    else if(state.equals("store")){
+                        currentCheckList.remove(appItem.getPackageName());
+                    }
                     //unsus.add(appItem.getPackageName());
                 }
             }
-                if(!state.equals("blocklist")){
+                if(!state.equals("blocklist")&&matchList!=null){
                     matchList.save();
                 }else if(state.equals("blocklist")){
                     blocklist.saveAndReload();
@@ -419,6 +474,37 @@ public class AppPickerActivity extends Activity {
                 }
             }catch(Exception e){LogUtil.logToFile(e);}
 
+        }
+        //logic to add & remove
+        if(state.equals("store")){
+            ItemsManager itemsManager=ItemsManager.getItemsManager();
+            for(String pn: currentCheckList){
+                itemsManager.addItem(
+                    new StoreItem(
+                        pn, itemsManager.getTitle( pn),itemsManager.getIcon(pn), itemsManager.getInstalledVersion(pn), "N/A", "מערכת",
+                        StoreItem.ItemSourceType.INSTALLED_APP, "",false,
+                        false, "", "", 0, false
+                    ));
+            }
+            List<ApplicationInfo> currentInstalledApps = getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA | PackageManager.MATCH_UNINSTALLED_PACKAGES);
+            //List<PackageInfo> currentInstalledApps = itemsManager.getInstalledApps(isSystemApps);
+            List<String> curinstpn=new ArrayList<>();
+            for(ApplicationInfo pi: currentInstalledApps){
+                curinstpn.add(pi.packageName);
+            }
+            //to remove item whats isnt in check list & is installed (not remove current uninstalled or not available apps) & is cur type
+            boolean found=true;
+            while(found){
+                found=false;
+                for(StoreItem si: itemsManager.getAllItems()){
+                    LogUtil.logToFile(si.itemSourceType.name()+si.packageName+currentCheckList.contains(si.packageName)+curinstpn.contains(si.packageName));
+                    if(si.itemSourceType.equals(StoreItem.ItemSourceType.INSTALLED_APP)&&curinstpn.contains(si.packageName)&&!currentCheckList.contains(si.packageName)){
+                        itemsManager.removeItem(si);
+                        found=true;
+                        break;
+                    }
+                }
+            }
         }
         //logic to add & remove
         /*

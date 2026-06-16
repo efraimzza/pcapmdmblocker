@@ -25,7 +25,8 @@ public class accser extends AccessibilityService {
     public static accser sinsta;
     static boolean access=true;
     boolean mcureve=false;
-    public static boolean blockStatus=true,blockNewsletter=true,blockNewsletterForwarded=false;
+    boolean mcurevei=false;
+    public static boolean blockStatus=true,blockNewsletter=true,blockNewsletterForwarded=false,blockcarsetting=false;
     static SharedPreferences sp=null;
     
     @Override
@@ -61,8 +62,16 @@ public class accser extends AccessibilityService {
             if(access){
                 try {
                     mcureve=false;
+                    mcurevei=false;
                     //LogUtil.logToFile("eve"+event.getPackageName());
                     if(event.getPackageName()!=null)
+                    {
+                        if(blockcarsetting){
+                            LogUtil.logToFile("curevepkg= "+event.getPackageName());
+                            pkgRules("com.android.settings","","id,str",event);
+                            pkgRules("com.dofun.carsetting","","id,str",event);
+                        }
+                        //pkgRules("com.whatsapp","","id",event);
                         if(event.getPackageName().toString().contains("com.whatsapp")){
                             AccessibilityEvent ae=event;
                                 ani(ae.getSource(),ae);
@@ -73,6 +82,7 @@ public class accser extends AccessibilityService {
                                     }
                                 }
                         }
+                    }
 
                 } catch (Exception e) {
                     LogUtil.logToFile(e.toString());
@@ -145,6 +155,7 @@ public class accser extends AccessibilityService {
             blockStatus=sp.getBoolean("distatus",true);
             blockNewsletter=sp.getBoolean("dischannel",true);
             blockNewsletterForwarded=sp.getBoolean("disforwardchannel",false);
+            blockcarsetting=sp.getBoolean("discarsetting",false);
             //LogUtil.logToFile("connected");
             refreshacc.refreshacc(getApplicationContext());
         }catch(Exception e){LogUtil.logToFile(e.toString());}
@@ -178,7 +189,21 @@ public class accser extends AccessibilityService {
         return sinsta;
     }
 
-    
+    void pkgRules(String pkg,String jsrules,String type,AccessibilityEvent event){
+        
+        if(event.getPackageName().toString().contains(pkg)){
+            
+            AccessibilityEvent ae=event;
+            
+            anii(ae.getSource(),ae,pkg,"",type);
+            for (int i=0;i < ae.getRecordCount();i++) {
+                AccessibilityRecord ar=ae.getRecord(i);
+                if (ar != null) {
+                    anii(ar.getSource(),ae,pkg,"",type);
+                }
+            }
+        }
+    }
     
     void ani(AccessibilityNodeInfo ani,AccessibilityEvent event) {
         try {
@@ -250,6 +275,103 @@ public class accser extends AccessibilityService {
                     if(mcureve)break;
                     //LogUtil.logToFile("overfor2");
                     ani(ani.getChild(i),event);
+                }
+            }
+        } catch (Exception e) {
+            LogUtil.logToFile(e.toString());
+        }
+    }
+    void anii(AccessibilityNodeInfo ani,AccessibilityEvent event,String pkg,String rules, String type) {
+        try {
+            if (ani != null) {
+                List<CharSequence> li=new ArrayList<>();
+                if(type.contains("id")){
+                    li.add(ani.getViewIdResourceName());
+                }
+                if(type.contains("str")){
+                    li.add(ani.getContentDescription());
+                    li.add(ani.getHintText());
+                    li.add(ani.getPaneTitle());
+                    li.add(ani.getStateDescription());
+                    li.add(ani.getTooltipText());
+                    li.add(ani.getText());
+                }
+                
+                //  List<CharSequence> li=new ArrayList<>();
+                //li.add(ani.getContentDescription());
+                //li.add(ani.getHintText());
+                //li.add(ani.getPaneTitle());
+                //li.add(ani.getStateDescription());
+                //li.add(ani.getTooltipText());
+                //  li.add(ani.getViewIdResourceName());
+                //li.add(ani.getWindowId() + "");
+                for (CharSequence csc:li) {
+                //String c=ani.getViewIdResourceName();
+                
+                if (csc != null) {
+                    String c=csc.toString().toLowerCase();
+                       if (!c.equals("") || !c.equals("null")) {
+                           LogUtil.logToFile(pkg+event.getClassName()+ c);
+                    //if(c.toString().contains(":id/")&&!c.toString().contains("android:id/")){
+                    //LogUtil.logToFile(c+" type="+typestr( event.getEventType()));
+                    //  if(c.toString().contains("rb_system")&&event.getEventType()==1){
+                    //old
+                    /*
+                     if(c.contains("newsletter_")&&!c.contains("newsletter_name_forwarded_message")){
+
+                     //quitApplication.quitApplication(this);
+                     performSystemBack();
+                     LogUtil.logToFile("killappd click rb system "+c);
+                     mcureve=true;
+                     // break;
+                     }
+                     */
+                    //or
+                    /*if (blockNewsletter && c.contains("newsletter_") && (!c.contains("newsletter_name_forwarded_message") || blockNewsletterForwarded)) {
+                        performSystemBack();
+                        LogUtil.logToFile("killappd click rb system " + c);
+                        mcurevei=true;
+                    }*/
+                           if(c.contains("שחזור")||c.contains("איפוס")||c.contains("שיחזור")||c.contains("אפס")||c.contains("factory")||c.contains("יצרן")){
+                               performSystemBack();
+                               LogUtil.logToFile("killapp "+pkg + c);
+                               mcurevei=true;
+                           }
+                    //or
+                    /*
+                     if (blockNewsletter && c.contains("newsletter_")) {
+                     boolean isForwarded = c.contains("newsletter_name_forwarded_message");
+
+                     if (isForwarded && !blockNewsletterForwarded) {
+                     LogUtil.logToFile("Newsletter allowed: forwarded and filter is off");
+                     } else {
+                     performSystemBack();
+                     LogUtil.logToFile("Newsletter blocked: " + c);
+                     }
+                     }
+                     */
+                    // }
+                    //detect(c,"צ'אטים");
+                    /*if (c.equals("צ'אטים")) {
+                     quitApplication.quitApplication(this);
+                     LogUtil.logToFile("killapp");
+                     }*/
+                    //}
+                }
+                 }
+                /*if (ani.getExtras() != null) {
+                 Object[] ext=ani.getExtras().keySet().toArray();
+                 for (Object o:ext) {
+                 //LogUtil.logToFile(o);
+                 }*/
+
+                 }
+
+                for (int i=0;i < ani.getChildCount();i++) {
+                    //LogUtil.logToFile("overfor1");
+                    if(mcurevei)break;
+                    //LogUtil.logToFile("overfor2");
+                    anii(ani.getChild(i),event,pkg,"",type);
                 }
             }
         } catch (Exception e) {

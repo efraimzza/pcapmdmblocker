@@ -17,6 +17,8 @@ import java.util.Set;
 import com.emanuelef.remote_capture.R;
 import android.content.pm.PackageInfo;
 import com.emanuelef.remote_capture.activities.LogUtil;
+import com.emanuelef.remote_capture.activities.AppPickerActivity;
+import android.content.Intent;
 /*
 public class SettingsFragment extends PreferenceFragment 
 implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -29,11 +31,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        // אתחול המנג'רים
+        
         configManager = new ConfigManager(getActivity());
         itemsManager = new ItemsManager(getActivity());
 
-        // עדכון סיכומי ברירת המחדל
+        
         updatePreferenceSummaries();
     }
 
@@ -57,10 +59,10 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
             updatePreferenceSummary(pref, sharedPreferences.getString(key, ""));
         }
 
-        // לאחר כל שינוי, יש לשמור את כל הקונפיגורציה ב-ConfigManager כדי לעדכן את המודל
+        
         saveConfigFromPreferences();
 
-        // עדכון סדר הקדימות הגלובלי (סטטי)
+        
         if (key.equals("source_priority_list")) {
             String priorityString = sharedPreferences.getString(key, "");
             List<String> newPriorityList = stringToList(priorityString);
@@ -78,21 +80,19 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
         updatePreferenceSummary(findPreference("installed_apps_check_list"), 
                                 sharedPrefs.getString("installed_apps_check_list", ""));
 
-        // טיפול בכפתור האיפוס
+        
         Preference clearPref = findPreference("clear_all_items");
         if (clearPref != null) {
             clearPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        // הצגת דיאלוג אישור לפני איפוס
+                        
                         Dialogs.showClearItemsConfirmationDialog(getActivity(), itemsManager);
                         return true;
                     }
                 });
         }
 
-        // ודא שההגדרות הנוכחיות של המערכת (ConfigManager) משתקפות ב-UI
-        // אם לא קיימות, שמור את ברירות המחדל של ה-XML
         saveConfigFromPreferences();
     }
 
@@ -131,7 +131,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
         configManager.saveConfig(newConfig);
     }
 
-    // --- עזרי המרה ---
+    
     private List<String> stringToList(String s) {
         if (s == null || s.trim().isEmpty()) {
             return new ArrayList<>();
@@ -148,18 +148,19 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
     public class storeSettingsFragment extends PreferenceFragment 
     implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
-        private ConfigManager configManager;
-        private ItemsManager itemsManager;
-        private SharedPreferences defaultPrefs;
+    private ConfigManager configManager;
+    private ItemsManager itemsManager;
+    private SharedPreferences defaultPrefs;
 
-        private static final String KEY_SELECT_SYSTEM_APPS = "select_system_apps";
-        private static final String KEY_SELECT_USER_APPS = "select_user_apps";
-       // public static final String KEY_CHECK_LIST = "installed_apps_check_list";
-        private static final String KEY_PRIORITY_LIST = "source_priority_list";
+    private static final String KEY_SELECT_APPS = "select_apps";
+    private static final String KEY_SELECT_SYSTEM_APPS = "select_system_apps";
+    private static final String KEY_SELECT_USER_APPS = "select_user_apps";
+    // public static final String KEY_CHECK_LIST = "installed_apps_check_list";
+    private static final String KEY_PRIORITY_LIST = "source_priority_list";
     private static final String KEY_VIEW_PRIORITY_LIST = "view_priority_list";
-        private static final String KEY_CLEAR_ITEMS = "clear_all_items";
+    private static final String KEY_CLEAR_ITEMS = "clear_all_items";
     private static final String KEY_CLEAR_AUTH = "clear_auth";
-
+    
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -173,8 +174,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
             defaultPrefs = getPreferenceScreen().getSharedPreferences();
 
             // 1. הגדרת Click Listeners
-            findPreference(KEY_SELECT_SYSTEM_APPS).setOnPreferenceClickListener(this);
-            findPreference(KEY_SELECT_USER_APPS).setOnPreferenceClickListener(this);
+            findPreference(KEY_SELECT_APPS).setOnPreferenceClickListener(this);
+            //findPreference(KEY_SELECT_SYSTEM_APPS).setOnPreferenceClickListener(this);
+            //findPreference(KEY_SELECT_USER_APPS).setOnPreferenceClickListener(this);
             findPreference(KEY_CLEAR_ITEMS).setOnPreferenceClickListener(this);
             findPreference(KEY_PRIORITY_LIST).setOnPreferenceClickListener(this);
             findPreference(KEY_VIEW_PRIORITY_LIST).setOnPreferenceClickListener(this);
@@ -198,8 +200,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             String key = preference.getKey();
-
-            if (key.equals(KEY_SELECT_SYSTEM_APPS)) {
+            if (key.equals(KEY_SELECT_APPS)) {
+                // פתח דיאלוג בחירת אפליקציות מערכת
+                startActivity(new Intent(getActivity(), AppPickerActivity.class).putExtra("state","store"));
+                return true;
+            } else if (key.equals(KEY_SELECT_SYSTEM_APPS)) {
                 // פתח דיאלוג בחירת אפליקציות מערכת
                 Dialogs.showAppMultiSelectDialog(getActivity(), itemsManager, true, multiSelectListener);
                 return true;
@@ -277,14 +282,14 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
                 boolean found=true;
                 while(found){
                     found=false;
-                for(StoreItem si: itemsManager.getAllItems()){
-                    LogUtil.logToFile(si.itemSourceType.name()+si.packageName+selectedPackages.contains(si.packageName)+curinstpn.contains(si.packageName));
-                    if(si.itemSourceType.equals(StoreItem.ItemSourceType.INSTALLED_APP)&&curinstpn.contains(si.packageName)&&!selectedPackages.contains(si.packageName)){
-                        itemsManager.removeItem(si);
-                        found=true;
-                        break;
+                    for(StoreItem si: itemsManager.getAllItems()){
+                        LogUtil.logToFile(si.itemSourceType.name()+si.packageName+selectedPackages.contains(si.packageName)+curinstpn.contains(si.packageName));
+                        if(si.itemSourceType.equals(StoreItem.ItemSourceType.INSTALLED_APP)&&curinstpn.contains(si.packageName)&&!selectedPackages.contains(si.packageName)){
+                            itemsManager.removeItem(si);
+                            found=true;
+                            break;
+                        }
                     }
-                }
                 }
                 /*String currentListString = defaultPrefs.getString(KEY_CHECK_LIST, "");
                 List<String> currentList = stringToList(currentListString);

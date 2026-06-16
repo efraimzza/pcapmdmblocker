@@ -256,34 +256,40 @@ public class ItemsManager {
     public List<StoreItem> getAllItemsvisible() {
         synchronized (listLock) {
             if(!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("visible_all",false)){
+                return AllItemsAvailable();
+            }else{
+                //return Collections.unmodifiableList(new ArrayList<>(allItems));
+                return allItems;
+            }
+        }
+    }
+    public List<StoreItem> AllItemsAvailable(){
+        synchronized (listLock) {
             List<StoreItem> itemsvisible=new ArrayList<>();
             for(StoreItem si:allItems){
-               // LogUtil.logToFile(si.downloadLink+si.customLink+si.currentVersion+si.latestVersion+(!si.currentVersion.equals(si.latestVersion))+(si.currentVersion.equals("N/A"))
-               // +((si.downloadLink!=null&&!si.downloadLink.equals(""))||(si.customLink!=null&&!si.customLink.equals(""))&&(!si.currentVersion.equals(si.latestVersion)||(si.currentVersion.equals("N/A"))))
-               // +(!si.currentVersion.equals(si.latestVersion)||(si.currentVersion.equals("N/A"))));
+                // LogUtil.logToFile(si.downloadLink+si.customLink+si.currentVersion+si.latestVersion+(!si.currentVersion.equals(si.latestVersion))+(si.currentVersion.equals("N/A"))
+                // +((si.downloadLink!=null&&!si.downloadLink.equals(""))||(si.customLink!=null&&!si.customLink.equals(""))&&(!si.currentVersion.equals(si.latestVersion)||(si.currentVersion.equals("N/A"))))
+                // +(!si.currentVersion.equals(si.latestVersion)||(si.currentVersion.equals("N/A"))));
                 if((si.downloadLink!=null&&!si.downloadLink.equals(""))||(si.customLink!=null&&!si.customLink.equals(""))||(si.source!=null&&si.source.equals("GPlay"))){
                     if(
                         (!si.currentVersion.equals(si.latestVersion)
-                           &&(VersionComparer.isNewer(si.latestVersion, si.currentVersion)
-                                ||(si.customLink!=null&&!si.customLink.equals(""))
-                           )
+                        &&(VersionComparer.isNewer(si.latestVersion, si.currentVersion)
+                        ||(si.customLink!=null&&!si.customLink.equals(""))
+                        )
                         ||(si.currentVersion.equals("N/A"))
                         )
-                       ){
-                    //LogUtil.logToFile(si.packageName);
-                    
-                    itemsvisible.add(si);
+                        ){
+                        //LogUtil.logToFile(si.packageName);
+
+                        itemsvisible.add(si);
                     }
                 }else if(si.packageName.equals(context.pkgName)||DownloadService.isinqueue(si.packageName)){
                     itemsvisible.add(si);
                 }
             }
-            //return Collections.unmodifiableList(new ArrayList<>(itemsvisible));
-            return itemsvisible;
-            }else{
-                //return Collections.unmodifiableList(new ArrayList<>(allItems));
-                return allItems;
-            }
+        
+        //return Collections.unmodifiableList(new ArrayList<>(itemsvisible));
+        return itemsvisible;
         }
     }
      /*   public void addItem(StoreItem item) {
@@ -353,6 +359,16 @@ public class ItemsManager {
                 return "N/A";
             }
         }
+    public long getInstalledVersionCode(String packageName) {
+        // [יישום קיים]
+        PackageManager pm = context.getPackageManager();
+        try {
+            PackageInfo pInfo = pm.getPackageInfo(packageName, 0);
+            return pInfo.versionCode != 0 ? pInfo.versionCode : 0;
+        } catch (PackageManager.NameNotFoundException e) {
+            return 0;
+        }
+    }
 /*
         private List<String> getSystemInstalledApps() {
             // [יישום קיים]

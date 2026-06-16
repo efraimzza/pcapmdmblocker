@@ -14,7 +14,7 @@ import android.widget.CompoundButton;
 
 public class AccessActivity extends Activity {
     
-    Switch swenaccess, swdistatus, swdischannel, swdisforwardchannel;
+    Switch swenaccess, swdistatus, swdischannel, swdisforwardchannel, swdiscarsetting;
     Button busave;
     SharedPreferences sp;
     SharedPreferences.Editor spe;
@@ -31,6 +31,7 @@ public class AccessActivity extends Activity {
         swdistatus=findViewById(R.id.swdistatus);
         swdischannel=findViewById(R.id.swdischannel);
         swdisforwardchannel=findViewById(R.id.swdisforwardchannel);
+        swdiscarsetting=findViewById(R.id.swdiscarsetting);
         busave=findViewById(R.id.btn_save_access);
         try{
             sp= PreferenceManager.getDefaultSharedPreferences(this);
@@ -48,6 +49,7 @@ public class AccessActivity extends Activity {
                                                 .putBoolean("distatus",swdistatus.isChecked())
                                                 .putBoolean("dischannel",swdischannel.isChecked())
                                                 .putBoolean("disforwardchannel",swdisforwardchannel.isChecked())
+                                                .putBoolean("discarsetting",swdiscarsetting.isChecked())
                                                 .commit();
                                             //disable to refresh new policies
                                             if(accser.sinsta!=null){
@@ -72,7 +74,7 @@ public class AccessActivity extends Activity {
                         swdistatus.setEnabled(isChecked);
                         swdischannel.setEnabled(isChecked);
                         swdisforwardchannel.setEnabled(isChecked);
-                    
+                    swdiscarsetting.setEnabled(isChecked);
                     }
                 });
             swenaccess.setChecked(sp.getBoolean("accessEnabled",false));
@@ -80,6 +82,7 @@ public class AccessActivity extends Activity {
             swdistatus.setChecked(sp.getBoolean("distatus",true));
             swdischannel.setChecked(sp.getBoolean("dischannel",true));
             swdisforwardchannel.setChecked(sp.getBoolean("disforwardchannel",false));
+            swdiscarsetting.setChecked(sp.getBoolean("discarsetting",false));
             
             swdistatus.setEnabled(swenaccess.isChecked());
             swdischannel.setEnabled(swenaccess.isChecked());

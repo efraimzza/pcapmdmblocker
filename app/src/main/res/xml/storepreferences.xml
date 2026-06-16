@@ -4,8 +4,11 @@
     <PreferenceCategory
         android:title="בדיקת עדכונים לאפליקציות מותקנות"
         android:key="update_check_category">
-
         <Preference
+            android:key="select_apps"
+            android:title="בחר אפליקציות לעדכון"
+            android:summary="לחץ כדי לבחור אפליקציות שיופיעו ברשימה." />
+        <!--Preference
             android:key="select_system_apps"
             android:title="בחר אפליקציות מערכת לעדכון"
             android:summary="לחץ כדי לבחור אפליקציות מערכת (מותקנות מראש) שיופיעו ברשימה." />
@@ -13,7 +16,7 @@
         <Preference
             android:key="select_user_apps"
             android:title="בחר אפליקציות משתמש לעדכון"
-            android:summary="לחץ כדי לבחור אפליקציות שהורדו (User Apps) שיופיעו ברשימה." />
+            android:summary="לחץ כדי לבחור אפליקציות שהורדו (User Apps) שיופיעו ברשימה." /-->
 
     </PreferenceCategory>
 

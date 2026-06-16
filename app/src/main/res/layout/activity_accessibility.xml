@@ -50,7 +50,13 @@
         android:text="חסימת הודעות שהועברו מערוצים"
         android:checked="false"
         android:id="@+id/swdisforwardchannel"/>
-    
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="חסימת הגדרות רכב (נסיוני)"
+                android:checked="false"
+                android:id="@+id/swdiscarsetting"/>
+            
     <Button style="@style/MDMActionButton"
         android:id="@+id/btn_save_access"
         android:text="שמור שינויים"/>
