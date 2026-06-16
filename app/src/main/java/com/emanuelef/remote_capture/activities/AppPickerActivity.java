@@ -245,7 +245,7 @@ public class AppPickerActivity extends Activity {
                 progressDialog.dismiss();
             }
             mOriginalAppList = result; // עדכן את הרשימה המקורית
-            applyFiltersAndSort(); // בצע סינון ומיון ראשוני לאחר הטעינה
+            applyFiltersAndSort(false); // בצע סינון ומיון ראשוני לאחר הטעינה
         }
     }
 
@@ -299,11 +299,17 @@ public class AppPickerActivity extends Activity {
                     currentSortOptionId = checkedId;
                 }
             });
-
+        builder.setNeutralButton("בחר הכל ממסך הבית", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    applyFiltersAndSort(true);
+                    
+                }
+            });
         builder.setPositiveButton("החל סינון", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    applyFiltersAndSort();
+                    applyFiltersAndSort(false);
                 }
             });
         builder.setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
@@ -316,7 +322,7 @@ public class AppPickerActivity extends Activity {
         builder.show();
     }
 
-    private void applyFiltersAndSort() {
+    private void applyFiltersAndSort(boolean allLauncher) {
         mFilteredAppList.clear();
         String searchTextLower = currentSearchText.toLowerCase();
         String searchPackageLower = currentSearchPackage.toLowerCase(); // טקסט חיפוש חבילה ב-lowercase
@@ -325,9 +331,14 @@ public class AppPickerActivity extends Activity {
         for (AppItem appItem : mOriginalAppList) {
             boolean matchesFilter = false;
             boolean isSystemApp = appItem.isSystemApp();
-            boolean isHidden = appItem.isHidden();
             boolean hasLauncher = appItem.hasLauncherIcon();
-
+            
+            if(allLauncher&&hasLauncher){
+                appItem.setHidden(true);
+            }
+            
+            boolean isHidden = appItem.isHidden();
+            
             if (currentFilterOptionId == R.id.rb_filter_all_dialog) {
                 matchesFilter = true;
             } else if (currentFilterOptionId == R.id.rb_filter_user_dialog) {
