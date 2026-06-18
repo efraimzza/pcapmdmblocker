@@ -23,6 +23,10 @@ import android.widget.Switch;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.text.InputType;
 import android.preference.PreferenceManager;
+import android.widget.TextView.OnEditorActionListener;
+import android.view.KeyEvent;
+import android.widget.TextView;
+import android.view.inputmethod.EditorInfo;
 
 public class PasswordManager {
     public static final String locksp="lock";
@@ -113,6 +117,7 @@ public class PasswordManager {
     public static int getMinPasswordLength() {
         return MIN_PASSWORD_LENGTH;
     }
+    static AlertDialog alDialog=null;
     public static void requestPasswordAndSave(final Runnable action,final Activity activity) {
         if(pwopen){
             action.run();
@@ -121,6 +126,7 @@ public class PasswordManager {
         final String storedPasswordHash = PasswordManager.getStoredPasswordHash(activity);
         
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        
         builder.setTitle("אימות סיסמה");
         
         final View passwordLayout = activity. getLayoutInflater().inflate(R.layout.dialog_password_input, null);
@@ -164,11 +170,21 @@ public class PasswordManager {
 
         if (storedPasswordHash != null) {
             builder.setView(passwordLayout);
-
+            etPassword.setOnEditorActionListener(new OnEditorActionListener(){
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            performOk(activity,alDialog,etPassword,cb,action);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             builder.setPositiveButton("אשר", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String enteredPassword = etPassword.getText().toString();
+                        performOk(activity,alDialog,etPassword,cb,action);
+                        /*String enteredPassword = etPassword.getText().toString();
                         if (PasswordManager.checkPassword(activity, enteredPassword)) {
                             SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(activity);
                         
@@ -184,7 +200,7 @@ public class PasswordManager {
                             }
                         } else {
                             Toast.makeText(activity.getApplicationContext(), "סיסמה שגויה!", Toast.LENGTH_SHORT).show();
-                        }
+                        }*/
                     }
                 });
         }else{
@@ -198,7 +214,28 @@ public class PasswordManager {
                 });
         }
         builder.setNegativeButton("ביטול", null);
-        builder.show();
+        alDialog= builder.show();
+    }
+    
+    private static void performOk(Activity activity, AlertDialog alDialog, EditText etPassword, CheckBox cb, Runnable action){
+        String enteredPassword = etPassword.getText().toString();
+        if (PasswordManager.checkPassword(activity, enteredPassword)) {
+            SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(activity);
+
+            if(!sp.getBoolean(locksp,false)){
+                SharedPreferences.Editor spe;
+                spe=sp.edit();
+                spe.putString("timepw",getCurrentDate());
+                spe.commit();
+
+                action.run();
+
+                pwopen=cb.isChecked();
+            }
+        } else {
+            Toast.makeText(activity.getApplicationContext(), "סיסמה שגויה!", Toast.LENGTH_SHORT).show();
+        }
+        alDialog.dismiss();
     }
 
     public static void showSetPasswordDialog(final Activity activity) {

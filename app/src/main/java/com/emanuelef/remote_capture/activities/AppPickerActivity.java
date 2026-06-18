@@ -125,7 +125,7 @@ public class AppPickerActivity extends Activity {
                             public void run() {
                                 try{
                                     applyAppVisibilityChanges();
-                                }catch(Exception e){}
+                                }catch(Exception e){LogUtil.logToFile(e);}
                             }
                         },AppPickerActivity.this);
                 }
@@ -406,9 +406,11 @@ public class AppPickerActivity extends Activity {
         List<String> unsus=new ArrayList<>();
         
         final List<String> currentCheckList =new ArrayList<>();
-        for(StoreItem si: ItemsManager.getItemsManager().getAllItems()){
-            if(si.itemSourceType.equals(StoreItem.ItemSourceType.INSTALLED_APP)){
-                currentCheckList.add(si.packageName);
+        if(state.equals("store")){
+            for(StoreItem si: ItemsManager.getItemsManager().getAllItems()){
+                if(si.itemSourceType.equals(StoreItem.ItemSourceType.INSTALLED_APP)){
+                    currentCheckList.add(si.packageName);
+                }
             }
         }
         for (AppItem appItem : mOriginalAppList) {
