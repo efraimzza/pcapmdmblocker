@@ -107,6 +107,9 @@
                 android:id="@+id/btn_lock_status"
                 android:text="נעילת מסך ראשי עם סיסמה"/>
             <Button style="@style/MDMActionButton"
+                android:id="@+id/btn_lock_settings"
+                android:text="נעילת הגדרות עם סיסמה"/>
+            <Button style="@style/MDMActionButton"
                 android:id="@+id/btn_lock_mdm"
                 android:text="נעילת הגדרות והסרה"/>
             <View

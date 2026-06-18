@@ -90,6 +90,23 @@ public class MDMSettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.setTheme(this);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(MDMSettingsActivity.this);
+        sp=PreferenceManager.getDefaultSharedPreferences(this);
+        spe=sp.edit();
+        
+        if(sp.getBoolean("locksettings",false)){
+            PasswordManager.requestPasswordAndSave(new Runnable() {
+                    @Override
+                    public void run() {
+                        start();
+                    }
+                },MDMSettingsActivity.this);
+        }else{
+            start();
+        }
+        
+    }
+    private void start(){
         try{
             setContentView(R.layout.activity_mdm_settings);
             if(getIntent().getStringExtra("err")!=null){
@@ -103,10 +120,11 @@ public class MDMSettingsActivity extends Activity {
                 downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                 handler = new Handler(Looper.getMainLooper());
                 IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+                monDownloadCompleted=monDownloadComplete;//to check null in onDestroy if not initalized 
                 if (Build.VERSION.SDK_INT >= 33/*Build.VERSION_CODES.TIRAMISU*/) {
-                    registerReceiver(monDownloadComplete, filter,2/* Context.RECEIVER_EXPORTED*/);
+                    registerReceiver(monDownloadCompleted, filter,2/* Context.RECEIVER_EXPORTED*/);
                 } else {
-                    registerReceiver(monDownloadComplete, filter);
+                    registerReceiver(monDownloadCompleted, filter);
                 }
             }  catch(Exception e){
                 MDMSettingsActivity.this.requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 55);
@@ -116,25 +134,19 @@ public class MDMSettingsActivity extends Activity {
             mDpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
             mAdminComponentName = new ComponentName(this,admin.class);
 
-            mPrefs = PreferenceManager.getDefaultSharedPreferences(MDMSettingsActivity.this);
-
-            sp=PreferenceManager.getDefaultSharedPreferences(this);
-            spe=sp.edit();
-
-
             TextView tvcurroute=findViewById(R.id.tv_cur_route);
             tvcurroute.setText("המסלול הפעיל - "+AppState.getInstance().getCurrentPath().getDescription());
-
 
             setupButton(R.id.btn_manage_restrictions, "ניהול הגבלות מכשיר", RestrictionManagementActivity.class);
             setupButton(R.id.btn_manage_apps, "ניהול אפליקציות", null);
             setupButton(R.id.btn_manage_vpn, "ניהול ניטור רשת (vpn)", MainActivity.class);
             setupButton(R.id.btn_change_password, "שנה סיסמה", null);
             setupButton(R.id.btn_remove_frp, "הסר frp", null); 
-           // setupButton(R.id.btn_activate_frp, "הפעל frp", null); 
+            // setupButton(R.id.btn_activate_frp, "הפעל frp", null); 
             setupButton(R.id.btn_manage_frp, "ניהול frp ידני", FrpActivity.class);
             setupButton(R.id.btn_update_mdm_app, "עדכון אפליקציית MDM", null);
             setupButton(R.id.btn_lock_status, "נעילת מסך ראשי עם סיסמה", null);
+            setupButton(R.id.btn_lock_settings, "נעילת הגדרות עם סיסמה", null);
             setupButton(R.id.btn_lock_mdm, "נעילת הגדרות והסרה", null);
             setupButton(R.id.btn_select_route, "בחירת מסלול לניטור רשת (vpn)", null); // תצטרך אקטיביטי לזה
             setupButton(R.id.btn_def_rest_multi, "השבתות מומלצות למולטימדיה", null);
@@ -149,8 +161,7 @@ public class MDMSettingsActivity extends Activity {
         }  catch(Exception e){
             Toast.makeText(getApplicationContext(), e+"",1).show();
         }
-        }
-
+    }
     private void setupButton(int buttonId, String text, final Class<?> targetActivity) {
         Button button = findViewById(buttonId);
         if (button != null) {
@@ -165,6 +176,7 @@ public class MDMSettingsActivity extends Activity {
                             v.getId() == R.id.btn_update_mdm_app ||
                             v.getId() == R.id.btn_lock_mdm ||
                             v.getId() == R.id.btn_lock_status ||
+                            v.getId() == R.id.btn_lock_settings ||
                             v.getId() ==  R.id.btn_select_route ||
                             v.getId() == R.id.btn_def_rest_multi ||
                             v.getId() == R.id.btn_def_rest_cube ||
@@ -204,6 +216,8 @@ public class MDMSettingsActivity extends Activity {
                 showLockMDMConfirmationDialog(MDMSettingsActivity.this);
             } else if (buttonId == R.id.btn_lock_status) {
                 showLockStatusConfirmationDialog(MDMSettingsActivity.this);
+            } else if (buttonId == R.id.btn_lock_settings) {
+                showLockSettingsConfirmationDialog(MDMSettingsActivity.this);
             } else if (buttonId == R.id.btn_select_route) {
                 final PathType[] paths = PathType.values();
                 String[] pathNames = new String[paths.length];
@@ -792,7 +806,7 @@ public class MDMSettingsActivity extends Activity {
         };
         handler.post(updateProgressRunnable); // התחל את עדכון ההתקדמות
     }
-
+    public BroadcastReceiver monDownloadCompleted;
     public BroadcastReceiver monDownloadComplete = new BroadcastReceiver() {
         @Deprecated
         @Override
@@ -1126,13 +1140,38 @@ public static void cancelDownload(String fileurl) {
             })
             .show();
     }
+    public void showLockSettingsConfirmationDialog(final Activity activity) {
+        new AlertDialog.Builder(activity)
+            .setTitle("נעילת הגדרות עם סיסמה")
+            .setMessage("האם אתה בטוח שברצונך לנעול הגדרות עם סיסמה?")
+            .setPositiveButton("כן, נעל!", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    spe.putBoolean("locksettings",true).commit();
+                }
+            })
+            .setNeutralButton("ביטול", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            })
+            .setNegativeButton("ביטול נעילה", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    spe.putBoolean("locksettings",false).commit();
+                }
+            })
+            .show();
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
         PasswordManager.pwopen=false;
         
         // בטל רישום של ה-BroadcastReceiver כדי למנוע דליפות זיכרון
-        unregisterReceiver(monDownloadComplete);
+        if(monDownloadCompleted!=null)
+        unregisterReceiver(monDownloadCompleted);
         // עצור עדכוני התקדמות ממתינים
         if (handler != null && updateProgressRunnable != null) {
             handler.removeCallbacks(updateProgressRunnable);
