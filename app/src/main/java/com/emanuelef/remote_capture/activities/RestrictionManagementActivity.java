@@ -98,7 +98,7 @@ public class RestrictionManagementActivity extends Activity {
             R.drawable.ic_restriction_date_time
         );
         addRestrictionIfApplicable(
-            "השבתת הגדרת נקודה חמה", UserManager.DISALLOW_CONFIG_TETHERING, 20,
+            "השבתת הגדרת נקודה חמה ושיתוף אינטרנט", UserManager.DISALLOW_CONFIG_TETHERING, 20,
             mDpm.getUserRestrictions(mAdminComponentName).getBoolean(UserManager.DISALLOW_CONFIG_TETHERING),
             R.drawable.ic_restriction_tethering
         );
@@ -248,11 +248,11 @@ public class RestrictionManagementActivity extends Activity {
     private String getDescriptionForKey(String key) {
         // ... (המתודה הקיימת, ללא שינוי)
         switch (key) {
-            case UserManager.DISALLOW_CONFIG_TETHERING: return "מונע מהמשתמש להגדיר נקודה חמה (Hotspot).";
+            case UserManager.DISALLOW_CONFIG_TETHERING: return "מונע מהמשתמש להגדיר נקודה חמה (Hotspot) ושיתוף אינטרנט.";
             case UserManager.DISALLOW_CONFIG_VPN: return "מונע מהמשתמש להגדיר חיבורי VPN.";
             case UserManager.DISALLOW_CONFIG_WIFI: return "מונע מהמשתמש להגדיר חיבורי Wi-Fi.";
-            case UserManager.DISALLOW_INSTALL_APPS: return "מונע מהמשתמש להתקין אפליקציות.";
-            case UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES: return "מונע התקנת אפליקציות ממקורות לא ידועים (מחוץ ל-Google Play).";
+            case UserManager.DISALLOW_INSTALL_APPS: return "מונע מהמשתמש להתקין או לעדכן אפליקציות. (כולל מאפליקציית החסימה והחנות)";
+            case UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES: return "מונע התקנת ועדכון אפליקציות ממקורות לא ידועים (מחוץ ל-Google Play או מחוץ לאפליקציית החסימה).";
             case UserManager.DISALLOW_DEBUGGING_FEATURES: return "מגביל גישה לאפשרויות מפתחים וניפוי באגים.";
             case UserManager.DISALLOW_FACTORY_RESET: return "מונע מהמשתמש לבצע איפוס להגדרות יצרן.";
             case UserManager.DISALLOW_ADD_MANAGED_PROFILE: return "מונע הוספת פרופיל מנוהל חדש.";

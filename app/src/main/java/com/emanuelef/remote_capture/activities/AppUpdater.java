@@ -285,9 +285,14 @@ public class AppUpdater {
 
         } catch (Exception e) {
             LogUtil.logToFile("failed to starting installation - " + e);
+            LogUtil.logToFile(e,true);
             //AppManagementActivity.progressDialog.setMessage("התחלת התקנה נכשלה " +reserr+ e);
             //dismissprogress(context);
-            AppManagementActivity.prgmsg(context,"התחלת התקנה נכשלה " +reserr+ e,true);
+            if(e.toString().toLowerCase().contains("restriction")){
+                AppManagementActivity.prgmsg(context,"התקנה נחסמה " +reserr+ e,true);
+            }else{
+                AppManagementActivity.prgmsg(context,"התחלת התקנה נכשלה " +reserr+ e,true);
+            }
             //Toast.makeText(context, "שגיאה בהתחלת התקנה/עדכון: " + e.getMessage(), Toast.LENGTH_LONG).show();
             if (session != null) {
                 session.abandon();

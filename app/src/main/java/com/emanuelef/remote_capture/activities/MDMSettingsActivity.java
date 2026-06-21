@@ -276,7 +276,9 @@ public class MDMSettingsActivity extends Activity {
                 
                 mDpm.setApplicationHidden(mAdminComponentName, "com.abupdate.fota_demo_iot", true);//fota updates
                 mDpm.setApplicationHidden(mAdminComponentName, "com.sprd.systemupdate", true);//fota updates
-
+                
+                    mDpm.setApplicationHidden(mAdminComponentName, "com.google.android.webview", true);//webview
+                    
                 //mDpm.setApplicationHidden(mAdminComponentName, "com.google.android.apps.maps", true);//maps
                 
                     uihandler.post(new Runnable(){public void run(){
@@ -321,6 +323,8 @@ public class MDMSettingsActivity extends Activity {
                 mDpm.setApplicationHidden(mAdminComponentName, "com.suding.apkinstaller", true);//market
                 mDpm.setApplicationHidden(mAdminComponentName, "com.google.android.apps.youtube.music", true);//YouTube music
                 
+                    mDpm.setApplicationHidden(mAdminComponentName, "com.google.android.webview", true);//webview
+                    
                     uihandler.post(new Runnable(){public void run(){
                         Toast.makeText(getApplicationContext(), "הופעלו השבתות מומלצות לקוביית אנדרואיד!", Toast.LENGTH_SHORT).show();
                     }});

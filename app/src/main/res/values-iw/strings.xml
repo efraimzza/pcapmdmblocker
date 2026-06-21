@@ -83,7 +83,7 @@
     <string name="rcvd_and_sent">%1$s קיבל - %2$s נשלח</string>
     <string name="query">שאלה</string>
     <string name="host">מארח</string>
-    <string name="ready">הפעל ניטור רשת (vpn)</string>
+    <string name="ready">הפעל ניטור רשת (vpn) לבדיקה שעובד</string>
     <string name="about">אודות</string>
     <string name="status">סטטוס</string>
     <string name="connections_view">חיבורים</string>
@@ -221,7 +221,7 @@
     <string name="edit_list">עריכת רשימת</string>
     <string name="hidden_connections_rules">כללי חיבורים נסתרים</string>
     <string name="list_is_empty">הרשימה ריקה</string>
-    <string name="show_only_malicious">חיבורים זדוניים</string>
+    <string name="show_only_malicious">חיבורים חסומים</string>
     <string name="show_only_cleartext">חיבורי ClearText</string>
     <string name="security">בטחון</string>
     <string name="malware_detection">רשימות לבנות</string>

@@ -30,7 +30,7 @@ public class activityadbpair extends Activity {
     private TextView outputTextView;
     private EditText edtxip,edtxport,edtxpwd;
     private EditText commandEditText;
-    private Button bupair,bucon,buconmult,budisacccon,buenacccon,budisaccmult,buenaccmult,budisacc,buenacc,buexecall;
+    private Button bupair,bucon,buconmult,budisacccon,buenacccon,budisaccmult,buenaccmult,bugrantsecmult,budisacc,buenacc,buexecall;
     private ScrollView outputScrollView; 
     public interface CommandOutputListener {
         void onOutputReceived(String line);
@@ -66,7 +66,7 @@ public class activityadbpair extends Activity {
         commandEditText = findViewById(R.id.commandEditText); // אתחול EditText
         bupair = findViewById(R.id.bupair);
         bucon = findViewById(R.id.bucon);
-        //buconmul = findViewById(R.id.buconmul);
+        bugrantsecmult = findViewById(R.id.bugrantsecmult);
         buconmult = findViewById(R.id.buconmult);
         budisacccon = findViewById(R.id.budisacccon);
         buenacccon = findViewById(R.id.buenacccon);
@@ -210,7 +210,7 @@ public class activityadbpair extends Activity {
                             
                             bupair.setEnabled(true);
                             bucon.setEnabled(true);
-                            //buconmul.setEnabled(true);
+                            bugrantsecmult.setEnabled(true);
                             buconmult.setEnabled(true);
                             budisacccon.setEnabled(true);
                             buenacccon.setEnabled(true);
@@ -370,6 +370,13 @@ public class activityadbpair extends Activity {
                     enaccmult();
                 }
             });
+            bugrantsecmult.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //
+                        grantsecmult();
+                    }
+                });
         budisacc.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -595,7 +602,43 @@ public class activityadbpair extends Activity {
                 }
             }).start();
     }
-    
+    void grantsecmult(){
+        
+        outputTextView.setText("מבצע פקודה...\n");
+        // נטרל את הכפתור כדי למנוע לחיצות מרובות בזמן שהפקודה רצה
+        bugrantsecmult.setEnabled(false);
+        //String mpropport = "setprop service.adb.tcp.port 5555\n";
+        //String mproprestart = "setprop ctl.restart adbd\n"+adb+" disconnect\n"+adb+" devices\n";
+        //String mproprestartb = "adb kill-server\nadb start-server\n";
+        //String patadb = "/data/user/0/com.emanuelef.remote_capture.debug/files/adb";
+        //patadb = adb;
+        //String multcmd = "/system/bin/sh -\nTMPDIR=/storage/emulated/0/\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\n"+patadb+" kill-server\n"+patadb+" disconnect\n"+patadb+" devices\n"+patadb+" connect localhost:5555\n"+patadb+" devices\n"+patadb+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        //multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\n#adb -t 1\nlibadb.so -s localhost:5555 shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        //String dis="pm disable-user --user -0 com.google.android.gms\npm disable-user --user -0 com.google.android.gm\npm disable-user --user -0 me.bluemail.mail\npm disable-user --user -0 com.azure.authenticator\nexit\n";
+        //dis="\"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
+        //String ena="pm enable com.google.android.gms\npm enable com.google.android.gm\npm enable me.bluemail.mail\npm enable com.azure.authenticator\nexit\n";
+        //ena="\"pm list packages -d | cut -d ':' -f 2 | tr -d '\\r' | sed 's/^/pm enable /' | sh 2>/dev/null\" < /dev/null\n";
+        //String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell "+ena+"exit\n";
+        String grantsec="pm grant "+getPackageName()+" android.permission.WRITE_SECURE_SETTINGS < /dev/null\n"
+            +"\nlibadb.so -s localhost:5555 shell \"dumpsys package "+getPackageName()+" | grep WRITE_SECURE_SETTINGS\" < /dev/null\n";
+        String multcmd = "/system/bin/sh -\nPATH=$PATH:"+filesdir+"\nTMPDIR=/storage/emulated/0/\nexport PATH\nexport TMPDIR\nHOME=/storage/emulated/0/\nTERM=screen\necho $TMPDIR$HOME\nsetprop service.adb.tcp.port 5555\nsetprop ctl.restart adbd\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so devices\nlibadb.so connect localhost:5555\nlibadb.so devices\nlibadb.so -s localhost:5555 shell "+grantsec+"\nexit\n";
+        //"TERM=screen\nexport TMPDIR\nexport PATH\nlibadb.so kill-server\nlibadb.so disconnect\nlibadb.so connect localhost:5555\nlibadb.so disconnect\nlibadb.so connect localhost:5555\n#libadb.so\nlibadb.so devices -l\nadb -t 1\nlibadb.so shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin & exit\nexit\n";
+        commandEditText.setText(multcmd);
+        final String commandToExecute = commandEditText.getText().toString();
+        if (commandToExecute.isEmpty()) {
+            outputTextView.append("שגיאה: נא הכנס פקודה לביצוע.\n");
+            bugrantsecmult.setEnabled(true);
+            return;
+        }
+        //Log.d(TAG, "Button clicked, executing command: " + commandToExecute);
+
+        new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    executeRootCommandInternal(commandToExecute, commandListener);
+                }
+            }).start();
+    }
     void disactenaccmult(){
         findViewById(R.id.act_adbpair_main).setVisibility(View.GONE);
         outputTextView.setText("מבצע פקודה...\n");

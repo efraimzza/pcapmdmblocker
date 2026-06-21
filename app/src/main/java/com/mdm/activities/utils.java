@@ -1803,7 +1803,11 @@ public class utils {
             //utils.progressDialog.setMessage("התחלת התקנה נכשלה " +reserr+ e);
             //dismissprogress(context);
             //utils.prgmsg(context,"התחלת התקנה נכשלה " +reserr+ e,true);
+            if(e.toString().toLowerCase().contains("restriction")){
+                notificationManager.notify(NOTIFICATION_ID, buildNotification(context,"התקנה נחסמה " +reserr+ e));
+            }else{
             notificationManager.notify(NOTIFICATION_ID, buildNotification(context,"התחלת התקנה נכשלה " +reserr+ e));
+            }
             //Toast.makeText(context, "שגיאה בהתחלת התקנה/עדכון: " + e.getMessage(), Toast.LENGTH_LONG).show();
             if (session != null) {
                 session.abandon();

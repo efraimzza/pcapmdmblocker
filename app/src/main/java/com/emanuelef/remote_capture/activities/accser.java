@@ -290,9 +290,13 @@ public class accser extends AccessibilityService {
                 }
                 if(type.contains("str")){
                     li.add(ani.getContentDescription());
+                    if(Build.VERSION.SDK_INT>=26)
                     li.add(ani.getHintText());
+                    if(Build.VERSION.SDK_INT>=28)
                     li.add(ani.getPaneTitle());
+                    if(Build.VERSION.SDK_INT>=30)
                     li.add(ani.getStateDescription());
+                    if(Build.VERSION.SDK_INT>=28)
                     li.add(ani.getTooltipText());
                     li.add(ani.getText());
                 }
@@ -333,6 +337,12 @@ public class accser extends AccessibilityService {
                         mcurevei=true;
                     }*/
                            if(c.contains("שחזור")||c.contains("איפוס")||c.contains("שיחזור")||c.contains("אפס")||c.contains("factory")||c.contains("יצרן")){
+                               //performSystemBack();
+                               LogUtil.logToFile("killapp "+pkg + c);
+                               //mcurevei=true;
+                           }
+                           //factory_settings restore_factory_settings
+                           if(c.contains("factory_settings")){
                                performSystemBack();
                                LogUtil.logToFile("killapp "+pkg + c);
                                mcurevei=true;

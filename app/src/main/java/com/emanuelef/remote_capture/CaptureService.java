@@ -1236,12 +1236,12 @@ public class CaptureService extends VpnService implements Runnable {
         }
 
         // Status notification builder
-        PendingIntent pi = PendingIntent.getActivity(this, 0,
-                                                     new Intent(this, MainActivity.class), Utils.getIntentFlags(PendingIntent.FLAG_UPDATE_CURRENT));
+        //PendingIntent pi = PendingIntent.getActivity(this, 0,
+        //                                             new Intent(this, MainActivity.class), Utils.getIntentFlags(PendingIntent.FLAG_UPDATE_CURRENT));
         mStatusBuilder = new Notification.Builder(this, NOTIFY_CHAN_VPNSERVICE)
             .setSmallIcon(R.drawable.ic_logo)
             .setColor(getColor(R.color.colorPrimary))
-            .setContentIntent(pi)
+            //.setContentIntent(pi)
             .setOngoing(true)
             .setAutoCancel(false)
             .setContentTitle(getResources().getString(R.string.capture_running))

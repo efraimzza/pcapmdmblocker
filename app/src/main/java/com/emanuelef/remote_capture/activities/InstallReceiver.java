@@ -21,8 +21,8 @@ public class InstallReceiver extends BroadcastReceiver {
             String message = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE);
 
             // ודא שאתה מוחק את התיקיה הזמנית בכל מקרה
-            File tempDir = new File(context.getFilesDir()+ "/cach/apks_temp");
-            AppUpdater.deleteTempDir(tempDir);
+            //File tempDir = new File(context.getFilesDir()+ "/cach/apks_temp");
+            //AppUpdater.deleteTempDir(tempDir);
 
             // בנוסף, אם ההתקנה בוטלה בגלל סיסמה שגויה, אנו צריכים למחוק את קובץ ה-APK המקורי
             // זה קצת מורכב כי ה-Receiver לא יודע איזה קובץ APK נבחר
@@ -55,9 +55,14 @@ public class InstallReceiver extends BroadcastReceiver {
                     Toast.makeText(context, "התקנה/עדכון הושלם בהצלחה עבור " + packageName, Toast.LENGTH_LONG).show();
                     // ייתכן שתרצה לרענן את רשימת האפליקציות ב-UI (לדוגמה, לשלוח ברודקאסט חזרה ל-AppManagementActivity)
                     break;
+                case PackageInstaller.STATUS_FAILURE_BLOCKED:
+                    AppManagementActivity.progressDialog.setMessage("התקנה/עדכון נחסם עבור " + packageName + ": " + message);
+                    dismissprogress();
+                    Toast.makeText(context, "התקנה/עדכון נחסם עבור " + packageName, Toast.LENGTH_LONG).show();
+                    break;
                 case PackageInstaller.STATUS_FAILURE:
                 case PackageInstaller.STATUS_FAILURE_ABORTED:
-                case PackageInstaller.STATUS_FAILURE_BLOCKED:
+                
                 case PackageInstaller.STATUS_FAILURE_CONFLICT:
                 case PackageInstaller.STATUS_FAILURE_INCOMPATIBLE:
                 case PackageInstaller.STATUS_FAILURE_INVALID:
