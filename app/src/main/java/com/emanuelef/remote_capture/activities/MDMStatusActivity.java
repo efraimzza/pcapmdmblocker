@@ -97,6 +97,9 @@ import java.util.concurrent.Executor;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.CheckBox;
+import android.content.res.Resources;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
 
 @Deprecated
 public class MDMStatusActivity extends Activity {
@@ -122,11 +125,94 @@ public class MDMStatusActivity extends Activity {
     private static Activity mactivity;
     SharedPreferences sprst;
     static boolean coninuedisable=false;
+    /*
+    private Resources dynamicResourcesWrapper;
+    @Override
+    public Resources getResources() {
+        if (dynamicResourcesWrapper == null) {
+            dynamicResourcesWrapper = Utils.getDeepInjectedResources(super.getResources());
+        }
+        return dynamicResourcesWrapper;
+    }
+      
+         void apply() {
+            
+            final int javaColorPrimary = Color.parseColor("#3F51B5");
+            final int javaColorPrimaryDark = Color.parseColor("#303F9F");
+            final int javaColorAccent = Color.parseColor("#FF4081");
+            final int javaColorBackItem = Color.parseColor("#424242"); // ה-Custom שלך
+
+            
+            getLayoutInflater().setFactory(new LayoutInflater.Factory() {
+                    @Override
+                    public View onCreateView( String name, Context context, AttributeSet attrs) {
+                        View view = null;
+
+                        // יצירת הרכיב המקורי של אנדרואיד לפי השם שלו ב-XML
+                        try {
+                            if (name.indexOf('.') == -1) {
+                                if ("View".equals(name)) {
+                                    view = getLayoutInflater().createView(name, "android.view.", attrs);
+                                } else {
+                                    view = getLayoutInflater().createView(name, "android.widget.", attrs);
+                                }
+                            } else {
+                                view = getLayoutInflater().createView(name, null, attrs);
+                            }
+                        } catch (Exception e) {
+                            view = null;
+                        }
+
+                        
+                        if (view != null) {
+                            for (int i = 0; i < attrs.getAttributeCount(); i++) {
+                                int resId = attrs.getAttributeResourceValue(i, 0);
+                                String attrName = attrs.getAttributeName(i);
+
+                                
+                                if (resId == android.R.attr.colorPrimary) {
+                                    applyColorToView(view, attrName, javaColorPrimary);
+                                }
+                                
+                                else if (resId == android.R.attr.colorAccent) {
+                                    applyColorToView(view, attrName, javaColorAccent);
+                                }
+                                
+                                else if (resId == R.attr.colorBackItem) {
+                                    applyColorToView(view, attrName, javaColorBackItem);
+                                }
+                            }
+                        }
+                        return view;
+                    }
+
+                });
+
+            
+          
+        }
+
+       
+        private void applyColorToView(View view, String attrName, int color) {
+            if ("background".equals(attrName)) {
+                view.setBackgroundColor(color);
+            } else if ("textColor".equals(attrName) && view instanceof TextView) {
+                ((TextView) view).setTextColor(color);
+            }
+           
+        }
+   */
+    
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         Utils.setTheme(this);
+        /*apply();
+        Resources.Theme rst= getResources().newTheme();
+        rst.applyStyle(R.style.AppThemeMoDark,true);
+        setTheme(rst);*/
         
         
         mactivity=this;
@@ -899,6 +985,7 @@ public class MDMStatusActivity extends Activity {
             "uis7862a_1h10",
             "uis8581a2h10",
             "DSB0230",
+            "8227L_demo",
             ""};
         boolean found= false;
         String curdevice=Build.DEVICE;

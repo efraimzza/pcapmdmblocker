@@ -522,9 +522,10 @@ public class MdmProvisioningActivity extends Activity {
             "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_SIGNATURE_CHECKSUM\":\n" +
             "\"" + signatureChecksum + "\",\n" +
             "\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\n" +
-            "\"http://" + ipAddress + ":" + SERVER_PORT + MDM_APK_NAME + "\",\n" +
-            "    \"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\": true,\n" +
-            "    \"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\": true\n" +
+            "\"http://" + ipAddress + ":" + SERVER_PORT + MDM_APK_NAME + "\""+
+            //",\n" +
+           // "    \"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\": true,\n" +
+           // "    \"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\": true\n" +
             "}";
 
         return encodeToQrCode(qrContent, qrCodeSize, qrCodeSize);

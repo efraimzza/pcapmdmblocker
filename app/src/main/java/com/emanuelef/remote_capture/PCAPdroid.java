@@ -252,17 +252,20 @@ try{
     }
     
     private static void cpdef(Context mcontext){
-        
         try {
             if(AppState.getInstance().getCurrentPath().equals(PathType.MULTIMEDIA)){
-                if(!(new File(mcontext.getFilesDir().getPath()+"/malware_bl/").isDirectory()&&new File(mcontext.getFilesDir().getPath()+"/malware_bl/").list().length==2)){
-            new File(mcontext.getFilesDir().getPath()+"/malware_bl/").mkdirs();
-            String fname="domainswhite.txt";
-            Utils.copy(mcontext.getAssets().open(fname), new File(mcontext.getFilesDir().getPath()+"/malware_bl/"+fname));
-            fname="ipswhite.txt";
-            Utils.copy(mcontext.getAssets().open(fname), new File(mcontext.getFilesDir().getPath()+"/malware_bl/"+fname));
-            }}
-        } catch (Exception e) {try {
+                if(!new File(mcontext.getFilesDir().getPath()+"/malware_bl/").isDirectory()){
+                     new File(mcontext.getFilesDir().getPath()+"/malware_bl/").mkdirs();
+                }
+                if(!(new File(mcontext.getFilesDir().getPath()+"/malware_bl/").list().length==2)){
+                    String fname="domainswhite.txt";
+                    Utils.copy(mcontext.getAssets().open(fname), new File(mcontext.getFilesDir().getPath()+"/malware_bl/"+fname));
+                    fname="ipswhite.txt";
+                    Utils.copy(mcontext.getAssets().open(fname), new File(mcontext.getFilesDir().getPath()+"/malware_bl/"+fname));
+                }
+            }
+        } catch (Exception e) {
+            try {
                 String LOG_PATH = "/storage/emulated/0/log.txt";
                 FileWriter writer = new FileWriter(LOG_PATH, true);
                 String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
@@ -270,7 +273,8 @@ try{
                 writer.close();
             } catch (IOException ee) {
                 // silent
-            }}
+            }
+         }
             
     }
 

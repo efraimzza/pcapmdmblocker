@@ -72,6 +72,8 @@ forums.jtechforums.org
 chatrace.com
 js.nagich.co.il
 recaptcha.net
+f56df16859bd97c585f6f19f0a583c84.otlp.bugsnag.com
+v2.mishnatyosef.org
 mishnatyosef.org
 sefaria.org.il
 www.matara.pro
@@ -318,6 +320,9 @@ weather.car.dofuncar.com
 records.jewishpodcasts.fm
 *.torah-box.com
 zerem.biz
+image.zingmusic.app
+music.hngn.co.il
+hngn.co.il
 
 #bank
 #ecm.capitalone.com
@@ -422,3 +427,17 @@ auth.koshersystem.com
 lomdaat-apps-odoo.ams3.cdn.digitaloceanspaces.com
 lomdaat-music.ams3.cdn.digitaloceanspaces.com
 jusic.co
+
+#update
+update.intl.miui.com
+ultimateota.d.miui.com
+
+#tfilor
+s-gke-usc1-nssi4-69.firebaseio.com
+us-central1-siddur-klilat-yofi.cloudfunctions.net
+
+#pay
+pay-users-pa.googleapis.com
+consentprimitivedataservice-pa.googleapis.com
+
+sg.iot.dreame.tech

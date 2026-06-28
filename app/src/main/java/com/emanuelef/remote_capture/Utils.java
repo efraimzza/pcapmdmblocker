@@ -185,6 +185,8 @@ import java.util.Set;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 import java.util.HashSet;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 
 public class Utils {
     static final String TAG = "Utils";
@@ -2653,11 +2655,100 @@ public class Utils {
             context.setTheme(dark ? R.style.AppThemeMoDark : R.style.AppThemeMo);
         else if (theme.equals("cold"))
             context.setTheme(dark ? R.style.AppThemeCoDark : R.style.AppThemeCo);
-        
+        /*if(true){
+            context.setTheme(R.style.AppThemeCustoma);
+        }*/
         if (context instanceof Activity && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             setTaskColor(context);
     }
+    
 
+        /*
+        public static int dynamicPrimary = Color.parseColor("#3F51B5");
+        public static int dynamicPrimaryDark = Color.parseColor("#303F9F");
+        public static int dynamicAccent = Color.parseColor("#FF4081");
+        public static int dynamicBackItem = Color.parseColor("#222222");
+
+        
+        public static void applyTheme(Activity activity) {
+            activity.setTheme(R.style.AppThemeCustoma);
+            //activity.setTheme(getDeepInjectedResources(activity.getResources());
+        }
+
+        
+        public static Resources getDeepInjectedResources(Resources baseResources) {
+            
+            Resources rs= new Resources(baseResources.getAssets(), baseResources.getDisplayMetrics(), baseResources.getConfiguration()) {
+//Theme.applyStyle(R.style.AppThemeCustoma,true);
+
+              
+                
+                @Override
+                public void getValue(int id, TypedValue outValue, boolean resolveRefs) throws NotFoundException {
+                    if (id == R.color.java_custom_primary_placeholder) {
+                        outValue.type = TypedValue.TYPE_INT_COLOR_ARGB8;
+                        outValue.data = dynamicPrimary;
+                        return;
+                    }
+                    if (id == R.color.java_custom_primary_dark_placeholder) {
+                        outValue.type = TypedValue.TYPE_INT_COLOR_ARGB8;
+                        outValue.data = dynamicPrimaryDark;
+                        return;
+                    }
+                    if (id == R.color.java_custom_accent_placeholder) {
+                        outValue.type = TypedValue.TYPE_INT_COLOR_ARGB8;
+                        outValue.data = dynamicAccent;
+                        return;
+                    }
+                    if (id == R.color.java_custom_back_item_placeholder) {
+                        outValue.type = TypedValue.TYPE_INT_COLOR_ARGB8;
+                        outValue.data = dynamicBackItem;
+                        return;
+                    }
+                    super.getValue(id, outValue, resolveRefs);
+                }
+
+                @Override
+                public int getColor(int id, Theme theme) throws NotFoundException {
+                    if (id == R.color.java_custom_primary_placeholder) return dynamicPrimary;
+                    if (id == R.color.java_custom_primary_dark_placeholder) return dynamicPrimaryDark;
+                    if (id == R.color.java_custom_accent_placeholder) return dynamicAccent;
+                    if (id == R.color.java_custom_back_item_placeholder) return dynamicBackItem;
+                    return super.getColor(id, theme);
+                }
+
+                @Override
+                public int getColor(int id) throws NotFoundException {
+                    if (id == R.color.java_custom_primary_placeholder) return dynamicPrimary;
+                    if (id == R.color.java_custom_primary_dark_placeholder) return dynamicPrimaryDark;
+                    if (id == R.color.java_custom_accent_placeholder) return dynamicAccent;
+                    if (id == R.color.java_custom_back_item_placeholder) return dynamicBackItem;
+                    return super.getColor(id);
+                }
+
+                @Override
+                public ColorStateList getColorStateList(int id, Theme theme) throws NotFoundException {
+                    // רק החזרת הצבע נטו כמצב בסיס. הסלקטורים שלך ב-XML יעשו את שאר העבודה.
+                    if (id == R.color.java_custom_primary_placeholder) return ColorStateList.valueOf(dynamicPrimary);
+                    if (id == R.color.java_custom_primary_dark_placeholder) return ColorStateList.valueOf(dynamicPrimaryDark);
+                    if (id == R.color.java_custom_accent_placeholder) return ColorStateList.valueOf(dynamicAccent);
+                    if (id == R.color.java_custom_back_item_placeholder) return ColorStateList.valueOf(dynamicBackItem);
+                    return super.getColorStateList(id, theme);
+                }
+
+                @Override
+                public ColorStateList getColorStateList(int id) throws NotFoundException {
+                    if (id == R.color.java_custom_primary_placeholder) return ColorStateList.valueOf(dynamicPrimary);
+                    if (id == R.color.java_custom_primary_dark_placeholder) return ColorStateList.valueOf(dynamicPrimaryDark);
+                    if (id == R.color.java_custom_accent_placeholder) return ColorStateList.valueOf(dynamicAccent);
+                    if (id == R.color.java_custom_back_item_placeholder) return ColorStateList.valueOf(dynamicBackItem);
+                    return super.getColorStateList(id);
+                }
+            };
+            //rs.newTheme().applyStyle(R.style.AppThemeCustoma,true);
+            return rs;
+        }
+    */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static void setTaskColor(Context context) {
         TypedValue tv = new TypedValue();

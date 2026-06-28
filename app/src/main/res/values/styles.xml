@@ -1,8 +1,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Base application theme. -->
     <!-- https://material.io/blog/android-dark-theme-tutorial -->
     <style name="Base.AppTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
@@ -82,8 +80,7 @@
     <style name="TextSmall" parent="@android:style/TextAppearance.Material.Small" />
     <style name="TextTitle" parent="@android:style/TextAppearance.Material.Title" />
     
-    <attr name="colorOn" format="reference" />
-    <attr name="colorOff" format="reference" />
+    
     <attr name="expander" format="reference" />
     <attr name="iconQueue" format="reference" />
     <attr name="iconMetered" format="reference" />
@@ -448,8 +445,7 @@
         <item name="android:colorPrimaryDark">@color/colorTealPrimaryDark</item>
         <item name="android:colorAccent">@color/colorTealAccent</item>
         <item name="colorBackItem">@color/colorTealBackItem</item>
-        <item name="colorOn">@color/colorTealOn</item>
-        <item name="colorOff">@color/colorTealOff</item>
+        
     </style>
 
     <style name="AppThemeTealDark" parent="BaseThemeLight">
@@ -457,8 +453,7 @@
         <item name="android:colorPrimaryDark">@color/colorTealPrimaryDark</item>
         <item name="android:colorAccent">@color/colorTealAccent</item>
         <item name="colorBackItem">@color/colorTealBackItemd</item>
-        <item name="colorOn">@color/colorTealOn</item>
-        <item name="colorOff">@color/colorTealOff</item>
+        
     </style>
 
     <style name="AppThemeBlue" parent="BaseThemeDark">
@@ -466,8 +461,7 @@
         <item name="android:colorPrimaryDark">@color/colorBluePrimaryDark</item>
         <item name="android:colorAccent">@color/colorBlueAccent</item>
         <item name="colorBackItem">@color/colorBlueBackItem</item>
-        <item name="colorOn">@color/colorBlueOn</item>
-        <item name="colorOff">@color/colorBlueOff</item>
+        
     </style>
 
     <style name="AppThemeBlueDark" parent="BaseThemeLight">
@@ -475,8 +469,7 @@
         <item name="android:colorPrimaryDark">@color/colorBluePrimaryDark</item>
         <item name="android:colorAccent">@color/colorBlueAccent</item>
         <item name="colorBackItem">@color/colorBlueBackItemd</item>
-        <item name="colorOn">@color/colorBlueOn</item>
-        <item name="colorOff">@color/colorBlueOff</item>
+        
     </style>
 
     <style name="AppThemePurple" parent="BaseThemeDark">
@@ -484,8 +477,7 @@
         <item name="android:colorPrimaryDark">@color/colorPurplePrimaryDark</item>
         <item name="android:colorAccent">@color/colorPurpleAccent</item>
         <item name="colorBackItem">@color/colorPurpleBackItem</item>
-        <item name="colorOn">@color/colorPurpleOn</item>
-        <item name="colorOff">@color/colorPurpleOff</item>
+        
     </style>
 
     <style name="AppThemePurpleDark" parent="BaseThemeLight">
@@ -493,8 +485,7 @@
         <item name="android:colorPrimaryDark">@color/colorPurplePrimaryDark</item>
         <item name="android:colorAccent">@color/colorPurpleAccent</item>
         <item name="colorBackItem">@color/colorPurpleBackItemd</item>
-        <item name="colorOn">@color/colorPurpleOn</item>
-        <item name="colorOff">@color/colorPurpleOff</item>
+        
     </style>
 
     <style name="AppThemeAmber" parent="BaseThemeDark">
@@ -502,8 +493,7 @@
         <item name="android:colorPrimaryDark">@color/colorAmberPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAmberAccent</item>
         <item name="colorBackItem">@color/colorAmberBackItem</item>
-        <item name="colorOn">@color/colorAmberOn</item>
-        <item name="colorOff">@color/colorAmberOff</item>
+
     </style>
 
     <style name="AppThemeAmberDark" parent="BaseThemeLight">
@@ -511,8 +501,7 @@
         <item name="android:colorPrimaryDark">@color/colorAmberPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAmberAccent</item>
         <item name="colorBackItem">@color/colorAmberBackItemd</item>
-        <item name="colorOn">@color/colorAmberOn</item>
-        <item name="colorOff">@color/colorAmberOff</item>
+        
     </style>
 
     <style name="AppThemeOrange" parent="BaseThemeDark">
@@ -520,8 +509,7 @@
         <item name="android:colorPrimaryDark">@color/colorOrangePrimaryDark</item>
         <item name="android:colorAccent">@color/colorOrangeAccent</item>
         <item name="colorBackItem">@color/colorOrangeBackItem</item>
-        <item name="colorOn">@color/colorOrangeOn</item>
-        <item name="colorOff">@color/colorOrangeOff</item>
+        
     </style>
 
     <style name="AppThemeOrangeDark" parent="BaseThemeLight">
@@ -529,8 +517,7 @@
         <item name="android:colorPrimaryDark">@color/colorOrangePrimaryDark</item>
         <item name="android:colorAccent">@color/colorOrangeAccent</item>
         <item name="colorBackItem">@color/colorOrangeBackItemd</item>
-        <item name="colorOn">@color/colorOrangeOn</item>
-        <item name="colorOff">@color/colorOrangeOff</item>
+        
     </style>
 
     <style name="AppThemeGreen" parent="BaseThemeDark">
@@ -538,8 +525,7 @@
         <item name="android:colorPrimaryDark">@color/colorGreenPrimaryDark</item>
         <item name="android:colorAccent">@color/colorGreenAccent</item>
         <item name="colorBackItem">@color/colorGreenBackItem</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+        
     </style>
 
     <style name="AppThemeGreenDark" parent="BaseThemeLight">
@@ -547,8 +533,7 @@
         <item name="android:colorPrimaryDark">@color/colorGreenPrimaryDark</item>
         <item name="android:colorAccent">@color/colorGreenAccent</item>
         <item name="colorBackItem">@color/colorGreenBackItemd</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+        
     </style>
     
     <style name="AppThemeClassic" parent="BaseThemeDark">
@@ -556,8 +541,7 @@
         <item name="android:colorPrimaryDark">@color/colorClassicPrimaryDark</item>
         <item name="android:colorAccent">@color/colorClassicAccent</item>
         <item name="colorBackItem">@color/colorClassicBackItem</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+        
     </style>
 
     <style name="AppThemeClassicDark" parent="BaseThemeLight">
@@ -565,8 +549,7 @@
         <item name="android:colorPrimaryDark">@color/colorClassicPrimaryDark</item>
         <item name="android:colorAccent">@color/colorClassicAccentd</item>
         <item name="colorBackItem">@color/colorClassicBackItemd</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+        
     </style>
     
     <style name="AppThemeGrd" parent="BaseThemeDark">
@@ -574,8 +557,7 @@
         <item name="android:colorPrimaryDark">@color/colorGrdPrimaryDark</item>
         <item name="android:colorAccent">@color/colorGrdAccent</item>
         <item name="colorBackItem">@color/colorGrdBackItem</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+        
     </style>
 
     <style name="AppThemeGrdDark" parent="BaseThemeLight">
@@ -583,8 +565,7 @@
         <item name="android:colorPrimaryDark">@color/colorGrdPrimaryDark</item>
         <item name="android:colorAccent">@color/colorGrdAccentd</item>
         <item name="colorBackItem">@color/colorGrdBackItemd</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+  
     </style>
     
     <style name="AppThemePu" parent="BaseThemeDark">
@@ -592,8 +573,7 @@
         <item name="android:colorPrimaryDark">@color/colorPuPrimaryDark</item>
         <item name="android:colorAccent">@color/colorPuAccent</item>
         <item name="colorBackItem">@color/colorPuBackItem</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+        
     </style>
 
     <style name="AppThemePuDark" parent="BaseThemeLight">
@@ -601,8 +581,7 @@
         <item name="android:colorPrimaryDark">@color/colorPuPrimaryDark</item>
         <item name="android:colorAccent">@color/colorPuAccentd</item>
         <item name="colorBackItem">@color/colorPuBackItemd</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+        
     </style>
     
     <style name="AppThemeMo" parent="BaseThemeDark">
@@ -610,8 +589,7 @@
         <item name="android:colorPrimaryDark">@color/colorMoPrimaryDark</item>
         <item name="android:colorAccent">@color/colorMoAccent</item>
         <item name="colorBackItem">@color/colorMoBackItem</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+        
     </style>
 
     <style name="AppThemeMoDark" parent="BaseThemeLight">
@@ -619,8 +597,7 @@
         <item name="android:colorPrimaryDark">@color/colorMoPrimaryDark</item>
         <item name="android:colorAccent">@color/colorMoAccentd</item>
         <item name="colorBackItem">@color/colorMoBackItemd</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+   
     </style>
     
     <style name="AppThemeCo" parent="BaseThemeDark">
@@ -628,8 +605,7 @@
         <item name="android:colorPrimaryDark">@color/colorCoPrimaryDark</item>
         <item name="android:colorAccent">@color/colorCoAccent</item>
         <item name="colorBackItem">@color/colorCoBackItem</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+
     </style>
 
     <style name="AppThemeCoDark" parent="BaseThemeLight">
@@ -637,8 +613,16 @@
         <item name="android:colorPrimaryDark">@color/colorCoPrimaryDark</item>
         <item name="android:colorAccent">@color/colorCoAccentd</item>
         <item name="colorBackItem">@color/colorCoBackItemd</item>
-        <item name="colorOn">@color/colorGreenOn</item>
-        <item name="colorOff">@color/colorGreenOff</item>
+        
+    </style>
+    
+    <style name="AppThemeCustoma" parent="BaseThemeDark">
+        <item name="android:colorPrimary">@color/java_custom_primary_placeholder</item>
+        <item name="android:colorPrimaryDark">@color/java_custom_primary_dark_placeholder</item>
+        <item name="android:colorAccent">@color/java_custom_accent_placeholder</item>
+        <item name="colorBackItem">@color/java_custom_back_item_placeholder</item>
+
+        
     </style>
     <style name="TextMaterialStyle">
         <item name="android:textAppearance">@android:style/TextAppearance.Material.Widget.Button.Borderless.Colored</item>

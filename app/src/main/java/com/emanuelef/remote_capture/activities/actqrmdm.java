@@ -612,7 +612,16 @@ public class actqrmdm extends Activity {
     public Bitmap enco(String ipres) {
         String rece=mdmrec(patmdm);
         String checksum=mdmchecksum(patmdm);
-        Bitmap i=encodeToQrCode("{\n    \"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\n    \""+rece+"\",\n\"android.app.extra.PROVISIONING_DEVICE_ADMIN_SIGNATURE_CHECKSUM\":\n\""+checksum+"\",\n\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\n\"http://" + ipres + ":7777/mdm.apk\",\n    \"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\": true,\n    \"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\": true\n}", 1200, 1200);
+        Bitmap i=encodeToQrCode(
+        "{\n    \"android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME\":\n    \""
+        +rece
+        +"\",\n\"android.app.extra.PROVISIONING_DEVICE_ADMIN_SIGNATURE_CHECKSUM\":\n\""
+        +checksum
+        +"\",\n\"android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION\":\n\"http://" 
+        + ipres 
+        + ":7777/mdm.apk\""
+        //+",\n    \"android.app.extra.PROVISIONING_SKIP_ENCRYPTION\": true,\n    \"android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED\": true\n"
+        +"}", 1200, 1200);
         return i;
     }
     public static Bitmap encodeToQrCode(String text, int width, int height) {

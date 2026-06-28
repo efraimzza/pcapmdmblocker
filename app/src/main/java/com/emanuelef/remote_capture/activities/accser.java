@@ -67,9 +67,9 @@ public class accser extends AccessibilityService {
                     if(event.getPackageName()!=null)
                     {
                         if(blockcarsetting){
-                            LogUtil.logToFile("curevepkg= "+event.getPackageName());
-                            pkgRules("com.android.settings","","id,str",event);
-                            pkgRules("com.dofun.carsetting","","id,str",event);
+                            //LogUtil.logToFile("curevepkg= "+event.getPackageName());
+                            //pkgRules("com.android.settings","","id,str",event);
+                            pkgRules("com.dofun.carsetting","","id"/*,str"*/,event);
                         }
                         //pkgRules("com.whatsapp","","id",event);
                         if(event.getPackageName().toString().contains("com.whatsapp")){
@@ -315,7 +315,7 @@ public class accser extends AccessibilityService {
                 if (csc != null) {
                     String c=csc.toString().toLowerCase();
                        if (!c.equals("") || !c.equals("null")) {
-                           LogUtil.logToFile(pkg+event.getClassName()+ c);
+                           //LogUtil.logToFile(pkg+event.getClassName()+ c);
                     //if(c.toString().contains(":id/")&&!c.toString().contains("android:id/")){
                     //LogUtil.logToFile(c+" type="+typestr( event.getEventType()));
                     //  if(c.toString().contains("rb_system")&&event.getEventType()==1){
@@ -336,11 +336,11 @@ public class accser extends AccessibilityService {
                         LogUtil.logToFile("killappd click rb system " + c);
                         mcurevei=true;
                     }*/
-                           if(c.contains("שחזור")||c.contains("איפוס")||c.contains("שיחזור")||c.contains("אפס")||c.contains("factory")||c.contains("יצרן")){
+                           //if(c.contains("שחזור")||c.contains("איפוס")||c.contains("שיחזור")||c.contains("אפס")||c.contains("factory")||c.contains("יצרן")){
                                //performSystemBack();
-                               LogUtil.logToFile("killapp "+pkg + c);
+                               //LogUtil.logToFile("killapp "+pkg + c);
                                //mcurevei=true;
-                           }
+                           //}
                            //factory_settings restore_factory_settings
                            if(c.contains("factory_settings")){
                                performSystemBack();
