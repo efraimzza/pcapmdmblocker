@@ -184,7 +184,9 @@ public class myadb {
                                 res+="s";
                             }
                         }
-                        
+                        //if(todo.contains("c")){
+                            //only check no beed to do anymore
+                        //}
                         
                         
                         
@@ -283,6 +285,7 @@ public class myadb {
             String enacc="";
             String acti="";
             String sec="";
+            String check="";
             if(todo.contains("d")){
                 disacc="\nlibadb.so -s "+ipPort+" shell \"cmd package query-services -a android.accounts.AccountAuthenticator | grep packageName | cut -d '=' -f 2 | tr -d '\\r' | sort -u | sed 's/^/pm disable-user --user -0 /' | sh\" < /dev/null\n";
             }
@@ -298,6 +301,9 @@ public class myadb {
                 
                 //sec="\nlibadb.so -s "+ipPort+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\n";
             }
+            if(todo.contains("c")){
+                check="\nlibadb.so -s "+ipPort+" shell \"dumpsys account | grep Account | grep type | cut -d '=' -f 3 | cut -d '}' -f 1\" < /dev/null\n";
+            }
             //if(pin.equals("false")){
              //   cmddpmnew="\nlibadb.so -s "+ipPort+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\nexit\nexit\n";
             //}else if(pin.equals("true")){
@@ -305,7 +311,7 @@ public class myadb {
                 
                 
                 //cmddpmnew="\nlibadb.so -s "+ipPort+" shell "+disacc+"libadb.so -s "+ipPort+" shell "+"dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\n"+"libadb.so -s "+ipPort+" shell "+enacc+"\nexit\nexit\n";
-                cmddpmnew=disacc+"sleep 3"+acti+enacc+sec+"\nexit\nexit\n";
+                cmddpmnew=disacc+"sleep 3"+acti+enacc+sec+check+"\nexit\nexit\n";
             //}
             //String exc="/system/bin/sh -"+menv+adb+" kill-server\nlibadb.so disconnect\nlibadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+"\nlibadb.so disconnect\nlibadb.so connect "+edtxip.getText().toString()+":"+edtxport.getText().toString()+cmddpm;
             //cmddpmnew="\nlibadb.so -s "+ipPort+" shell dpm set-device-owner com.emanuelef.remote_capture.debug/com.emanuelef.remote_capture.activities.admin</dev/null\nexit\nexit\n";

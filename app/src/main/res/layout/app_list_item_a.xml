@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/rounded_list_item_background">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        android:gravity="center_vertical"
+        android:background="@drawable/rounded_list_item_background">
+        <ImageView
+            android:id="@+id/app_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="אייקון אפליקציה"
+            android:src="@mipmap/ic_launcher"/> 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/app_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+
+                android:text="שם אפליקציה"/>
+
+            <TextView
+                android:id="@+id/app_package"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+
+                android:text="com.example.package"/>
+
+            <TextView
+                android:id="@+id/app_last_updated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+
+                android:text="עדכון אחרון: DD/MM/YYYY HH:MM"/>
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="השבתה"/>
+            <Switch
+                android:id="@+id/hide_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:thumb="@drawable/custom_switch_thumb"
+                android:track="@drawable/custom_switch_track"
+                android:focusable="false"
+                android:clickable="false" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/suspend_linl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="השהייה"/>
+            <Switch
+                android:id="@+id/suspend_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:thumb="@drawable/custom_switch_thumb"
+                android:track="@drawable/custom_switch_track"
+                android:focusable="false"
+                android:clickable="false"
+            />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/remove_linl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="הסרה"/>
+            <Switch
+                android:id="@+id/remove_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:thumb="@drawable/custom_switch_thumb"
+                android:track="@drawable/custom_switch_track"
+                android:focusable="false"
+                android:clickable="false"
+            />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

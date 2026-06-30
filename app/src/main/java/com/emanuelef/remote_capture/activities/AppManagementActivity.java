@@ -58,9 +58,9 @@ public class AppManagementActivity extends Activity {
     private DevicePolicyManager mDpm;
     private ComponentName mAdminComponentName;
     private ListView lvApps;
-    private List<AppItem> mOriginalAppList;
-    private List<AppItem> mFilteredAppList;
-    private AppListAdapter mAdapter;
+    private List<AppItema> mOriginalAppList;
+    private List<AppItema> mFilteredAppList;
+    private AppListAdaptera mAdapter;
 
     private String currentSearchText = "";
     private String currentSearchPackage = ""; // לחיפוש לפי שם חבילה
@@ -90,8 +90,8 @@ public class AppManagementActivity extends Activity {
         // טען את הרשימה באופן אסינכרוני
         new LoadAppsTask().execute();
 
-        mFilteredAppList = new ArrayList<AppItem>();
-        mAdapter = new AppListAdapter(this, mFilteredAppList,false);
+        mFilteredAppList = new ArrayList<AppItema>();
+        mAdapter = new AppListAdaptera(this, mFilteredAppList);
         lvApps.setAdapter(mAdapter);
 
         Button btnShowFilterOptions = (Button) findViewById(R.id.btn_filter_apps);
@@ -118,7 +118,7 @@ public class AppManagementActivity extends Activity {
                             public void run() {
                                 try{
                                     applyAppVisibilityChanges();
-                                }catch(Exception e){}
+                                }catch(Exception e){LogUtil.logToFile(e);}
                             }
                         },AppManagementActivity.this);
                 }
@@ -165,7 +165,7 @@ public class AppManagementActivity extends Activity {
 
     // הוסף AsyncTask חדש לטעינת אפליקציות
     @Deprecated
-    private class LoadAppsTask extends AsyncTask<Void, Void, List<AppItem>> {
+    private class LoadAppsTask extends AsyncTask<Void, Void, List<AppItema>> {
         
         @Deprecated
         @Override
@@ -179,15 +179,20 @@ public class AppManagementActivity extends Activity {
         }
 
         @Override
-        protected List<AppItem> doInBackground(Void... voids) {
+        protected List<AppItema> doInBackground(Void... voids) {
             PackageManager pm = getPackageManager();
             List<ApplicationInfo> installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA | PackageManager.MATCH_UNINSTALLED_PACKAGES);
-            List<AppItem> appList = new ArrayList<AppItem>();
+            List<AppItema> appList = new ArrayList<AppItema>();
 
             for (ApplicationInfo appInfo : installedApps) {
+                if(appInfo.packageName.equals(getPackageName()))continue;
                 boolean isHiddenByMDM =false;
                 try{
                     isHiddenByMDM = mDpm.isApplicationHidden(mAdminComponentName, appInfo.packageName);
+                }catch(Exception e){}
+                boolean isSuspdndByMDM =false;
+                try{
+                    isSuspdndByMDM = mDpm.isPackageSuspended(mAdminComponentName, appInfo.packageName);
                 }catch(Exception e){}
                 long lastUpdateTime = 0;
                 try {
@@ -198,11 +203,13 @@ public class AppManagementActivity extends Activity {
                     e.printStackTrace();
                 }
 
-                appList.add(new AppItem(
+                appList.add(new AppItema(
                                 appInfo.loadLabel(pm).toString(),
                                 appInfo.packageName,
                                 appInfo.loadIcon(pm),
                                 isHiddenByMDM,
+                                isSuspdndByMDM,
+                                false,
                                 (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0,
                                 hasLauncherIcon(pm, appInfo.packageName),
                                 lastUpdateTime
@@ -213,7 +220,7 @@ public class AppManagementActivity extends Activity {
         
         @Deprecated
         @Override
-        protected void onPostExecute(List<AppItem> result) {
+        protected void onPostExecute(List<AppItema> result) {
             super.onPostExecute(result);
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
@@ -229,7 +236,7 @@ public class AppManagementActivity extends Activity {
     private void showFilterOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_filter_options, null);
+        View dialogView = inflater.inflate(R.layout.dialog_filter_options_a, null);
         builder.setView(dialogView);
 
         final EditText etSearchApps = dialogView.findViewById(R.id.et_search_apps_dialog);
@@ -297,10 +304,12 @@ public class AppManagementActivity extends Activity {
         String searchPackageLower = currentSearchPackage.toLowerCase(); // טקסט חיפוש חבילה ב-lowercase
 
         // 1. סינון
-        for (AppItem appItem : mOriginalAppList) {
+        for (AppItema appItem : mOriginalAppList) {
             boolean matchesFilter = false;
             boolean isSystemApp = appItem.isSystemApp();
             boolean isHidden = appItem.isHidden();
+            boolean isSuspend = appItem.isSuspend();
+            boolean isRemove = appItem.isRemove();
             boolean hasLauncher = appItem.hasLauncherIcon();
 
             if (currentFilterOptionId == R.id.rb_filter_all_dialog) {
@@ -311,6 +320,10 @@ public class AppManagementActivity extends Activity {
                 matchesFilter = isSystemApp;
             } else if (currentFilterOptionId == R.id.rb_filter_hidden_dialog) {
                 matchesFilter = isHidden;
+            } else if (currentFilterOptionId == R.id.rb_filter_suspend_dialog) {
+                matchesFilter = isSuspend;
+            } else if (currentFilterOptionId == R.id.rb_filter_remove_dialog) {
+                matchesFilter = isRemove;
             } else if (currentFilterOptionId == R.id.rb_filter_launcher_dialog) {
                 matchesFilter = hasLauncher;
             }
@@ -326,16 +339,16 @@ public class AppManagementActivity extends Activity {
 
         // 2. מיון
         if (currentSortOptionId == R.id.rb_sort_name_dialog) {
-            Collections.sort(mFilteredAppList, new Comparator<AppItem>() {
+            Collections.sort(mFilteredAppList, new Comparator<AppItema>() {
                     @Override
-                    public int compare(AppItem item1, AppItem item2) {
+                    public int compare(AppItema item1, AppItema item2) {
                         return item1.getName().compareToIgnoreCase(item2.getName());
                     }
                 });
         } else if (currentSortOptionId == R.id.rb_sort_last_installed_dialog) {
-            Collections.sort(mFilteredAppList, new Comparator<AppItem>() {
+            Collections.sort(mFilteredAppList, new Comparator<AppItema>() {
                     @Override
-                    public int compare(AppItem item1, AppItem item2) {
+                    public int compare(AppItema item1, AppItema item2) {
                         if (item1.getLastUpdateTime() > item2.getLastUpdateTime()) {
                             return -1;
                         } else if (item1.getLastUpdateTime() < item2.getLastUpdateTime()) {
@@ -710,12 +723,56 @@ public class AppManagementActivity extends Activity {
 
     private void applyAppVisibilityChanges() {
         List<String> ss=new ArrayList<>();
-        for (AppItem appItem : mOriginalAppList) { // עבר על הרשימה המקורית
+        List<String> sus=new ArrayList<>();
+        List<String> unsus=new ArrayList<>();
+        for (AppItema appItem : mOriginalAppList) { // עבר על הרשימה המקורית
             // אם מצב ה-hidden השתנה עבור האפליקציה הזו
-            boolean currentHiddenState = mDpm.isApplicationHidden(mAdminComponentName, appItem.getPackageName());
-            if (currentHiddenState != appItem.isHidden()) {
-                mDpm.setApplicationHidden(mAdminComponentName, appItem.getPackageName(), appItem.isHidden());
+            if(appItem.isRemove()){
+                //remove app
+                LogUtil.logToFile(appItem.getName());
+                /*try {
+                    StringBuilder stringBuilder = new StringBuilder("package:");
+                    stringBuilder.append("top.defaults.colorpicker");
+                    Uri parse = Uri.parse(stringBuilder.toString());
+                    startActivity(new Intent(Intent.ACTION_UNINSTALL_PACKAGE, parse).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_SHORT).show();
+                }*/
+                try {
+                Intent callbackIntent = new Intent(this, InstallReceiver.class);
+                callbackIntent.setAction(AppUpdater.ACTION_INSTALL_COMPLETE);
+                //callbackIntent.putExtra(EXTRA_PACKAGE_NAME, mainPackageName);
+
+                int flags = 0;
+                if (Build.VERSION.SDK_INT >= 31) {
+                    flags = android.app.PendingIntent.FLAG_IMMUTABLE;
+                    //flags = android.app.PendingIntent.FLAG_MUTABLE;
+                    flags = 33554432;
+                } else {
+                    flags = android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+                }
+
+                android.app.PendingIntent pendingIntent = android.app.PendingIntent.getBroadcast(
+                    this, 0, callbackIntent, flags);
+                getPackageManager().getPackageInstaller().uninstall(appItem.getPackageName(),pendingIntent.getIntentSender());
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_SHORT).show();
+                }
             }
+            try{
+                boolean currentHiddenState = mDpm.isApplicationHidden(mAdminComponentName, appItem.getPackageName());
+                if (currentHiddenState != appItem.isHidden()) {
+                    mDpm.setApplicationHidden(mAdminComponentName, appItem.getPackageName(), appItem.isHidden());
+                }
+                boolean currentSuspendState = mDpm.isPackageSuspended(mAdminComponentName, appItem.getPackageName());
+                if (currentSuspendState != appItem.isSuspend()) {
+                    if(appItem.isSuspend()){
+                        sus.add(appItem.getPackageName());
+                    }else{
+                        unsus.add(appItem.getPackageName());
+                    }
+                }
+            }catch(Exception e){LogUtil.logToFile(e);}
             if(appItem.isHidden()&&!appItem.isSystemApp()) //no need to save sysytem apps because isnt loading in prappmng anyway...
                 ss.add(appItem.getPackageName());
         }
@@ -725,6 +782,15 @@ public class AppManagementActivity extends Activity {
         
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AppManagementActivity.this).edit();
         editor.putStringSet(mownsetapps, s).commit();
+        
+        //suspend
+        String[] susa={};
+        susa=sus.toArray(susa);
+        mDpm.setPackagesSuspended(mAdminComponentName,susa,true);
+        String[] unsusa={};
+        unsusa=unsus.toArray(unsusa);
+        mDpm.setPackagesSuspended(mAdminComponentName,unsusa,false);
+        
         Toast.makeText(getApplicationContext(), "שינויים באפליקציות נשמרו!", Toast.LENGTH_SHORT).show();
         // רענן את הרשימה לאחר שמירה כדי לשקף שינויים (לדוגמה, בסינון 'מוסתרות')
         // טען מחדש את הרשימה המקורית מהמערכת

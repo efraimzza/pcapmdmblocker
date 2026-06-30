@@ -25,7 +25,7 @@ public class nsdactivity extends Activity implements AdbNsdResolver.AdbServiceFo
     private AdbNsdResolver mAdbResolver;
     private TextView mStatusText,pairst,connst,resst,discost,logst,mrlog;
     private Button mDiscoveryButton,mconDiscoveryButton,mstopDiscobu;
-    Switch swacti,swsec,swdisacc,swenacc;
+    Switch swacti,swsec,swdisacc,swenacc,swcheckacc;
     private String storedconnect;
     String todo="";
     public static boolean ready=true;
@@ -62,6 +62,7 @@ public class nsdactivity extends Activity implements AdbNsdResolver.AdbServiceFo
         swsec=findViewById(R.id.swsec);
         swdisacc=findViewById(R.id.swdisacc);
         swenacc=findViewById(R.id.swenacc);
+        swcheckacc=findViewById(R.id.swcheckacc);
         mAdbResolver = new AdbNsdResolver(this, this);
         IntentFilter filter = new IntentFilter("com.ands.ACTION_START_CONNECT_DISCOVERY");
         registerReceiver(mConnectStartReceiver, filter);
@@ -330,7 +331,7 @@ public class nsdactivity extends Activity implements AdbNsdResolver.AdbServiceFo
         private void mconnectrun(){
             if(!mAdbResolver.pairactive){
                 if(storedconnect!=null){
-                    todo=(swdisacc.isChecked()?"d":"")+(swenacc.isChecked()?"e":"")+(swacti.isChecked()?"a":"")+(swsec.isChecked()?"s":"");
+                    todo=(swdisacc.isChecked()?"d":"")+(swenacc.isChecked()?"e":"")+(swacti.isChecked()?"a":"")+(swsec.isChecked()?"s":"")+(swcheckacc.isChecked()?"c":"");
                     if(!todo.equals("")){
                         if(ready){
                             connst.setText("מריץ");

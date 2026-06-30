@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
->
+    android:padding="16dp">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -12,54 +11,52 @@
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-        >
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="נגישות"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center_horizontal"
-        android:paddingBottom="16dp"
-    />
-    <Switch
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="הפעלת נגישות"
-        android:checked="true"
-        android:id="@+id/swenaccess"/>
-    
-    <Switch
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="חסימת סטטוסים"
-        android:checked="true"
-        android:id="@+id/swdistatus"/>
-
-    <Switch
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="חסימת ערוצים"
-        android:checked="true"
-        android:id="@+id/swdischannel"/>
-
-    <Switch
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="חסימת הודעות שהועברו מערוצים"
-        android:checked="false"
-        android:id="@+id/swdisforwardchannel"/>
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="נגישות"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:paddingBottom="16dp"/>
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="חסימת הגדרות רכב (נסיוני)"
+                android:text="הפעלת נגישות"
+                android:checked="true"
+                android:id="@+id/swenaccess"/>
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="חסימת סטטוסים"
+                android:checked="true"
+                android:id="@+id/swdistatus"/>
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="חסימת ערוצים"
+                android:checked="true"
+                android:id="@+id/swdischannel"/>
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="חסימת הודעות שהועברו מערוצים"
+                android:checked="false"
+                android:id="@+id/swdisforwardchannel"/>
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="חסימת איפוס מהגדרות רכב"
                 android:checked="false"
                 android:id="@+id/swdiscarsetting"/>
-            
-    <Button style="@style/MDMActionButton"
-        android:id="@+id/btn_save_access"
-        android:text="שמור שינויים"/>
+
+            <Button style="@style/MDMActionButton"
+                android:id="@+id/btn_save_access"
+                android:text="שמור שינויים"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

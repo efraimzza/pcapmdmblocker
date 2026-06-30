@@ -348,10 +348,11 @@ public class MDMSettingsActivity extends Activity {
             } else if (buttonId == R.id.btn_pwopen) {
                pwopen();
             }else if (buttonId == R.id.btn_manage_apps) {
+                Intent intent = new Intent(MDMSettingsActivity.this, AppManagementActivity.class);
+                startActivity(intent);
+                /*
                 String[] pathNames = {"התקנת והשבתת אפליקציות","השהיית אפליקציות"};
                 
-                
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("בחר סוג ניהול");
                 builder.setItems(pathNames, new DialogInterface.OnClickListener() {
@@ -367,7 +368,7 @@ public class MDMSettingsActivity extends Activity {
                             
                         }
                     });
-                builder.create().show();
+                builder.create().show();*/
             } else if (buttonId == R.id.btn_def_rest_netfree) {
                 new Thread(){public void run(){
                 boolean mdmstate=mDpm.isDeviceOwnerApp(MDMSettingsActivity.this.getPackageName());

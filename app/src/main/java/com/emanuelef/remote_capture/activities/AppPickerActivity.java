@@ -192,7 +192,6 @@ public class AppPickerActivity extends Activity {
                     //is in rules
                     
                     if(state.equals("whitelist")){
-
                         final MatchList whitelist = PCAPdroid.getInstance().getMalwareWhitelist();
                         isSelected=whitelist.matchesApp(appInfo.uid);
                     }else if(state.equals("fwWhitelist")){
@@ -201,6 +200,9 @@ public class AppPickerActivity extends Activity {
                     }else if(state.equals("decryptionList")){
                         final MatchList decryptionList = PCAPdroid.getInstance().getDecryptionList();
                         isSelected=decryptionList.matchesApp(appInfo.uid);
+                    }else if(state.equals("visualizationMask")){
+                        final MatchList visualizationMask = PCAPdroid.getInstance().getVisualizationMask();
+                        isSelected=visualizationMask.matchesApp(appInfo.uid);
                     }else if(state.equals("blocklist")){
                         final Blocklist blocklist = PCAPdroid.getInstance().getBlocklist();
                         isSelected=blocklist.matchesApp(appInfo.uid);
@@ -429,6 +431,8 @@ public class AppPickerActivity extends Activity {
                     matchList = PCAPdroid.getInstance().getFirewallWhitelist();
                 }else if(state.equals("decryptionList")){
                     matchList = PCAPdroid.getInstance().getDecryptionList();
+                }else if(state.equals("visualizationMask")){
+                    matchList = PCAPdroid.getInstance().getVisualizationMask();
                 }else if(state.equals("blocklist")){
                     blocklist = PCAPdroid.getInstance().getBlocklist();
                 }

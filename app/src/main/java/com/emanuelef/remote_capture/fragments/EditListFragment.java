@@ -329,6 +329,9 @@ public class EditListFragment extends Fragment implements MatchList.ListChangeLi
                 case BLOCKLIST:
                     state="blocklist";
                     break;
+                case VISUALIZATION_MASK:
+                    state="visualizationMask";
+                    break;
                 default:
                     break;
             }
